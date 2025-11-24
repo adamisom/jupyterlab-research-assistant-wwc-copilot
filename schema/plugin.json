@@ -1,0 +1,8 @@
+{
+  "jupyter.lab.shortcuts": [],
+  "title": "jupyterlab-research-assistant-wwc-copilot",
+  "description": "jupyterlab-research-assistant-wwc-copilot settings.",
+  "type": "object",
+  "properties": {},
+  "additionalProperties": false
+}

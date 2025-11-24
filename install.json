@@ -1,0 +1,5 @@
+{
+  "packageManager": "python",
+  "packageName": "jupyterlab_research_assistant_wwc_copilot",
+  "uninstallInstructions": "Use your Python package manager (pip, conda, etc.) to uninstall the package jupyterlab_research_assistant_wwc_copilot"
+}

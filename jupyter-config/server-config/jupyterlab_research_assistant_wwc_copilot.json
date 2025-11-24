@@ -1,0 +1,7 @@
+{
+  "ServerApp": {
+    "jpserver_extensions": {
+      "jupyterlab_research_assistant_wwc_copilot": true
+    }
+  }
+}

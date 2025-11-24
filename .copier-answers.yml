@@ -1,0 +1,18 @@
+# Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
+_commit: v4.5.0
+_src_path: https://github.com/jupyterlab/extension-template
+author_email: adam.r.isom@gmail.com
+author_name: Adam Isom
+create_claude_symlink: true
+create_gemini_symlink: true
+has_ai_rules: true
+has_binder: false
+has_settings: true
+kind: frontend-and-server
+labextension_name: jupyterlab-research-assistant-wwc-copilot
+project_short_description: A JupyterLab extension for academic research management
+    and WWC quality assessment
+python_name: jupyterlab_research_assistant_wwc_copilot
+repository: https://github.com/adamisom/jupyterlab-research-assistant-wwc-copilot
+test: true
+
