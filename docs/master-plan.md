@@ -1,4 +1,3 @@
-
 # JupyterLab WWC Co-Pilot: Master Implementation Plan (Extension Approach)
 
 **Project Goal**: To develop a third-party JupyterLab extension with two substantial, end-to-end features that empower researchers to import, analyze, and synthesize academic literature, with a specialized focus on learning science research and What Works Clearinghouse (WWC) quality assessment.
@@ -12,15 +11,19 @@
 JupyterLab is a web-based IDE for data science and scientific computing, used by millions of researchers. Building the WWC Co-Pilot as a JupyterLab extension is a strategic choice for several reasons:
 
 ### 1. Your Target Users Are Already There
+
 Education researchers who do meta-analyses and systematic reviews are likely already using JupyterLab (or Jupyter Notebooks) for their statistical analysis. We are meeting them where they work.
 
 ### 2. Integrated Workflow
+
 Instead of a fragmented workflow across multiple applications (Zotero, Excel, R, Word), researchers can do everything in one place: import PDFs in JupyterLab, extract metadata with our extension, run WWC quality assessment with our extension, run meta-analysis in a notebook cell, and generate reports in the same notebook.
 
 ### 3. Computational Context
+
 Our features (PDF extraction, meta-analysis, forest plots) are computational tasks. JupyterLab is built for computational workflows. It makes sense to put research tools where the research computation happens.
 
 ### 4. Extensibility is the Core Philosophy
+
 JupyterLab was designed from the ground up to be extended. Building a third-party extension is the intended way to add specialized functionality.
 
 ---
@@ -37,14 +40,14 @@ This phase focuses on understanding JupyterLab's core concepts and design patter
 
 1.  **Documentation Review**: Thoroughly read the official JupyterLab developer documentation, focusing on the extension development guides, architecture overviews, and the Lumino widget framework documentation [1].
 2.  **Study Existing Extensions**: Analyze the structure of 2-3 popular third-party extensions to understand real-world patterns:
-    *   **jupyterlab-git**: Demonstrates sidebar panels, server extensions, and complex state management.
-    *   **jupyterlab-lsp**: Shows how to integrate external services and provide real-time feedback.
-    *   **jupyterlab-drawio**: Illustrates custom document types and rendering.
+    - **jupyterlab-git**: Demonstrates sidebar panels, server extensions, and complex state management.
+    - **jupyterlab-lsp**: Shows how to integrate external services and provide real-time feedback.
+    - **jupyterlab-drawio**: Illustrates custom document types and rendering.
 3.  **Pattern Identification**: Document key architectural patterns, including:
-    *   **Plugin System**: How plugins are defined, registered, and activated using tokens for dependency injection.
-    *   **Service & Token Model**: How different parts of the application provide and consume services.
-    *   **Lumino Widgets**: The lifecycle and structure of UI components, including panels, menus, and dialogs.
-    *   **Server Extensions**: The mechanism for adding backend functionality and creating REST APIs.
+    - **Plugin System**: How plugins are defined, registered, and activated using tokens for dependency injection.
+    - **Service & Token Model**: How different parts of the application provide and consume services.
+    - **Lumino Widgets**: The lifecycle and structure of UI components, including panels, menus, and dialogs.
+    - **Server Extensions**: The mechanism for adding backend functionality and creating REST APIs.
 
 **Deliverable**: A personal architecture diagram illustrating how your extension will integrate with JupyterLab, showing the key extension points to be used and the anticipated data flow between the frontend and backend components.
 
@@ -67,22 +70,25 @@ This phase uses the official JupyterLab Extension Template to create your extens
 **Key Activities**:
 
 1.  **Use the Extension Template**: Generate your extension using cookiecutter:
+
     ```bash
     pip install cookiecutter
     cookiecutter https://github.com/jupyterlab/extension-template
     ```
+
     Answer the prompts:
-    *   Extension name: `jupyterlab-research-assistant`
-    *   Has server extension: `Yes`
-    *   Has frontend extension: `Yes`
+    - Extension name: `jupyterlab-research-assistant`
+    - Has server extension: `Yes`
+    - Has frontend extension: `Yes`
 
 2.  **Explore the Generated Structure**: Examine the scaffolded code to understand:
-    *   `src/`: Frontend TypeScript code
-    *   `jupyterlab_research_assistant/`: Backend Python code
-    *   `package.json`: Frontend dependencies and build scripts
-    *   `pyproject.toml`: Python package configuration
+    - `src/`: Frontend TypeScript code
+    - `jupyterlab_research_assistant/`: Backend Python code
+    - `package.json`: Frontend dependencies and build scripts
+    - `pyproject.toml`: Python package configuration
 
 3.  **Link for Development**: Install your extension in development mode:
+
     ```bash
     cd jupyterlab-research-assistant
     pip install -e .
@@ -108,28 +114,33 @@ This phase focuses on engaging with the JupyterLab community to gather feedback,
 3.  **Post an RFC (Request for Comments)**: Share your feature proposals with the community to gather early feedback. Use the template below:
 
 **RFC Post Template**:
+
 ```markdown
 Title: Proposal: WWC Co-Pilot & Research Assistant Extension for JupyterLab
 
 Context: Researchers using JupyterLab for data analysis often work with academic papers but lack integrated tools for managing and synthesizing research literature, especially for conducting rigorous systematic reviews.
 
 Proposed Features:
+
 1. Research Library & Discovery Engine - Search Semantic Scholar, import PDFs, extract metadata, build searchable database
 2. WWC Co-Pilot & Synthesis Engine - Assess study quality using WWC standards, perform meta-analysis, detect conflicts
 
 Use Cases:
+
 - Learning science researchers analyzing intervention studies
 - Education researchers conducting What Works Clearinghouse reviews
 - Meta-analysts comparing effect sizes across studies
 - Systematic reviewers assessing research quality
 
 Design Principles:
+
 - Privacy-first (all processing local or user-controlled)
 - Extensible (templates for different research domains)
 - Follows JupyterLab patterns (Lumino widgets, command system)
 - Human-in-the-loop for critical judgments
 
 Questions for Community:
+
 - Does this fit JupyterLab's scope?
 - Any existing extensions I should build upon?
 - Preferred approach for server-side AI processing?
@@ -150,6 +161,7 @@ Questions for Community:
 ### Phase 1.1: Backend - Discovery, Processing, and Metadata Service
 
 **Suggested Directory Structure (`packages/research-assistant-server/`)**:
+
 ```
 ├── handlers/              # API endpoints
 │   ├── discovery.py      # Semantic Scholar search
@@ -174,115 +186,116 @@ This phase establishes the server-side foundation. It will be a JupyterLab serve
 **Key Components & Technologies**:
 
 1.  **Academic Discovery Service**:
-    *   **Primary Tool**: **Semantic Scholar API**. This provides free, high-quality access to a massive academic graph, including search, paper details, and citation networks [3].
-    *   **Implementation**: A Python client will be created to handle requests to the Semantic Scholar API. This service will power the frontend's discovery features.
-    *   **Code Example (`backend/services/semantic_scholar.py`)**:
-        ```python
-        import requests
-        from typing import List, Dict, Optional
+    - **Primary Tool**: **Semantic Scholar API**. This provides free, high-quality access to a massive academic graph, including search, paper details, and citation networks [3].
+    - **Implementation**: A Python client will be created to handle requests to the Semantic Scholar API. This service will power the frontend's discovery features.
+    - **Code Example (`backend/services/semantic_scholar.py`)**:
 
-        class SemanticScholarAPI:
-            BASE_URL = "https://api.semanticscholar.org/graph/v1"
+      ```python
+      import requests
+      from typing import List, Dict, Optional
 
-            def __init__(self, api_key: Optional[str] = None):
-                self.session = requests.Session()
-                if api_key:
-                    self.session.headers.update({"x-api-key": api_key})
+      class SemanticScholarAPI:
+          BASE_URL = "https://api.semanticscholar.org/graph/v1"
 
-            def search_papers(self, query: str, year: str, limit: int = 20) -> List[Dict]:
-                """Search for papers using a query and year range."""
-                params = {
-                    "query": query,
-                    "year": year,
-                    "limit": limit,
-                    "fields": "title,authors,year,abstract,doi,openAccessPdf"
-                }
-                response = self.session.get(f"{self.BASE_URL}/paper/search", params=params)
-                response.raise_for_status()
-                data = response.json()
-                return data.get("data", [])
+          def __init__(self, api_key: Optional[str] = None):
+              self.session = requests.Session()
+              if api_key:
+                  self.session.headers.update({"x-api-key": api_key})
 
-            def get_paper_details(self, doi: str) -> Optional[Dict]:
-                """Fetch detailed information for a single paper by DOI."""
-                params = {"fields": "title,authors,year,abstract,doi,openAccessPdf,citationCount,referenceCount"}
-                response = self.session.get(f"{self.BASE_URL}/paper/DOI:{doi}", params=params)
-                if response.status_code == 404:
-                    return None
-                response.raise_for_status()
-                return response.json()
-        ```
+          def search_papers(self, query: str, year: str, limit: int = 20) -> List[Dict]:
+              """Search for papers using a query and year range."""
+              params = {
+                  "query": query,
+                  "year": year,
+                  "limit": limit,
+                  "fields": "title,authors,year,abstract,doi,openAccessPdf"
+              }
+              response = self.session.get(f"{self.BASE_URL}/paper/search", params=params)
+              response.raise_for_status()
+              data = response.json()
+              return data.get("data", [])
+
+          def get_paper_details(self, doi: str) -> Optional[Dict]:
+              """Fetch detailed information for a single paper by DOI."""
+              params = {"fields": "title,authors,year,abstract,doi,openAccessPdf,citationCount,referenceCount"}
+              response = self.session.get(f"{self.BASE_URL}/paper/DOI:{doi}", params=params)
+              if response.status_code == 404:
+                  return None
+              response.raise_for_status()
+              return response.json()
+      ```
 
 2.  **PDF Text and Basic Metadata Extraction**:
-    *   **Primary Tool**: **PyMuPDF (`fitz`)** will be used for its high speed and accuracy in extracting raw text and basic metadata (e.g., title, author from PDF properties) [4].
-    *   **Implementation**: A Python function will open an uploaded or downloaded PDF, iterate through pages to extract the full text, and retrieve the document's built-in metadata dictionary.
+    - **Primary Tool**: **PyMuPDF (`fitz`)** will be used for its high speed and accuracy in extracting raw text and basic metadata (e.g., title, author from PDF properties) [4].
+    - **Implementation**: A Python function will open an uploaded or downloaded PDF, iterate through pages to extract the full text, and retrieve the document's built-in metadata dictionary.
 
 3.  **AI-Powered Deep Metadata Extraction**:
     This is the core intelligent feature for enriching papers beyond what standard APIs provide. The extracted text will be processed by a language model to identify and structure detailed academic metadata, especially for the WWC Co-Pilot.
-
-    *   **Alternative A (High-Quality Cloud API)**: **Claude 3** or **GPT-4.1**. Highest accuracy, but requires API keys and internet.
-    *   **Alternative B (Local/Open-Source LLM)**: **Ollama** with `Llama-3-8B` or `Mistral-7B`. Excellent for privacy, no cost, but requires more powerful hardware.
-    *   **Alternative C (Specialized Non-LLM Tools)**: **GROBID**. Very fast for standard bibliographic data, but less flexible for custom learning science fields.
+    - **Alternative A (High-Quality Cloud API)**: **Claude 3** or **GPT-4.1**. Highest accuracy, but requires API keys and internet.
+    - **Alternative B (Local/Open-Source LLM)**: **Ollama** with `Llama-3-8B` or `Mistral-7B`. Excellent for privacy, no cost, but requires more powerful hardware.
+    - **Alternative C (Specialized Non-LLM Tools)**: **GROBID**. Very fast for standard bibliographic data, but less flexible for custom learning science fields.
 
     **Recommended Path**: Implement support for **Alternative A** and **Alternative B**, allowing the user to choose their preferred method in the settings.
+    - **Code Example (`backend/extractors/ai_extractor.py`)**:
 
-    *   **Code Example (`backend/extractors/ai_extractor.py`)**:
-        ```python
-        from openai import OpenAI # Works for both OpenAI and Anthropic-compatible APIs
-        import json
+      ```python
+      from openai import OpenAI # Works for both OpenAI and Anthropic-compatible APIs
+      import json
 
-        class AIExtractor:
-            def __init__(self, client: OpenAI, model: str):
-                self.client = client
-                self.model = model
+      class AIExtractor:
+          def __init__(self, client: OpenAI, model: str):
+              self.client = client
+              self.model = model
 
-            def extract_metadata(self, text: str, schema: Dict) -> Dict:
-                """Extracts metadata from text based on a JSON schema."""
-                prompt = f"""Please extract the following information from the provided academic paper text. Respond with a single, valid JSON object that conforms to the schema.
+          def extract_metadata(self, text: str, schema: Dict) -> Dict:
+              """Extracts metadata from text based on a JSON schema."""
+              prompt = f"""Please extract the following information from the provided academic paper text. Respond with a single, valid JSON object that conforms to the schema.
 
-                Schema: {json.dumps(schema, indent=2)}
+              Schema: {json.dumps(schema, indent=2)}
 
-                Paper Text:
-                {text[:16000]} # Truncate for context window
-                """
+              Paper Text:
+              {text[:16000]} # Truncate for context window
+              """
 
-                response = self.client.chat.completions.create(
-                    model=self.model,
-                    messages=[{"role": "user", "content": prompt}],
-                    response_format={"type": "json_object"}
-                )
-                try:
-                    return json.loads(response.choices[0].message.content)
-                except (json.JSONDecodeError, IndexError):
-                    return {}
-        ```
+              response = self.client.chat.completions.create(
+                  model=self.model,
+                  messages=[{"role": "user", "content": prompt}],
+                  response_format={"type": "json_object"}
+              )
+              try:
+                  return json.loads(response.choices[0].message.content)
+              except (json.JSONDecodeError, IndexError):
+                  return {}
+      ```
 
 4.  **Database Storage**:
-    *   **Technology**: **SQLite** via **SQLAlchemy**. This provides a robust, file-based database with a proper ORM for maintainable queries.
-    *   **Schema**: The schema is expanded to include data from Semantic Scholar and fields necessary for the WWC Co-Pilot.
+    - **Technology**: **SQLite** via **SQLAlchemy**. This provides a robust, file-based database with a proper ORM for maintainable queries.
+    - **Schema**: The schema is expanded to include data from Semantic Scholar and fields necessary for the WWC Co-Pilot.
 
-    *Table 1: Expanded Database Schema*
-    | Table Name                  | Column Name           | Data Type | Description                                      |
+    _Table 1: Expanded Database Schema_
+    | Table Name | Column Name | Data Type | Description |
     | --------------------------- | --------------------- | --------- | ------------------------------------------------ |
-    | `papers`                    | `id`                  | INTEGER   | Primary Key                                      |
-    |                             | `title`               | TEXT      | The title of the paper.                            |
-    |                             | `authors`             | TEXT      | JSON array of author names.                      |
-    |                             | `year`                | INTEGER   | Publication year.                                |
-    |                             | `doi`                 | TEXT      | Digital Object Identifier.                       |
-    |                             | `s2_id`               | TEXT      | Semantic Scholar ID for citation graph lookups.  |
-    |                             | `citation_count`      | INTEGER   | Number of citations.                             |
-    |                             | `pdf_path`            | TEXT      | Filesystem path to the stored PDF.               |
-    | `study_metadata`            | `paper_id`            | INTEGER   | Foreign key to `papers.id`.                      |
-    |                             | `methodology`         | TEXT      | e.g., "RCT", "Quasi-experimental".               |
-    |                             | `sample_size_baseline`| INTEGER   | N at baseline (for WWC).                         |
-    |                             | `sample_size_endline` | INTEGER   | N at endline (for WWC).                          |
-    |                             | `effect_sizes`        | TEXT      | JSON object of reported effect sizes.            |
-    | `learning_science_metadata` | `paper_id`            | INTEGER   | Foreign key to `papers.id`.                      |
-    |                             | `learning_domain`     | TEXT      | e.g., "Cognitive", "Affective".                  |
-    |                             | `intervention_type`   | TEXT      | e.g., "Spaced Repetition", "Active Learning".    |
+    | `papers` | `id` | INTEGER | Primary Key |
+    | | `title` | TEXT | The title of the paper. |
+    | | `authors` | TEXT | JSON array of author names. |
+    | | `year` | INTEGER | Publication year. |
+    | | `doi` | TEXT | Digital Object Identifier. |
+    | | `s2_id` | TEXT | Semantic Scholar ID for citation graph lookups. |
+    | | `citation_count` | INTEGER | Number of citations. |
+    | | `pdf_path` | TEXT | Filesystem path to the stored PDF. |
+    | `study_metadata` | `paper_id` | INTEGER | Foreign key to `papers.id`. |
+    | | `methodology` | TEXT | e.g., "RCT", "Quasi-experimental". |
+    | | `sample_size_baseline`| INTEGER | N at baseline (for WWC). |
+    | | `sample_size_endline` | INTEGER | N at endline (for WWC). |
+    | | `effect_sizes` | TEXT | JSON object of reported effect sizes. |
+    | `learning_science_metadata` | `paper_id` | INTEGER | Foreign key to `papers.id`. |
+    | | `learning_domain` | TEXT | e.g., "Cognitive", "Affective". |
+    | | `intervention_type` | TEXT | e.g., "Spaced Repetition", "Active Learning". |
 
 ### Phase 1.2: Frontend - The Research Library Panel
 
 **Suggested Directory Structure (`packages/research-assistant/`)**:
+
 ```typescript
 ├── src/
 │   ├── index.ts              // Extension entry point
@@ -308,63 +321,65 @@ This phase focuses on building the user-facing interface as a new panel in the J
 
 1.  **Main Panel**: A new sidebar panel, registered with a custom icon, that serves as the main view for the research library.
 2.  **Discovery & Import Tab**: The default view, allowing users to find new papers.
-    *   **UI Mockup**: A search bar, filters for year and open access, and a results list.
-    *   **Code Example (`frontend/widgets/DiscoveryTab.tsx`)**:
-        ```typescript
-        import React, { useState } from 'react';
-        import { api } from '../services/api';
+    - **UI Mockup**: A search bar, filters for year and open access, and a results list.
+    - **Code Example (`frontend/widgets/DiscoveryTab.tsx`)**:
 
-        interface PaperResult {
-          paperId: string;
-          title: string;
-          authors: { name: string }[];
-          year: number;
-          abstract: string;
-        }
+      ```typescript
+      import React, { useState } from 'react';
+      import { api } from '../services/api';
 
-        export const DiscoveryTab = (): JSX.Element => {
-          const [query, setQuery] = useState('');
-          const [results, setResults] = useState<PaperResult[]>([]);
-          const [isLoading, setIsLoading] = useState(false);
+      interface PaperResult {
+        paperId: string;
+        title: string;
+        authors: { name: string }[];
+        year: number;
+        abstract: string;
+      }
 
-          const handleSearch = async () => {
-            if (!query) return;
-            setIsLoading(true);
-            const papers = await api.searchSemanticScholar(query);
-            setResults(papers);
-            setIsLoading(false);
-          };
+      export const DiscoveryTab = (): JSX.Element => {
+        const [query, setQuery] = useState('');
+        const [results, setResults] = useState<PaperResult[]>([]);
+        const [isLoading, setIsLoading] = useState(false);
 
-          const handleImport = async (paper: PaperResult) => {
-            await api.importPaper(paper.paperId, paper.doi);
-            // Optionally show a notification
-          };
-
-          return (
-            <div>
-              <input 
-                type="text" 
-                value={query} 
-                onChange={(e) => setQuery(e.target.value)} 
-                placeholder="Search Semantic Scholar..." 
-              />
-              <button onClick={handleSearch} disabled={isLoading}>
-                {isLoading ? 'Searching...' : 'Search'}
-              </button>
-              <div>
-                {results.map(paper => (
-                  <div key={paper.paperId} className="paper-card">
-                    <h3>{paper.title} ({paper.year})</h3>
-                    <p>{paper.authors.map(a => a.name).join(', ')}</p>
-                    <p>{paper.abstract}</p>
-                    <button onClick={() => handleImport(paper)}>Import</button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          );
+        const handleSearch = async () => {
+          if (!query) return;
+          setIsLoading(true);
+          const papers = await api.searchSemanticScholar(query);
+          setResults(papers);
+          setIsLoading(false);
         };
-        ```
+
+        const handleImport = async (paper: PaperResult) => {
+          await api.importPaper(paper.paperId, paper.doi);
+          // Optionally show a notification
+        };
+
+        return (
+          <div>
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search Semantic Scholar..."
+            />
+            <button onClick={handleSearch} disabled={isLoading}>
+              {isLoading ? 'Searching...' : 'Search'}
+            </button>
+            <div>
+              {results.map(paper => (
+                <div key={paper.paperId} className="paper-card">
+                  <h3>{paper.title} ({paper.year})</h3>
+                  <p>{paper.authors.map(a => a.name).join(', ')}</p>
+                  <p>{paper.abstract}</p>
+                  <button onClick={() => handleImport(paper)}>Import</button>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      };
+      ```
+
 3.  **Library Tab**: A tab to view and search the papers already imported into the local database.
 4.  **Paper Detail View**: A dedicated view that displays all extracted metadata for a selected paper, including the learning science-specific fields and a button to open the original PDF.
 
@@ -376,15 +391,16 @@ This phase focuses on integrating the extension into JupyterLab's command system
 
 1.  **Plugin Registration**: Register the extension with JupyterLab's plugin system using the `JupyterFrontEndPlugin` interface.
 2.  **Command Palette**: Add commands to the command palette for quick access:
-    *   `research:search-papers` - Open the discovery tab
-    *   `research:import-pdf` - Open file picker to import a local PDF
-    *   `research:view-library` - Switch to library tab
-    *   `research:export-library` - Export library as CSV/JSON
+    - `research:search-papers` - Open the discovery tab
+    - `research:import-pdf` - Open file picker to import a local PDF
+    - `research:view-library` - Switch to library tab
+    - `research:export-library` - Export library as CSV/JSON
 3.  **Main Menu Integration**: Add a "Research" menu to the main menu bar with the above commands.
 4.  **Keyboard Shortcuts**: Register keyboard shortcuts for frequently used commands (e.g., `Ctrl+Shift+R` for search).
 5.  **File Browser Context Menu**: Add a "Import to Research Library" option when right-clicking PDF files in the file browser.
 
 **Code Example (`frontend/plugin.ts`)**:
+
 ```typescript
 import { JupyterFrontEndPlugin } from '@jupyterlab/application';
 import { ICommandPalette } from '@jupyterlab/apputils';
@@ -423,13 +439,13 @@ export default plugin;
 2.  **Integration Tests**: Test the full workflow from search to import to database storage.
 3.  **Performance Benchmarks**: Measure and document extraction time for papers of various lengths.
 4.  **Edge Cases**:
-    *   **Malformed PDFs**: Handle corrupted or unreadable PDFs gracefully.
-    *   **API Rate Limits**: Implement exponential backoff for Semantic Scholar and AI APIs.
-    *   **Large Libraries**: Test performance with 1,000+ papers in the database.
-    *   **Concurrent Uploads**: Ensure multiple simultaneous uploads don't corrupt the database.
-    *   **No Open Access PDF**: Handle cases where Semantic Scholar finds a paper but no downloadable PDF.
-    *   **Empty/Irrelevant Text**: What happens if the extracted text is garbage or from a non-academic document?
-    *   **Network Failures**: Handle failed API calls gracefully.
+    - **Malformed PDFs**: Handle corrupted or unreadable PDFs gracefully.
+    - **API Rate Limits**: Implement exponential backoff for Semantic Scholar and AI APIs.
+    - **Large Libraries**: Test performance with 1,000+ papers in the database.
+    - **Concurrent Uploads**: Ensure multiple simultaneous uploads don't corrupt the database.
+    - **No Open Access PDF**: Handle cases where Semantic Scholar finds a paper but no downloadable PDF.
+    - **Empty/Irrelevant Text**: What happens if the extracted text is garbage or from a non-academic document?
+    - **Network Failures**: Handle failed API calls gracefully.
 
 **Documentation Requirements**:
 
@@ -447,6 +463,7 @@ export default plugin;
 ### Phase 2.1: Backend - The WWC & Synthesis Service
 
 **Suggested Directory Structure (`packages/synthesis-engine-server/`)**:
+
 ```
 ├── handlers/
 │   ├── wwc.py              # WWC assessment endpoint
@@ -467,118 +484,120 @@ This phase extends the backend server extension with new API endpoints and busin
 **Key Components & Technologies**:
 
 1.  **WWC Quality Assessment Engine**:
-    *   **The Core Logic**: This is the heart of the WWC Co-Pilot. It implements the decision rules from the WWC Handbook v5.0 as a series of functions.
-    *   **Implementation**: A Python class will take in study metadata (extracted in Stage 1) and user judgments to produce a full WWC assessment.
-    *   **Code Example (`backend/services/wwc_assessor.py`)**: This is the detailed implementation from our research, showing how the handbook's rules are translated into code.
-        ```python
-        from dataclasses import dataclass, field
-        from typing import Optional, Dict, List
-        from enum import Enum
+    - **The Core Logic**: This is the heart of the WWC Co-Pilot. It implements the decision rules from the WWC Handbook v5.0 as a series of functions.
+    - **Implementation**: A Python class will take in study metadata (extracted in Stage 1) and user judgments to produce a full WWC assessment.
+    - **Code Example (`backend/services/wwc_assessor.py`)**: This is the detailed implementation from our research, showing how the handbook's rules are translated into code.
 
-        class WWCRating(Enum):
-            MEETS_WITHOUT_RESERVATIONS = "Meets WWC Standards Without Reservations"
-            MEETS_WITH_RESERVATIONS = "Meets WWC Standards With Reservations"
-            DOES_NOT_MEET = "Does Not Meet WWC Standards"
+      ```python
+      from dataclasses import dataclass, field
+      from typing import Optional, Dict, List
+      from enum import Enum
 
-        class AttritionBoundary(Enum):
-            OPTIMISTIC = "optimistic"
-            CAUTIOUS = "cautious"
+      class WWCRating(Enum):
+          MEETS_WITHOUT_RESERVATIONS = "Meets WWC Standards Without Reservations"
+          MEETS_WITH_RESERVATIONS = "Meets WWC Standards With Reservations"
+          DOES_NOT_MEET = "Does Not Meet WWC Standards"
 
-        @dataclass
-        class WWCAssessment:
-            # --- Fields requiring human judgment ---
-            chosen_attrition_boundary: AttritionBoundary = AttritionBoundary.CAUTIOUS
-            adjustment_strategy_is_valid: Optional[bool] = None
+      class AttritionBoundary(Enum):
+          OPTIMISTIC = "optimistic"
+          CAUTIOUS = "cautious"
 
-            # --- Fields for automated extraction & calculation ---
-            is_rct: bool = True
-            randomization_documented: bool = False
-            overall_attrition: Optional[float] = None
-            differential_attrition: Optional[float] = None
-            is_high_attrition: Optional[bool] = None
-            baseline_effect_size: Optional[float] = None
-            baseline_equivalence_satisfied: Optional[bool] = None
+      @dataclass
+      class WWCAssessment:
+          # --- Fields requiring human judgment ---
+          chosen_attrition_boundary: AttritionBoundary = AttritionBoundary.CAUTIOUS
+          adjustment_strategy_is_valid: Optional[bool] = None
 
-            # --- Final Rating ---
-            final_rating: WWCRating = WWCRating.DOES_NOT_MEET
-            rating_justification: List[str] = field(default_factory=list)
+          # --- Fields for automated extraction & calculation ---
+          is_rct: bool = True
+          randomization_documented: bool = False
+          overall_attrition: Optional[float] = None
+          differential_attrition: Optional[float] = None
+          is_high_attrition: Optional[bool] = None
+          baseline_effect_size: Optional[float] = None
+          baseline_equivalence_satisfied: Optional[bool] = None
 
-        class WWCQualityAssessor:
-            ATTRITION_BOUNDARIES = {
-                "cautious": {0.10: 0.05, 0.20: 0.03, 0.30: 0.01, 0.40: 0.00},
-                "optimistic": {0.10: 0.07, 0.20: 0.05, 0.30: 0.03, 0.40: 0.01}
-            }
+          # --- Final Rating ---
+          final_rating: WWCRating = WWCRating.DOES_NOT_MEET
+          rating_justification: List[str] = field(default_factory=list)
 
-            def is_low_attrition(self, overall: float, differential: float, boundary: AttritionBoundary) -> bool:
-                if overall is None or differential is None: return False
-                boundary_table = self.ATTRITION_BOUNDARIES[boundary.value]
-                for overall_threshold, diff_threshold in sorted(boundary_table.items()):
-                    if overall <= overall_threshold:
-                        return differential <= diff_threshold
-                return False
+      class WWCQualityAssessor:
+          ATTRITION_BOUNDARIES = {
+              "cautious": {0.10: 0.05, 0.20: 0.03, 0.30: 0.01, 0.40: 0.00},
+              "optimistic": {0.10: 0.07, 0.20: 0.05, 0.30: 0.03, 0.40: 0.01}
+          }
 
-            def assess(self, extracted_data: Dict, user_judgments: Dict) -> WWCAssessment:
-                assessment = WWCAssessment(**user_judgments)
-                assessment.rating_justification = []
+          def is_low_attrition(self, overall: float, differential: float, boundary: AttritionBoundary) -> bool:
+              if overall is None or differential is None: return False
+              boundary_table = self.ATTRITION_BOUNDARIES[boundary.value]
+              for overall_threshold, diff_threshold in sorted(boundary_table.items()):
+                  if overall <= overall_threshold:
+                      return differential <= diff_threshold
+              return False
 
-                if not extracted_data.get("randomization_documented"):
-                    assessment.final_rating = WWCRating.DOES_NOT_MEET
-                    assessment.rating_justification.append("Randomization was not documented.")
-                    return assessment
+          def assess(self, extracted_data: Dict, user_judgments: Dict) -> WWCAssessment:
+              assessment = WWCAssessment(**user_judgments)
+              assessment.rating_justification = []
 
-                assessment.overall_attrition = (extracted_data["baseline_n"] - extracted_data["endline_n"]) / extracted_data["baseline_n"]
-                assessment.differential_attrition = abs(extracted_data["treatment_attrition"] - extracted_data["control_attrition"])
-                
-                assessment.is_high_attrition = not self.is_low_attrition(
-                    assessment.overall_attrition, 
-                    assessment.differential_attrition, 
-                    assessment.chosen_attrition_boundary
-                )
+              if not extracted_data.get("randomization_documented"):
+                  assessment.final_rating = WWCRating.DOES_NOT_MEET
+                  assessment.rating_justification.append("Randomization was not documented.")
+                  return assessment
 
-                requires_baseline_check = not assessment.is_rct or assessment.is_high_attrition
-                if requires_baseline_check:
-                    # ... baseline equivalence logic ...
-                    pass
+              assessment.overall_attrition = (extracted_data["baseline_n"] - extracted_data["endline_n"]) / extracted_data["baseline_n"]
+              assessment.differential_attrition = abs(extracted_data["treatment_attrition"] - extracted_data["control_attrition"])
 
-                if not assessment.is_high_attrition:
-                    assessment.final_rating = WWCRating.MEETS_WITHOUT_RESERVATIONS
-                elif assessment.is_high_attrition and assessment.baseline_equivalence_satisfied:
-                    assessment.final_rating = WWCRating.MEETS_WITH_RESERVATIONS
-                
-                return assessment
-        ```
+              assessment.is_high_attrition = not self.is_low_attrition(
+                  assessment.overall_attrition,
+                  assessment.differential_attrition,
+                  assessment.chosen_attrition_boundary
+              )
+
+              requires_baseline_check = not assessment.is_rct or assessment.is_high_attrition
+              if requires_baseline_check:
+                  # ... baseline equivalence logic ...
+                  pass
+
+              if not assessment.is_high_attrition:
+                  assessment.final_rating = WWCRating.MEETS_WITHOUT_RESERVATIONS
+              elif assessment.is_high_attrition and assessment.baseline_equivalence_satisfied:
+                  assessment.final_rating = WWCRating.MEETS_WITH_RESERVATIONS
+
+              return assessment
+      ```
 
 2.  **Meta-Analysis Engine**:
-    *   **Primary Tool**: The **`statsmodels`** library in Python will be used for its robust and well-validated meta-analysis capabilities [5].
-    *   **Implementation**: An API endpoint will accept a list of paper IDs. The service will retrieve the relevant study metadata (effect sizes, standard errors, sample sizes) from the database and use `statsmodels.stats.meta_analysis` to perform a random-effects meta-analysis.
+    - **Primary Tool**: The **`statsmodels`** library in Python will be used for its robust and well-validated meta-analysis capabilities [5].
+    - **Implementation**: An API endpoint will accept a list of paper IDs. The service will retrieve the relevant study metadata (effect sizes, standard errors, sample sizes) from the database and use `statsmodels.stats.meta_analysis` to perform a random-effects meta-analysis.
 
 3.  **Forest Plot Generation**:
-    *   **Primary Tool**: **`matplotlib`** will be used to generate a classic forest plot.
-    *   **Implementation**: The backend will generate the plot as a PNG or SVG image and send it to the frontend for display.
-    *   **Code Example (`backend/services/visualizer.py`)**:
-        ```python
-        import matplotlib.pyplot as plt
-        import statsmodels.stats.meta_analysis as meta
-        import io
-        import base64
+    - **Primary Tool**: **`matplotlib`** will be used to generate a classic forest plot.
+    - **Implementation**: The backend will generate the plot as a PNG or SVG image and send it to the frontend for display.
+    - **Code Example (`backend/services/visualizer.py`)**:
 
-        class Visualizer:
-            def create_forest_plot(self, effect_sizes, std_errs, labels):
-                """Generates a forest plot and returns it as a base64 encoded string."""
-                fig, ax = plt.subplots(figsize=(8, 5), dpi=100)
-                meta.forest_plot(effect_sizes, std_errs, labels=labels, ax=ax)
-                ax.set_title("Forest Plot of Study Effect Sizes")
-                
-                buf = io.BytesIO()
-                fig.savefig(buf, format=\"png\", bbox_inches=\"tight\")
-                plt.close(fig)
-                
-                return base64.b64encode(buf.getvalue()).decode("utf-8")
-        ```
+      ```python
+      import matplotlib.pyplot as plt
+      import statsmodels.stats.meta_analysis as meta
+      import io
+      import base64
+
+      class Visualizer:
+          def create_forest_plot(self, effect_sizes, std_errs, labels):
+              """Generates a forest plot and returns it as a base64 encoded string."""
+              fig, ax = plt.subplots(figsize=(8, 5), dpi=100)
+              meta.forest_plot(effect_sizes, std_errs, labels=labels, ax=ax)
+              ax.set_title("Forest Plot of Study Effect Sizes")
+
+              buf = io.BytesIO()
+              fig.savefig(buf, format=\"png\", bbox_inches=\"tight\")
+              plt.close(fig)
+
+              return base64.b64encode(buf.getvalue()).decode("utf-8")
+      ```
 
 4.  **Conflict & Contradiction Detection**:
-    *   **Approach**: Use a pre-trained **Natural Language Inference (NLI)** model to compare key findings extracted from papers.
-    *   **Implementation**: Key findings will be paired up and fed into an NLI model (e.g., a DeBERTa or RoBERTa model fine-tuned on an NLI dataset like MNLI). Pairs classified as `contradiction` will be flagged.
+    - **Approach**: Use a pre-trained **Natural Language Inference (NLI)** model to compare key findings extracted from papers.
+    - **Implementation**: Key findings will be paired up and fed into an NLI model (e.g., a DeBERTa or RoBERTa model fine-tuned on an NLI dataset like MNLI). Pairs classified as `contradiction` will be flagged.
 
 ### Phase 2.2: Frontend - The Synthesis Workbench
 
@@ -588,58 +607,60 @@ This phase builds the UI for the synthesis engine, likely as a new main area wid
 
 1.  **Study Selection**: The research library panel will be updated to allow multi-select, with a "Synthesize Studies" button appearing when two or more papers are selected.
 2.  **WWC Co-Pilot Interface**: A dedicated view for a single paper that walks the user through the WWC assessment.
-    *   **UI Mockup**: A multi-step form with clear sections for Attrition, Baseline Equivalence, etc. It will use the data extracted in Stage 1 to pre-fill fields and show initial calculations.
-    *   **Code Example (`frontend/widgets/WWCCoPilot.tsx`)**:
-        ```typescript
-        import React, { useState, useEffect } from 'react';
-        import { api } from '../services/api';
+    - **UI Mockup**: A multi-step form with clear sections for Attrition, Baseline Equivalence, etc. It will use the data extracted in Stage 1 to pre-fill fields and show initial calculations.
+    - **Code Example (`frontend/widgets/WWCCoPilot.tsx`)**:
 
-        export const WWCCoPilot = ({ paperId }) => {
-          const [assessment, setAssessment] = useState(null);
-          const [judgments, setJudgments] = useState({ chosen_attrition_boundary: 'cautious' });
+      ```typescript
+      import React, { useState, useEffect } from 'react';
+      import { api } from '../services/api';
 
-          useEffect(() => {
-            const runAssessment = async () => {
-              const result = await api.runWWCAssessment(paperId, judgments);
-              setAssessment(result);
-            };
-            runAssessment();
-          }, [paperId, judgments]);
+      export const WWCCoPilot = ({ paperId }) => {
+        const [assessment, setAssessment] = useState(null);
+        const [judgments, setJudgments] = useState({ chosen_attrition_boundary: 'cautious' });
 
-          return (
-            <div>
-              <h2>WWC Co-Pilot for {assessment?.paper_title}</h2>
-              
-              <div className="assessment-section">
-                <h3>Attrition</h3>
-                <p>Overall: {assessment?.overall_attrition?.toFixed(2)}%</p>
-                <p>Differential: {assessment?.differential_attrition?.toFixed(2)}%</p>
-                <select 
-                  value={judgments.chosen_attrition_boundary}
-                  onChange={e => setJudgments({...judgments, chosen_attrition_boundary: e.target.value})}
-                >
-                  <option value="cautious">Cautious Boundary</option>
-                  <option value="optimistic">Optimistic Boundary</option>
-                </select>
-                <p>Status: {assessment?.is_high_attrition ? 'High Attrition' : 'Low Attrition'}</p>
-              </div>
+        useEffect(() => {
+          const runAssessment = async () => {
+            const result = await api.runWWCAssessment(paperId, judgments);
+            setAssessment(result);
+          };
+          runAssessment();
+        }, [paperId, judgments]);
 
-              {/* ... other sections for baseline equivalence, etc. ... */}
+        return (
+          <div>
+            <h2>WWC Co-Pilot for {assessment?.paper_title}</h2>
 
-              <div className="final-rating">
-                <h3>Final Rating: {assessment?.final_rating}</h3>
-                <ul>
-                  {assessment?.rating_justification.map(reason => <li key={reason}>{reason}</li>)}
-                </ul>
-              </div>
+            <div className="assessment-section">
+              <h3>Attrition</h3>
+              <p>Overall: {assessment?.overall_attrition?.toFixed(2)}%</p>
+              <p>Differential: {assessment?.differential_attrition?.toFixed(2)}%</p>
+              <select
+                value={judgments.chosen_attrition_boundary}
+                onChange={e => setJudgments({...judgments, chosen_attrition_boundary: e.target.value})}
+              >
+                <option value="cautious">Cautious Boundary</option>
+                <option value="optimistic">Optimistic Boundary</option>
+              </select>
+              <p>Status: {assessment?.is_high_attrition ? 'High Attrition' : 'Low Attrition'}</p>
             </div>
-          );
-        };
-        ```
+
+            {/* ... other sections for baseline equivalence, etc. ... */}
+
+            <div className="final-rating">
+              <h3>Final Rating: {assessment?.final_rating}</h3>
+              <ul>
+                {assessment?.rating_justification.map(reason => <li key={reason}>{reason}</li>)}
+              </ul>
+            </div>
+          </div>
+        );
+      };
+      ```
+
 3.  **Synthesis Dashboard**: A dashboard view that presents the results of the backend analysis for multiple papers:
-    *   **Meta-Analysis Summary**: A clear, concise summary of the pooled effect size and confidence interval.
-    *   **Forest Plot Display**: The generated forest plot image will be displayed prominently.
-    *   **Conflict List**: A list of potential contradictions identified by the NLI model.
+    - **Meta-Analysis Summary**: A clear, concise summary of the pooled effect size and confidence interval.
+    - **Forest Plot Display**: The generated forest plot image will be displayed prominently.
+    - **Conflict List**: A list of potential contradictions identified by the NLI model.
 4.  **Export Functionality**: Buttons to export the comparison matrix as a CSV and the synthesis dashboard as a Markdown report.
 
 ---
@@ -650,58 +671,58 @@ This phase builds the UI for the synthesis engine, likely as a new main area wid
 
 ### Phase 3.1: Testing & Refinement
 
-*   **Unit Tests**: Write comprehensive unit tests for all backend Python functions and frontend TypeScript/React components.
-*   **Integration Tests**: Create integration tests for the full workflow, from PDF upload to synthesis generation.
-*   **User Feedback**: Solicit feedback from potential users (e.g., other researchers) to identify usability issues and areas for improvement.
+- **Unit Tests**: Write comprehensive unit tests for all backend Python functions and frontend TypeScript/React components.
+- **Integration Tests**: Create integration tests for the full workflow, from PDF upload to synthesis generation.
+- **User Feedback**: Solicit feedback from potential users (e.g., other researchers) to identify usability issues and areas for improvement.
 
 ### Phase 3.2: Documentation
 
-*   **User Guide**: Write a clear, user-facing guide on how to use the new features, with screenshots and examples, focusing on the WWC Co-Pilot workflow.
-*   **Developer Docs**: Document the architecture, API endpoints, and key code components to help future developers understand and extend the work.
-*   **Changelog**: Create a detailed entry for the project's changelog, summarizing the new features and improvements.
+- **User Guide**: Write a clear, user-facing guide on how to use the new features, with screenshots and examples, focusing on the WWC Co-Pilot workflow.
+- **Developer Docs**: Document the architecture, API endpoints, and key code components to help future developers understand and extend the work.
+- **Changelog**: Create a detailed entry for the project's changelog, summarizing the new features and improvements.
 
 ### Phase 3.3: Publishing Preparation
 
-*   **Code Cleanup**: Ensure all code adheres to JupyterLab's coding style and linting rules.
-*   **Package Metadata**: Verify that `package.json` and `pyproject.toml` have correct and complete metadata (version, author, license, keywords, repository URL).
-*   **README**: Write a comprehensive README with installation instructions, usage examples, screenshots, and links to documentation.
+- **Code Cleanup**: Ensure all code adheres to JupyterLab's coding style and linting rules.
+- **Package Metadata**: Verify that `package.json` and `pyproject.toml` have correct and complete metadata (version, author, license, keywords, repository URL).
+- **README**: Write a comprehensive README with installation instructions, usage examples, screenshots, and links to documentation.
 
 ### Phase 3.4: Video Presentation & Community Outreach
 
 **Video Production Checklist**:
 
-*   [ ] Write a detailed script for a 7-10 minute video.
-*   [ ] Record screen demos for each feature (multiple takes).
-*   [ ] Record a clear voiceover or narrate live.
-*   [ ] Edit the video to cut mistakes and add transitions.
-*   [ ] Add captions for accessibility.
-*   [ ] Export at 1080p and upload to YouTube (public or unlisted).
+- [ ] Write a detailed script for a 7-10 minute video.
+- [ ] Record screen demos for each feature (multiple takes).
+- [ ] Record a clear voiceover or narrate live.
+- [ ] Edit the video to cut mistakes and add transitions.
+- [ ] Add captions for accessibility.
+- [ ] Export at 1080p and upload to YouTube (public or unlisted).
 
 **Demo Tips**:
 
-*   **Use Clean Test Data**: Don't use messy, real-world data for demos.
-*   **Pre-Generate Results**: Have synthesis results ready to show for a smooth demo.
-*   **Cursor Highlighting**: Use a tool to highlight your cursor during code walkthroughs.
-*   **Zoom In**: Zoom in on important code sections or UI elements.
+- **Use Clean Test Data**: Don't use messy, real-world data for demos.
+- **Pre-Generate Results**: Have synthesis results ready to show for a smooth demo.
+- **Cursor Highlighting**: Use a tool to highlight your cursor during code walkthroughs.
+- **Zoom In**: Zoom in on important code sections or UI elements.
 
 **Community Outreach**:
 
-*   Post about your extension on the JupyterLab Discourse forum.
-*   Share on relevant social media (Twitter/X, LinkedIn, Reddit's r/JupyterLab).
-*   Consider writing a blog post explaining the motivation and design decisions.
+- Post about your extension on the JupyterLab Discourse forum.
+- Share on relevant social media (Twitter/X, LinkedIn, Reddit's r/JupyterLab).
+- Consider writing a blog post explaining the motivation and design decisions.
 
 ### Phase 3.5: Final Polish & Publishing
 
 **Pre-Publishing Quality Assurance Checklist**:
 
-*   [ ] All tests pass locally and on CI (if you set up GitHub Actions).
-*   [ ] Code coverage >80%.
-*   [ ] Linting passes with no warnings.
-*   [ ] Documentation is complete and accurate.
-*   [ ] Screenshots in docs are up-to-date.
-*   [ ] Example notebooks run without errors.
-*   [ ] Performance is acceptable (no major lag with 100+ papers).
-*   [ ] Accessibility tested (keyboard navigation works).
+- [ ] All tests pass locally and on CI (if you set up GitHub Actions).
+- [ ] Code coverage >80%.
+- [ ] Linting passes with no warnings.
+- [ ] Documentation is complete and accurate.
+- [ ] Screenshots in docs are up-to-date.
+- [ ] Example notebooks run without errors.
+- [ ] Performance is acceptable (no major lag with 100+ papers).
+- [ ] Accessibility tested (keyboard navigation works).
 
 **Publishing Steps**:
 
@@ -740,9 +761,9 @@ To ensure the tool is particularly useful for learning science research, the fol
 
 1.  **Specialized Metadata Schema**: The database schema (Table 1) includes fields like `learning_domain` and `intervention_type`, which are critical for organizing and comparing learning science studies.
 2.  **Preset Extraction Templates**: The AI extraction prompt will include a preset template specifically for learning science and WWC criteria. It will instruct the model to look for:
-    *   **Learning Objectives**: What were the students supposed to learn?
-    *   **Intervention Components**: What specific techniques were used (e.g., worked examples, feedback, collaboration)?
-    *   **WWC Criteria**: Baseline/endline sample sizes, attrition numbers for treatment/control, and baseline demographic tables.
+    - **Learning Objectives**: What were the students supposed to learn?
+    - **Intervention Components**: What specific techniques were used (e.g., worked examples, feedback, collaboration)?
+    - **WWC Criteria**: Baseline/endline sample sizes, attrition numbers for treatment/control, and baseline demographic tables.
 3.  **Example Workflows**: The user documentation will include a tutorial specifically for learning scientists, demonstrating how to import a set of papers on a topic like "spaced repetition" and generate a meta-analytic summary with WWC quality ratings.
 
 ---
@@ -751,20 +772,20 @@ To ensure the tool is particularly useful for learning science research, the fol
 
 ### For JupyterLab Contribution:
 
-*   [ ] Both PRs follow contribution guidelines exactly
-*   [ ] Code matches JupyterLab style and patterns
-*   [ ] Tests are comprehensive and passing
-*   [ ] Documentation is clear and complete
-*   [ ] Maintainers engage with PRs (questions/feedback)
-*   [ ] Features are genuinely useful to the research community
+- [ ] Both PRs follow contribution guidelines exactly
+- [ ] Code matches JupyterLab style and patterns
+- [ ] Tests are comprehensive and passing
+- [ ] Documentation is clear and complete
+- [ ] Maintainers engage with PRs (questions/feedback)
+- [ ] Features are genuinely useful to the research community
 
 ### For Learning Science Goals:
 
-*   [ ] Tools are useful for Alpha School research evaluation
-*   [ ] Learning science preset demonstrates deep domain knowledge
-*   [ ] Quality indicators align with ed research standards (WWC)
-*   [ ] Statistical methods are appropriate for education meta-analysis
-*   [ ] Example workflows showcase real use cases
+- [ ] Tools are useful for Alpha School research evaluation
+- [ ] Learning science preset demonstrates deep domain knowledge
+- [ ] Quality indicators align with ed research standards (WWC)
+- [ ] Statistical methods are appropriate for education meta-analysis
+- [ ] Example workflows showcase real use cases
 
 ---
 
@@ -772,29 +793,29 @@ To ensure the tool is particularly useful for learning science research, the fol
 
 ### JupyterLab Documentation:
 
-*   **Main docs**: https://jupyterlab.readthedocs.io/
-*   **Extension tutorial**: https://jupyterlab.readthedocs.io/en/stable/extension/extension_tutorial.html
-*   **Contributing guide**: https://github.com/jupyterlab/jupyterlab/blob/main/CONTRIBUTING.md
-*   **Architecture**: https://github.com/jupyterlab/jupyterlab/blob/main/ARCHITECTURE.md
+- **Main docs**: https://jupyterlab.readthedocs.io/
+- **Extension tutorial**: https://jupyterlab.readthedocs.io/en/stable/extension/extension_tutorial.html
+- **Contributing guide**: https://github.com/jupyterlab/jupyterlab/blob/main/CONTRIBUTING.md
+- **Architecture**: https://github.com/jupyterlab/jupyterlab/blob/main/ARCHITECTURE.md
 
 ### JupyterLab Community:
 
-*   **Gitter chat**: https://gitter.im/jupyterlab/jupyterlab
-*   **Discourse forum**: https://discourse.jupyter.org/
-*   **GitHub discussions**: https://github.com/jupyterlab/jupyterlab/discussions
+- **Gitter chat**: https://gitter.im/jupyterlab/jupyterlab
+- **Discourse forum**: https://discourse.jupyter.org/
+- **GitHub discussions**: https://github.com/jupyterlab/jupyterlab/discussions
 
 ### Learning Science Resources:
 
-*   **What Works Clearinghouse**: https://ies.ed.gov/ncee/wwc/
-*   **Campbell Collaboration**: https://www.campbellcollaboration.org/
-*   **GRADE handbook**: https://gdt.gradepro.org/app/handbook/handbook.html
-*   **Cochrane Handbook**: https://training.cochrane.org/handbook
+- **What Works Clearinghouse**: https://ies.ed.gov/ncee/wwc/
+- **Campbell Collaboration**: https://www.campbellcollaboration.org/
+- **GRADE handbook**: https://gdt.gradepro.org/app/handbook/handbook.html
+- **Cochrane Handbook**: https://training.cochrane.org/handbook
 
 ### Statistical Tools:
 
-*   **Meta-analysis in Python (statsmodels)**: https://www.statsmodels.org/stable/stats.html#meta-analysis
-*   **R metafor package**: https://www.metafor-project.org/
-*   **Effect size calculators**: https://www.psychometrica.de/effect_size.html
+- **Meta-analysis in Python (statsmodels)**: https://www.statsmodels.org/stable/stats.html#meta-analysis
+- **R metafor package**: https://www.metafor-project.org/
+- **Effect size calculators**: https://www.psychometrica.de/effect_size.html
 
 ---
 
@@ -802,24 +823,24 @@ To ensure the tool is particularly useful for learning science research, the fol
 
 ### Speed vs Quality:
 
-*   Build fast, but don't skip testing or documentation.
-*   Use AI to accelerate development, but review all generated code.
-*   Don't reinvent the wheel—use existing libraries like `statsmodels` and `PyMuPDF`.
+- Build fast, but don't skip testing or documentation.
+- Use AI to accelerate development, but review all generated code.
+- Don't reinvent the wheel—use existing libraries like `statsmodels` and `PyMuPDF`.
 
 ### Community Engagement:
 
-*   Over-communicate with maintainers.
-*   Be responsive to feedback.
-*   Acknowledge when you're wrong.
-*   Thank people for their time.
-*   Build relationships, not just code.
+- Over-communicate with maintainers.
+- Be responsive to feedback.
+- Acknowledge when you're wrong.
+- Thank people for their time.
+- Build relationships, not just code.
 
 ### Learning Science Focus:
 
-*   Every feature should have a learning science application in mind.
-*   The preset is the showcase, but the core tools must be general.
-*   The Alpha School use case drives design decisions.
-*   Document pedagogical reasoning in addition to technical details.
+- Every feature should have a learning science application in mind.
+- The preset is the showcase, but the core tools must be general.
+- The Alpha School use case drives design decisions.
+- Document pedagogical reasoning in addition to technical details.
 
 ### Deliverable Priority:
 
@@ -835,18 +856,18 @@ To ensure the tool is particularly useful for learning science research, the fol
 
 ### Success Criteria
 
-*   **Functionality**: Both the Research Library and WWC Co-Pilot/Synthesis Engine features are fully implemented and functional.
-*   **Usability**: A researcher can successfully discover, import, assess with the WWC Co-Pilot, and synthesize a set of papers, all within the JupyterLab interface.
-*   **Alignment**: The final code contribution adheres to all JupyterLab community guidelines for code style, testing, and documentation.
-*   **Performance**: PDF processing and metadata extraction for a typical 15-page paper completes in under 60 seconds.
+- **Functionality**: Both the Research Library and WWC Co-Pilot/Synthesis Engine features are fully implemented and functional.
+- **Usability**: A researcher can successfully discover, import, assess with the WWC Co-Pilot, and synthesize a set of papers, all within the JupyterLab interface.
+- **Alignment**: The final code contribution adheres to all JupyterLab community guidelines for code style, testing, and documentation.
+- **Performance**: PDF processing and metadata extraction for a typical 15-page paper completes in under 60 seconds.
 
 ### Estimated Timeline (8-12 Weeks)
 
-*   **Weeks 1-2**: Stage 0 - Foundation & Repository Mastery.
-*   **Weeks 3-5**: Stage 1 - Research Library & Discovery Engine (Backend & Frontend).
-*   **Weeks 6-8**: Stage 2 - WWC Co-Pilot & Synthesis Engine (Backend & Frontend).
-*   **Weeks 9-10**: Stage 3 - Testing, Refinement, and Documentation.
-*   **Weeks 11-12**: Stage 3 - Submission Preparation and Pull Request Management.
+- **Weeks 1-2**: Stage 0 - Foundation & Repository Mastery.
+- **Weeks 3-5**: Stage 1 - Research Library & Discovery Engine (Backend & Frontend).
+- **Weeks 6-8**: Stage 2 - WWC Co-Pilot & Synthesis Engine (Backend & Frontend).
+- **Weeks 9-10**: Stage 3 - Testing, Refinement, and Documentation.
+- **Weeks 11-12**: Stage 3 - Submission Preparation and Pull Request Management.
 
 ---
 
@@ -860,35 +881,35 @@ The Learning Science Preset is a specialized configuration that optimizes the to
 
 **Common Effect Sizes in Education**:
 
-*   **Cohen's d**: Standardized mean difference between two groups.
-*   **Hedge's g**: A variation of Cohen's d, corrected for small sample sizes.
-*   **Odds Ratios**: For binary outcomes (e.g., pass/fail, dropout/stay).
-*   **Correlation Coefficients (r)**: For relationships between continuous variables.
+- **Cohen's d**: Standardized mean difference between two groups.
+- **Hedge's g**: A variation of Cohen's d, corrected for small sample sizes.
+- **Odds Ratios**: For binary outcomes (e.g., pass/fail, dropout/stay).
+- **Correlation Coefficients (r)**: For relationships between continuous variables.
 
 **Meta-Analysis Methods**:
 
-*   **Random-Effects Models**: The default for education research, as it assumes that the true effect size varies from study to study.
-*   **Subgroup Analysis**: To explore moderators (e.g., does the intervention work better for younger students?).
-*   **Meta-Regression**: To analyze the relationship between study characteristics and effect sizes.
-*   **Publication Bias Assessment**: Using techniques like funnel plots and Egger's test to check for missing studies.
+- **Random-Effects Models**: The default for education research, as it assumes that the true effect size varies from study to study.
+- **Subgroup Analysis**: To explore moderators (e.g., does the intervention work better for younger students?).
+- **Meta-Regression**: To analyze the relationship between study characteristics and effect sizes.
+- **Publication Bias Assessment**: Using techniques like funnel plots and Egger's test to check for missing studies.
 
 ### Intervention & Outcome Taxonomies
 
 **Intervention Taxonomy**:
 
-*   **Instructional Strategies**: Direct instruction, inquiry-based learning, project-based learning, etc.
-*   **Technology Integration**: Intelligent tutoring systems, educational games, online simulations, etc.
-*   **Assessment/Feedback**: Formative vs. summative, immediate vs. delayed feedback, peer vs. instructor feedback.
-*   **Collaborative Learning**: Think-pair-share, jigsaw, peer instruction, etc.
-*   **Self-Regulated Learning**: Goal setting, metacognitive prompts, self-monitoring, etc.
+- **Instructional Strategies**: Direct instruction, inquiry-based learning, project-based learning, etc.
+- **Technology Integration**: Intelligent tutoring systems, educational games, online simulations, etc.
+- **Assessment/Feedback**: Formative vs. summative, immediate vs. delayed feedback, peer vs. instructor feedback.
+- **Collaborative Learning**: Think-pair-share, jigsaw, peer instruction, etc.
+- **Self-Regulated Learning**: Goal setting, metacognitive prompts, self-monitoring, etc.
 
 **Outcome Measures Library**:
 
-*   **Standardized Tests**: SAT, GRE, PISA, TIMSS, etc.
-*   **Custom Assessments**: Pre/post tests, concept inventories, performance tasks.
-*   **Behavioral Measures**: Time on task, help-seeking behavior, dropout rates.
-*   **Affective Measures**: Surveys for engagement, motivation, self-efficacy, anxiety.
-*   **Retention/Transfer**: Measures of long-term knowledge retention and application to new contexts.
+- **Standardized Tests**: SAT, GRE, PISA, TIMSS, etc.
+- **Custom Assessments**: Pre/post tests, concept inventories, performance tasks.
+- **Behavioral Measures**: Time on task, help-seeking behavior, dropout rates.
+- **Affective Measures**: Surveys for engagement, motivation, self-efficacy, anxiety.
+- **Retention/Transfer**: Measures of long-term knowledge retention and application to new contexts.
 
 ### Extraction Schema for Learning Science
 
@@ -903,7 +924,14 @@ The AI extraction prompt will use this schema when the learning science preset i
   },
   "bloom_level": {
     "type": "enum",
-    "values": ["remember", "understand", "apply", "analyze", "evaluate", "create"],
+    "values": [
+      "remember",
+      "understand",
+      "apply",
+      "analyze",
+      "evaluate",
+      "create"
+    ],
     "description": "Highest Bloom's taxonomy level addressed"
   },
   "intervention_components": {
@@ -917,7 +945,12 @@ The AI extraction prompt will use this schema when the learning science preset i
   },
   "learning_outcome_types": {
     "type": "array",
-    "values": ["knowledge_gain", "skill_acquisition", "attitude_change", "behavior_change"],
+    "values": [
+      "knowledge_gain",
+      "skill_acquisition",
+      "attitude_change",
+      "behavior_change"
+    ],
     "description": "Types of learning outcomes measured"
   },
   "assessment_types": {
@@ -952,36 +985,36 @@ class LearningScienceQualityAssessor:
     def assess(self, paper: Paper) -> QualityReport:
         """Assess quality of learning science research based on WWC standards."""
         report = QualityReport()
-        
+
         # Check randomization
         if paper.methodology == "RCT":
             report.randomization = self.check_randomization(paper)
-        
+
         # Check sample size adequacy (power analysis)
         report.sample_size = self.assess_power(paper)
-        
+
         # Check outcome measure validity
         report.measures = self.assess_measures(paper)
-        
+
         # Check attrition rates
         report.attrition = self.check_attrition(paper)
-        
+
         # Implementation fidelity
         report.fidelity = self.check_fidelity(paper)
-        
+
         # Overall WWC rating
         report.overall = self.calculate_wwc_rating(report)
-        
+
         return report
-    
+
     def check_randomization(self, paper: Paper) -> Dict:
         """Checks if randomization is properly documented."""
         keywords = ["random assignment", "randomized", "randomly assigned"]
         text = paper.full_text.lower()
-        
+
         documented = any(kw in text for kw in keywords)
         method_described = "randomization method" in text or "random number" in text
-        
+
         return {
             "documented": documented,
             "method_described": method_described,
@@ -994,6 +1027,7 @@ class LearningScienceQualityAssessor:
 The documentation will include these example notebooks:
 
 **Example 1: Meta-Analysis of Spaced Repetition Studies**
+
 ```python
 # Import the extension
 from jupyterlab_research_assistant import ResearchLibrary, SynthesisEngine
@@ -1052,14 +1086,14 @@ Attrition (participant dropout) is the most critical and complex part of a WWC r
 
 **Cautious Boundary**: Used when the intervention could plausibly affect retention (e.g., a dropout prevention program, a school choice voucher, an intensive tutoring program). This is the default and more stringent boundary.
 
-*Table 2: WWC Attrition Boundaries (from Handbook Appendix C)*
+_Table 2: WWC Attrition Boundaries (from Handbook Appendix C)_
 | Overall Attrition | Max Differential (Cautious) | Max Differential (Optimistic) |
 |-------------------|----------------------------|-------------------------------|
-| ≤ 10%             | 5%                         | 7%                            |
-| ≤ 20%             | 3%                         | 5%                            |
-| ≤ 30%             | 1%                         | 3%                            |
-| ≤ 40%             | 0%                         | 1%                            |
-| > 40%             | Does Not Meet Standards    | Does Not Meet Standards       |
+| ≤ 10% | 5% | 7% |
+| ≤ 20% | 3% | 5% |
+| ≤ 30% | 1% | 3% |
+| ≤ 40% | 0% | 1% |
+| > 40% | Does Not Meet Standards | Does Not Meet Standards |
 
 **Tooling Implication**: The WWC Co-Pilot must first ask the researcher to choose a boundary, providing the official WWC examples to guide their choice. This decision then dictates which set of thresholds to apply.
 
@@ -1069,9 +1103,9 @@ This standard is only required for certain study types: all quasi-experimental d
 
 1. **Calculate the baseline difference** between treatment and control groups as a standardized effect size (Cohen's d).
 2. **Compare this difference to specific thresholds**:
-    *   **≤ 0.05 SD**: Groups are considered equivalent. No statistical adjustment is required (but is recommended).
-    *   **> 0.05 SD and ≤ 0.25 SD**: An acceptable statistical adjustment (e.g., ANCOVA, regression with baseline as a covariate) *must* be used.
-    *   **> 0.25 SD**: The study *Does Not Meet WWC Standards*.
+   - **≤ 0.05 SD**: Groups are considered equivalent. No statistical adjustment is required (but is recommended).
+   - **> 0.05 SD and ≤ 0.25 SD**: An acceptable statistical adjustment (e.g., ANCOVA, regression with baseline as a covariate) _must_ be used.
+   - **> 0.25 SD**: The study _Does Not Meet WWC Standards_.
 
 **Tooling Implication**: The WWC Co-Pilot can automate this entirely. It will extract baseline means and standard deviations, calculate the effect size, and display the result against color-coded thresholds (green/yellow/red) to show the user exactly where the study stands.
 
@@ -1079,9 +1113,9 @@ This standard is only required for certain study types: all quasi-experimental d
 
 The WWC requires that the intervention be delivered as intended. The handbook specifies that reviewers should look for:
 
-*   **Quantitative measures** of fidelity (e.g., "Teachers implemented 85% of lessons").
-*   **Descriptions of monitoring procedures** (e.g., classroom observations, teacher logs).
-*   **Analysis of fidelity's relationship to outcomes** (e.g., did students whose teachers had higher fidelity have better outcomes?).
+- **Quantitative measures** of fidelity (e.g., "Teachers implemented 85% of lessons").
+- **Descriptions of monitoring procedures** (e.g., classroom observations, teacher logs).
+- **Analysis of fidelity's relationship to outcomes** (e.g., did students whose teachers had higher fidelity have better outcomes?).
 
 **Tooling Implication**: The WWC Co-Pilot will extract any mentions of "fidelity," "implementation," or "adherence" and present them to the researcher for judgment.
 
@@ -1100,18 +1134,18 @@ class PDFParser:
     def extract_text_and_metadata(self, pdf_path: str) -> Dict:
         """Extracts full text and built-in metadata from a PDF."""
         doc = fitz.open(pdf_path)
-        
+
         # Extract metadata from PDF properties
         metadata = doc.metadata
-        
+
         # Extract full text
         full_text = ""
         for page_num in range(len(doc)):
             page = doc[page_num]
             full_text += page.get_text()
-        
+
         doc.close()
-        
+
         return {
             "title": metadata.get("title", ""),
             "author": metadata.get("author", ""),
@@ -1134,15 +1168,15 @@ class MetaAnalyzer:
         """Performs a random-effects meta-analysis on a set of studies."""
         effect_sizes = np.array([s["effect_size"] for s in studies])
         std_errors = np.array([s["std_error"] for s in studies])
-        
+
         # Perform random-effects meta-analysis
         result = meta.combine_effects(
-            effect_sizes, 
-            std_errors, 
+            effect_sizes,
+            std_errors,
             method_re="DL",  # DerSimonian-Laird estimator
             use_t=True
         )
-        
+
         return {
             "pooled_effect": result.effect,
             "ci_lower": result.conf_int()[0],
@@ -1163,7 +1197,7 @@ from typing import List, Dict
 class ContradictionDetector:
     def __init__(self):
         self.nli_pipeline = pipeline(
-            "text-classification", 
+            "text-classification",
             model="cross-encoder/nli-deberta-v3-base"
         )
 
@@ -1197,10 +1231,10 @@ class WWCAssessmentHandler(APIHandler):
         data = json.loads(self.request.body)
         paper_id = data.get("paper_id")
         user_judgments = data.get("judgments", {})
-        
+
         # Fetch paper from database
         paper = self.db.get_paper(paper_id)
-        
+
         # Extract relevant data
         extracted_data = {
             "randomization_documented": paper.randomization_method is not None,
@@ -1208,11 +1242,11 @@ class WWCAssessmentHandler(APIHandler):
             "endline_n": paper.sample_size_endline,
             # ... more fields
         }
-        
+
         # Run assessment
         assessor = WWCQualityAssessor()
         assessment = assessor.assess(extracted_data, user_judgments)
-        
+
         self.finish(json.dumps(assessment.__dict__, default=str))
 ```
 
@@ -1225,6 +1259,7 @@ class WWCAssessmentHandler(APIHandler):
 Every backend function and frontend component must have comprehensive unit tests. The target is >80% code coverage.
 
 **Backend Testing Example**:
+
 ```python
 # backend/tests/test_wwc_assessor.py
 import pytest
@@ -1233,8 +1268,8 @@ from services.wwc_assessor import WWCQualityAssessor, AttritionBoundary
 def test_low_attrition_cautious_boundary():
     assessor = WWCQualityAssessor()
     result = assessor.is_low_attrition(
-        overall=0.08, 
-        differential=0.04, 
+        overall=0.08,
+        differential=0.04,
         boundary=AttritionBoundary.CAUTIOUS
     )
     assert result == True
@@ -1242,14 +1277,15 @@ def test_low_attrition_cautious_boundary():
 def test_high_attrition_cautious_boundary():
     assessor = WWCQualityAssessor()
     result = assessor.is_low_attrition(
-        overall=0.15, 
-        differential=0.06, 
+        overall=0.15,
+        differential=0.06,
         boundary=AttritionBoundary.CAUTIOUS
     )
     assert result == False
 ```
 
 **Frontend Testing Example**:
+
 ```typescript
 // frontend/tests/DiscoveryTab.spec.tsx
 import { render, screen, fireEvent } from '@testing-library/react';
@@ -1257,13 +1293,13 @@ import { DiscoveryTab } from '../widgets/DiscoveryTab';
 
 test('search button triggers API call', async () => {
   render(<DiscoveryTab />);
-  
+
   const input = screen.getByPlaceholderText('Search Semantic Scholar...');
   const button = screen.getByText('Search');
-  
+
   fireEvent.change(input, { target: { value: 'spaced repetition' } });
   fireEvent.click(button);
-  
+
   // Assert that loading state appears
   expect(screen.getByText('Searching...')).toBeInTheDocument();
 });
@@ -1274,6 +1310,7 @@ test('search button triggers API call', async () => {
 Integration tests verify that the full workflow (from frontend action to backend processing to database storage) works correctly.
 
 **Example Integration Test**:
+
 ```python
 # backend/tests/test_integration.py
 import pytest
@@ -1286,7 +1323,7 @@ def test_pdf_upload_and_extraction_workflow(test_client, sample_pdf):
     response = test_client.post('/api/research/upload', files={'pdf': sample_pdf})
     assert response.status_code == 200
     paper_id = response.json()["paper_id"]
-    
+
     # Verify paper was added to database
     paper = Paper.query.get(paper_id)
     assert paper is not None
@@ -1304,21 +1341,26 @@ def test_pdf_upload_and_extraction_workflow(test_client, sample_pdf):
 Title: Add Academic Research Library & Discovery Engine Extension
 
 ## Summary
+
 This PR adds a JupyterLab extension for discovering, importing, and managing academic papers, enabling researchers to build a searchable research library without leaving JupyterLab.
 
 ## Motivation
+
 Researchers using JupyterLab for data analysis currently lack integrated tools for managing the academic literature they reference. This extension fills that gap by providing:
+
 - Discovery via Semantic Scholar API
 - PDF import and metadata extraction
 - Searchable local database
 - Learning science-specific metadata fields
 
 ## Implementation
+
 - **Backend**: Server extension for PDF processing, Semantic Scholar integration, and SQLite database management
 - **Frontend**: Sidebar panel with discovery tab, library view, and paper detail view
 - **AI Extraction**: Configurable support for Claude, GPT-4, or local Ollama models
 
 ## Features
+
 - Search Semantic Scholar directly from JupyterLab
 - Import PDFs via drag-and-drop or from search results
 - Automatic metadata extraction (authors, year, methodology, sample sizes, etc.)
@@ -1327,21 +1369,25 @@ Researchers using JupyterLab for data analysis currently lack integrated tools f
 - Extensible template system for domain-specific metadata
 
 ## Testing
+
 - 85% backend code coverage
 - All UI components tested with Jest and React Testing Library
 - Integration tests for full upload-extract-store workflow
 - Performance benchmarks: <60s for 15-page paper extraction
 
 ## Documentation
+
 - User guide with screenshots
 - API documentation for all endpoints
 - Architecture diagram
 - Example notebooks demonstrating learning science use case
 
 ## Breaking Changes
+
 None - this is a new extension.
 
 ## Checklist
+
 - [x] Tests pass locally
 - [x] Linting passes (ESLint, Prettier, Black, MyPy)
 - [x] Documentation updated
@@ -1355,10 +1401,13 @@ None - this is a new extension.
 Title: Add WWC Co-Pilot & Study Synthesis Engine Extension
 
 ## Summary
+
 Adds tools for assessing study quality using What Works Clearinghouse (WWC) standards and synthesizing findings across multiple papers, including meta-analysis and conflict detection.
 
 ## Motivation
+
 Education researchers conducting systematic reviews need to:
+
 1. Assess study quality using rigorous, standardized criteria (WWC)
 2. Synthesize findings across studies
 3. Identify contradictions in the literature
@@ -1366,6 +1415,7 @@ Education researchers conducting systematic reviews need to:
 This extension provides semi-automated tools for all three tasks, scaffolding human judgment while automating tedious calculations.
 
 ## Implementation
+
 - **WWC Assessment Engine**: Implements WWC Handbook v5.0 decision rules in Python
 - **Meta-Analysis**: Uses statsmodels for random-effects meta-analysis
 - **Forest Plots**: Generates publication-quality visualizations with matplotlib
@@ -1373,6 +1423,7 @@ This extension provides semi-automated tools for all three tasks, scaffolding hu
 - **Interactive UI**: Multi-step form that guides researchers through WWC assessment
 
 ## Features
+
 - Semi-automated WWC quality assessment with human-in-the-loop
 - Automatic attrition calculation with two-boundary system
 - Baseline equivalence checking with color-coded thresholds
@@ -1382,17 +1433,20 @@ This extension provides semi-automated tools for all three tasks, scaffolding hu
 - Export synthesis reports as Markdown
 
 ## Dependencies
+
 - Requires Research Library extension (PR #XXXX)
 - Uses statsmodels, matplotlib, transformers
 - Optional: Hugging Face model for NLI
 
 ## Testing
+
 - Statistical calculations verified against R's metafor package
 - 82% code coverage
 - UI components tested
 - End-to-end synthesis workflow tested with sample papers
 
 ## Documentation
+
 - User guide with WWC assessment walkthrough
 - Statistical methods documented
 - WWC Handbook v5.0 implementation notes
@@ -1400,6 +1454,7 @@ This extension provides semi-automated tools for all three tasks, scaffolding hu
 - API reference
 
 ## Checklist
+
 - [x] Tests pass locally
 - [x] Linting passes
 - [x] Documentation updated
@@ -1410,9 +1465,9 @@ This extension provides semi-automated tools for all three tasks, scaffolding hu
 
 ## References
 
-[1] JupyterLab Developer Documentation. (2024). *JupyterLab*. Retrieved from https://jupyterlab.readthedocs.io/en/stable/developer/index.html
+[1] JupyterLab Developer Documentation. (2024). _JupyterLab_. Retrieved from https://jupyterlab.readthedocs.io/en/stable/developer/index.html
 
-[2] JupyterLab Contribution Guide. (2024). *JupyterLab GitHub*. Retrieved from https://github.com/jupyterlab/jupyterlab/blob/master/CONTRIBUTING.md
+[2] JupyterLab Contribution Guide. (2024). _JupyterLab GitHub_. Retrieved from https://github.com/jupyterlab/jupyterlab/blob/master/CONTRIBUTING.md
 
 [3### Command & Server Extension Examples
 
@@ -1427,10 +1482,10 @@ This section provides two code snippets demonstrating how the frontend (TypeScri
 
 #### Key Takeaways
 
-*   **Commands are frontend-only**: They live in TypeScript.
-*   **API handlers are backend-only**: They live in Python.
-*   **They communicate via HTTP**: Using Jupyter Server's built-in authentication.
-*   **Both are required**: For features that need server-side processing.
+- **Commands are frontend-only**: They live in TypeScript.
+- **API handlers are backend-only**: They live in Python.
+- **They communicate via HTTP**: Using Jupyter Server's built-in authentication.
+- **Both are required**: For features that need server-side processing.
 
 This is the exact pattern you'll use for your WWC Co-Pilot features: frontend UI + backend processing (PDF extraction, database queries, meta-analysis, etc.).
 
@@ -1439,9 +1494,9 @@ This is the exact pattern you'll use for your WWC Co-Pilot features: frontend UI
 This code goes in your frontend plugin file (e.g., `src/plugin.ts`). It adds a "Call My Backend" command to the command palette.
 
 ```typescript
-import { 
-  JupyterFrontEnd, 
-  JupyterFrontEndPlugin 
+import {
+  JupyterFrontEnd,
+  JupyterFrontEndPlugin
 } from '@jupyterlab/application';
 import { ICommandPalette, showDialog } from '@jupyterlab/apputils';
 import { ServerConnection } from '@jupyterlab/services';
@@ -1481,7 +1536,6 @@ const plugin: JupyterFrontEndPlugin<void> = {
             body: `The backend says: "${data.message}"`,
             buttons: [showDialog.okButton({ label: 'OK' })]
           });
-
         } catch (error) {
           console.error('Error calling backend:', error);
           showDialog({
@@ -1494,9 +1548,9 @@ const plugin: JupyterFrontEndPlugin<void> = {
     });
 
     // Add the command to the command palette for easy access
-    palette.addItem({ 
-      command: COMMAND_ID, 
-      category: 'My Extension' 
+    palette.addItem({
+      command: COMMAND_ID,
+      category: 'My Extension'
     });
   }
 };
@@ -1527,10 +1581,10 @@ class HelloWorldHandler(APIHandler):
 def setup_handlers(web_app):
     host_pattern = ".*$"
     base_url = web_app.settings["base_url"]
-    
+
     # The API route is created by joining the base URL with your custom endpoint
     route_pattern = url_path_join(base_url, "my-extension", "hello")
-    
+
     # Add the handler to the web application
     handlers = [(route_pattern, HelloWorldHandler)]
     web_app.add_handlers(host_pattern, handlers)
@@ -1544,14 +1598,13 @@ def _load_jupyter_server_extension(server_app):
 
 ```
 
-### Semantic Scholar API Clientation. (2024). *Semantic Scholar*. Retrieved from https://www.semanticscholar.org/product/api
+### Semantic Scholar API Clientation. (2024). _Semantic Scholar_. Retrieved from https://www.semanticscholar.org/product/api
 
-[4] PyMuPDF Documentation. (2024). *PyMuPDF*. Retrieved from https://pymupdf.readthedocs.io/en/latest/
+[4] PyMuPDF Documentation. (2024). _PyMuPDF_. Retrieved from https://pymupdf.readthedocs.io/en/latest/
 
-[5] Statsmodels Documentation. (2024). *Statsmodels*. Retrieved from https://www.statsmodels.org/stable/index.html
+[5] Statsmodels Documentation. (2024). _Statsmodels_. Retrieved from https://www.statsmodels.org/stable/index.html
 
-[6] What Works Clearinghouse. (2022). *WWC Standards Handbook, Version 5.0*. U.S. Department of Education, Institute of Education Sciences. Retrieved from https://ies.ed.gov/ncee/wwc/Docs/referenceresources/Final_WWC-HandbookVer5.0-0-508.pdf
-
+[6] What Works Clearinghouse. (2022). _WWC Standards Handbook, Version 5.0_. U.S. Department of Education, Institute of Education Sciences. Retrieved from https://ies.ed.gov/ncee/wwc/Docs/referenceresources/Final_WWC-HandbookVer5.0-0-508.pdf
 
 ---
 
@@ -1562,6 +1615,7 @@ This appendix provides a high-level overview of the JupyterLab architecture, foc
 ### Monorepo Structure
 
 JupyterLab is a **monorepo** containing:
+
 - Many TypeScript packages (in `packages/`)
 - One Python package (in `jupyterlab/`)
 
@@ -1570,6 +1624,7 @@ The Python package distributes the bundled-and-compiled TypeScript code.
 ### Key Directories
 
 #### `packages/` - NPM Packages
+
 - Contains many TypeScript sub-packages
 - Independently versioned and published to npmjs.org
 - Compiled to JavaScript and bundled with Python package
@@ -1577,6 +1632,7 @@ The Python package distributes the bundled-and-compiled TypeScript code.
   - Example: `@jupyterlab/notebook` (component) + `@jupyterlab/notebook-extension` (integration)
 
 #### `jupyterlab/` - Python Package
+
 - Server-side code
 - Command line interface
 - Entry points
@@ -1592,6 +1648,7 @@ The Python package distributes the bundled-and-compiled TypeScript code.
 **History**: Formerly known as PhosphorJS.
 
 **Key Components**:
+
 - Widgets (UI components)
 - Layouts (DockPanel, SplitPanel, TabPanel, etc.)
 - Events system

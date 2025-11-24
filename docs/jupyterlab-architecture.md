@@ -6,8 +6,8 @@ This guide provides a comprehensive overview of the JupyterLab architecture, spe
 
 JupyterLab is a modular, extensible web application built on a frontend-backend architecture:
 
-*   **Frontend**: A single-page application written in TypeScript, using React for UI components and Lumino for the underlying widget and messaging system.
-*   **Backend**: A Jupyter Server extension written in Python, providing REST APIs for file access, kernel management, and other services.
+- **Frontend**: A single-page application written in TypeScript, using React for UI components and Lumino for the underlying widget and messaging system.
+- **Backend**: A Jupyter Server extension written in Python, providing REST APIs for file access, kernel management, and other services.
 
 ### The Monorepo Structure
 
@@ -15,36 +15,36 @@ The `jupyterlab/jupyterlab` repository is a **monorepo** managed with Lerna and 
 
 ### Key Architectural Concepts
 
-*   **Plugins**: The fundamental unit of extension. Everything in JupyterLab is a plugin, including core features like the file browser and notebook.
-*   **Services & Tokens**: A dependency injection system where plugins can provide and consume services using unique `Token` identifiers.
-*   **Lumino Widgets**: The foundation of the UI. Lumino provides a high-performance widget system with features like drag-and-drop, custom layouts, and messaging.
-*   **Server Extensions**: The mechanism for adding backend functionality to JupyterLab with custom Python handlers.
+- **Plugins**: The fundamental unit of extension. Everything in JupyterLab is a plugin, including core features like the file browser and notebook.
+- **Services & Tokens**: A dependency injection system where plugins can provide and consume services using unique `Token` identifiers.
+- **Lumino Widgets**: The foundation of the UI. Lumino provides a high-performance widget system with features like drag-and-drop, custom layouts, and messaging.
+- **Server Extensions**: The mechanism for adding backend functionality to JupyterLab with custom Python handlers.
 
 ## 2. Key Directories & Their Purposes
 
 When exploring the JupyterLab codebase, these are the most important directories to understand:
 
-| Directory             | Purpose                                                                                             |
-| --------------------- | --------------------------------------------------------------------------------------------------- |
+| Directory             | Purpose                                                                                                 |
+| --------------------- | ------------------------------------------------------------------------------------------------------- |
 | `packages/`           | **The heart of the frontend**. Contains all the individual TypeScript packages that make up JupyterLab. |
-| `jupyterlab/`         | **The core Python package**. Contains the server extension, application entry point, and build tools.  |
-| `jupyterlab/handlers` | Python API handlers for the backend server.                                                         |
-| `examples/`           | Example extensions that demonstrate various features and integration points.                        |
-| `testutils/`          | Utilities for testing JupyterLab extensions.                                                        |
+| `jupyterlab/`         | **The core Python package**. Contains the server extension, application entry point, and build tools.   |
+| `jupyterlab/handlers` | Python API handlers for the backend server.                                                             |
+| `examples/`           | Example extensions that demonstrate various features and integration points.                            |
+| `testutils/`          | Utilities for testing JupyterLab extensions.                                                            |
 
 ## 3. The "Component + Extension" Pattern
 
 JupyterLab follows a common pattern where a feature is split into two packages:
 
 1.  **Component Package** (e.g., `@jupyterlab/filebrowser`):
-    *   Contains the core UI widgets, data models, and logic.
-    *   Is framework-agnostic (doesn't depend on the JupyterLab application shell).
-    *   Can be used in other applications outside of JupyterLab.
+    - Contains the core UI widgets, data models, and logic.
+    - Is framework-agnostic (doesn't depend on the JupyterLab application shell).
+    - Can be used in other applications outside of JupyterLab.
 
 2.  **Extension Package** (e.g., `@jupyterlab/filebrowser-extension`):
-    *   Integrates the component package into JupyterLab.
-    *   Registers commands, adds widgets to the shell, and connects to other services.
-    *   Depends on the JupyterLab application shell.
+    - Integrates the component package into JupyterLab.
+    - Registers commands, adds widgets to the shell, and connects to other services.
+    - Depends on the JupyterLab application shell.
 
 **For your project**: Your `jupyterlab-research-assistant` extension will follow this pattern. The core logic for your Research Library and Synthesis Engine will be in component packages, and the main extension package will integrate them into JupyterLab.
 
@@ -57,10 +57,12 @@ Here are the key patterns you will use, with specific examples relevant to your 
 **Goal**: Add a new panel to the left sidebar to display the research library.
 
 **Key Files to Study**:
-*   `packages/running-extension/src/index.ts`
-*   `packages/toc-extension/src/index.ts`
+
+- `packages/running-extension/src/index.ts`
+- `packages/toc-extension/src/index.ts`
 
 **Code Pattern**:
+
 ```typescript
 import { ReactWidget, WidgetTracker } from '@jupyterlab/apputils';
 import { ILabShell, ILayoutRestorer } from '@jupyterlab/application';
@@ -99,28 +101,28 @@ const activate = (app: JupyterFrontEnd, restorer: ILayoutRestorer | null) => {
 
   // 6. Use ILayoutRestorer to restore the panel on page load
   if (restorer) {
-    restorer.restore(tracker, { 
-      command: 'apputils:activate-command-by-id', 
-      args: { id: 'research-library-panel' }, 
-      name: () => 'research-library' 
+    restorer.restore(tracker, {
+      command: 'apputils:activate-command-by-id',
+      args: { id: 'research-library-panel' },
+      name: () => 'research-library'
     });
   }
 };
 ```
-
-
 
 ### Pattern 2: Creating a Server Extension API (for PDF processing, database access)
 
 **Goal**: Create a Python backend to handle file uploads, run AI metadata extraction, and query the SQLite database.
 
 **Key Files to Study**:
-*   `jupyterlab/handlers/announcements.py`
-*   `jupyterlab/serverextension.py`
+
+- `jupyterlab/handlers/announcements.py`
+- `jupyterlab/serverextension.py`
 
 **Code Pattern**:
 
 **`jupyterlab_research_assistant/handlers.py`**
+
 ```python
 from jupyter_server.base.handlers import APIHandler
 import tornado
@@ -143,6 +145,7 @@ class LibraryHandler(APIHandler):
 ```
 
 **`jupyterlab_research_assistant/__init__.py`**
+
 ```python
 from .handlers import LibraryHandler
 
@@ -166,11 +169,13 @@ def _load_jupyter_server_extension(server_app):
 **Goal**: Define a service for your research library and allow other plugins to access it.
 
 **Key Files to Study**:
-*   `packages/filebrowser/src/tokens.ts`
+
+- `packages/filebrowser/src/tokens.ts`
 
 **Code Pattern**:
 
 **`src/tokens.ts`**
+
 ```typescript
 import { Token } from '@lumino/coreutils';
 
@@ -187,6 +192,7 @@ export interface IResearchLibrary {
 ```
 
 **`src/index.ts` (providing the service)**
+
 ```typescript
 const libraryPlugin: JupyterFrontEndPlugin<IResearchLibrary> = {
   id: '@wwc-copilot/research-assistant:library-service',
@@ -199,6 +205,7 @@ const libraryPlugin: JupyterFrontEndPlugin<IResearchLibrary> = {
 ```
 
 **`src/other-plugin.ts` (consuming the service)**
+
 ```typescript
 const otherPlugin: JupyterFrontEndPlugin<void> = {
   id: '@wwc-copilot/other-plugin',
@@ -214,7 +221,6 @@ const otherPlugin: JupyterFrontEndPlugin<void> = {
 
 ![WWC Co-Pilot Architecture](https://private-us-east-1.manuscdn.com/sessionFile/GD2q1QUeS0HU1rV8UauXBA/sandbox/vUW3CxABzRzrGXfbnfnMRR-images_1764017696606_na1fn_L2hvbWUvdWJ1bnR1L3d3Y19hcmNoaXRlY3R1cmU.png?Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvR0QycTFRVWVTMEhVMXJWOFVhdVhCQS9zYW5kYm94L3ZVVzNDeEFCelJ6ckdYZmJuZm5NUlItaW1hZ2VzXzE3NjQwMTc2OTY2MDZfbmExZm5fTDJodmJXVXZkV0oxYm5SMUwzZDNZMTloY21Ob2FYUmxZM1IxY21VLnBuZyIsIkNvbmRpdGlvbiI6eyJEYXRlTGVzc1RoYW4iOnsiQVdTOkVwb2NoVGltZSI6MTc5ODc2MTYwMH19fV19&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=mGmna2CNiRCHtrE8iH-wBvM350GmiPqvS3YUBS19n9WzqyJDfqWAYmiTHodoHmiGDBm-pgVGPoqLvaocztvueSUSjrhB0p-~DRYlw~dMyAMPDecrZu-0BYCfaGPUe8tcvOP0P4o2wH5mSIqg9-kaWSb7OJRefIR~8SclvKme7e038Be~Rj73QdFPqIKXdp1Tf6j3-tJyy9Z4gLg0riL6qbDCaXegYBnneGMridGGHmmrHOBlmswuMTYz7vgy2em1RCzhD8aTkmkWxqGo9F-giAFxPzDjpIZnlFvoEJ~JERAY0OzpzxtTA0btVuK5AeN-OEjplSR~f7stXbrkNdrW9A__)
 
-
 ## 6. Specific Examples for the WWC Co-Pilot Features
 
 ### Feature 1: Research Library Panel
@@ -222,11 +228,13 @@ const otherPlugin: JupyterFrontEndPlugin<void> = {
 **What you're building**: A sidebar panel that displays imported papers, allows search/filtering, and provides a "Discovery" tab for Semantic Scholar integration.
 
 **Key patterns to use**:
+
 1. **Sidebar Panel Pattern** (see Pattern 1 above)
 2. **API Client Pattern** for calling your backend
 3. **State Management** using Lumino signals or React state
 
 **Directory structure in your extension**:
+
 ```
 src/
 ├── index.ts                    # Main plugin registration
@@ -241,6 +249,7 @@ src/
 ```
 
 **Code snippet for calling your backend**:
+
 ```typescript
 import { ServerConnection } from '@jupyterlab/services';
 
@@ -248,7 +257,7 @@ export class ResearchLibraryAPI {
   async getPapers(): Promise<any[]> {
     const settings = ServerConnection.makeSettings();
     const url = `${settings.baseUrl}research-assistant/library`;
-    
+
     const response = await ServerConnection.makeRequest(url, {}, settings);
     if (!response.ok) {
       throw new Error('Failed to fetch papers');
@@ -259,15 +268,19 @@ export class ResearchLibraryAPI {
   async addPaper(file: File): Promise<any> {
     const settings = ServerConnection.makeSettings();
     const url = `${settings.baseUrl}research-assistant/import`;
-    
+
     const formData = new FormData();
     formData.append('file', file);
-    
-    const response = await ServerConnection.makeRequest(url, {
-      method: 'POST',
-      body: formData
-    }, settings);
-    
+
+    const response = await ServerConnection.makeRequest(
+      url,
+      {
+        method: 'POST',
+        body: formData
+      },
+      settings
+    );
+
     if (!response.ok) {
       throw new Error('Failed to import paper');
     }
@@ -281,11 +294,13 @@ export class ResearchLibraryAPI {
 **What you're building**: A main area widget that opens when a user selects papers for synthesis. It includes the WWC Co-Pilot, meta-analysis tools, and conflict detection.
 
 **Key patterns to use**:
+
 1. **Main Area Widget Pattern** (similar to notebooks)
 2. **Tabbed Interface** for different synthesis views (WWC, Meta-Analysis, Conflicts)
 3. **Toolbar** with action buttons
 
 **Code snippet for opening in main area with tabs and toolbar**:
+
 ```typescript
 import { ReactWidget, Toolbar, ToolbarButton } from '@jupyterlab/apputils';
 import { TabPanel, Widget } from '@lumino/widgets';
@@ -296,46 +311,52 @@ class SynthesisWorkbenchWidget extends Widget {
   constructor(paperIds: number[]) {
     super();
     this.addClass('jp-SynthesisWorkbench');
-    
+
     // 1. Create toolbar
     const toolbar = new Toolbar();
-    toolbar.addItem('run-synthesis', new ToolbarButton({
-      icon: runIcon,
-      onClick: () => this.runSynthesis(),
-      tooltip: 'Run Synthesis'
-    }));
-    toolbar.addItem('export', new ToolbarButton({
-      icon: stopIcon,
-      onClick: () => this.exportResults(),
-      tooltip: 'Export Results'
-    }));
-    
+    toolbar.addItem(
+      'run-synthesis',
+      new ToolbarButton({
+        icon: runIcon,
+        onClick: () => this.runSynthesis(),
+        tooltip: 'Run Synthesis'
+      })
+    );
+    toolbar.addItem(
+      'export',
+      new ToolbarButton({
+        icon: stopIcon,
+        onClick: () => this.exportResults(),
+        tooltip: 'Export Results'
+      })
+    );
+
     // 2. Create tab panel
     const tabPanel = new TabPanel();
-    
+
     // 3. Add tabs for different views
     const wwcTab = new WWCCoPilotWidget(paperIds);
     wwcTab.title.label = 'WWC Quality';
     tabPanel.addWidget(wwcTab);
-    
+
     const metaAnalysisTab = new MetaAnalysisWidget(paperIds);
     metaAnalysisTab.title.label = 'Meta-Analysis';
     tabPanel.addWidget(metaAnalysisTab);
-    
+
     const conflictsTab = new ConflictDetectionWidget(paperIds);
     conflictsTab.title.label = 'Conflicts';
     tabPanel.addWidget(conflictsTab);
-    
+
     // 4. Layout: toolbar on top, tabs below
     this.layout = new PanelLayout();
     (this.layout as PanelLayout).addWidget(toolbar);
     (this.layout as PanelLayout).addWidget(tabPanel);
   }
-  
+
   private runSynthesis(): void {
     // Synthesis logic
   }
-  
+
   private exportResults(): void {
     // Export logic
   }
@@ -349,10 +370,10 @@ app.commands.addCommand('research-assistant:open-synthesis', {
     widget.id = `synthesis-${Date.now()}`;
     widget.title.label = 'Synthesis Workbench';
     widget.title.closable = true;
-    
+
     // Add to main area (not sidebar)
     app.shell.add(widget, 'main');
-    
+
     // Activate it
     app.shell.activateById(widget.id);
   }
@@ -366,6 +387,7 @@ JupyterLab uses Jest for frontend tests and pytest for backend tests.
 ### Frontend Testing Pattern
 
 **`src/__tests__/library.spec.ts`**
+
 ```typescript
 import { ResearchLibraryWidget } from '../library/widget';
 
@@ -380,7 +402,7 @@ describe('ResearchLibraryWidget', () => {
     // Mock API response
     const papers = [{ id: 1, title: 'Test Paper' }];
     widget.model.papers = papers;
-    
+
     // Assert that the paper is displayed
     expect(widget.node.textContent).toContain('Test Paper');
   });
@@ -390,6 +412,7 @@ describe('ResearchLibraryWidget', () => {
 ### Backend Testing Pattern
 
 **`jupyterlab_research_assistant/tests/test_handlers.py`**
+
 ```python
 import pytest
 from unittest.mock import Mock
@@ -406,18 +429,18 @@ async def test_library_handler_get(jp_fetch):
 
 Here's a quick reference for the most important packages in the `packages/` directory that you should study:
 
-| Package                        | Purpose                                                                                   | Relevance to WWC Co-Pilot                                                           |
-| ------------------------------ | ----------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| `@jupyterlab/application`      | Core application shell, plugin system                                                     | **Critical**: You'll use `JupyterFrontEnd` and `JupyterFrontEndPlugin` everywhere. |
-| `@jupyterlab/apputils`         | Common UI utilities (dialogs, toolbars, widgets)                                          | **High**: Use `ReactWidget`, `Dialog`, `showErrorMessage`.                         |
-| `@jupyterlab/services`         | API clients for Jupyter Server (kernels, contents, sessions)                             | **High**: Use `ServerConnection` for your custom API calls.                         |
-| `@jupyterlab/filebrowser`      | File browser widget and model                                                             | **High**: Study this for the sidebar panel pattern.                                 |
-| `@jupyterlab/running`          | Running sessions sidebar                                                                  | **High**: Another great example of a sidebar panel.                                 |
-| `@jupyterlab/notebook`         | Notebook widget and model                                                                 | **Medium**: Study for main area widget patterns.                                    |
-| `@jupyterlab/ui-components`    | Reusable UI components (icons, buttons, menus)                                            | **High**: Use `LabIcon`, `CommandToolbarButton`, etc.                               |
-| `@jupyterlab/settingregistry`  | Settings management                                                                       | **Medium**: For user preferences (e.g., AI provider choice).                        |
-| `@jupyterlab/statedb`          | Persistent state storage                                                                  | **Medium**: For remembering panel state across sessions.                            |
-| `@jupyterlab/translation`      | Internationalization (i18n)                                                               | **Low**: Optional, but good practice for accessibility.                             |
+| Package                       | Purpose                                                      | Relevance to WWC Co-Pilot                                                          |
+| ----------------------------- | ------------------------------------------------------------ | ---------------------------------------------------------------------------------- |
+| `@jupyterlab/application`     | Core application shell, plugin system                        | **Critical**: You'll use `JupyterFrontEnd` and `JupyterFrontEndPlugin` everywhere. |
+| `@jupyterlab/apputils`        | Common UI utilities (dialogs, toolbars, widgets)             | **High**: Use `ReactWidget`, `Dialog`, `showErrorMessage`.                         |
+| `@jupyterlab/services`        | API clients for Jupyter Server (kernels, contents, sessions) | **High**: Use `ServerConnection` for your custom API calls.                        |
+| `@jupyterlab/filebrowser`     | File browser widget and model                                | **High**: Study this for the sidebar panel pattern.                                |
+| `@jupyterlab/running`         | Running sessions sidebar                                     | **High**: Another great example of a sidebar panel.                                |
+| `@jupyterlab/notebook`        | Notebook widget and model                                    | **Medium**: Study for main area widget patterns.                                   |
+| `@jupyterlab/ui-components`   | Reusable UI components (icons, buttons, menus)               | **High**: Use `LabIcon`, `CommandToolbarButton`, etc.                              |
+| `@jupyterlab/settingregistry` | Settings management                                          | **Medium**: For user preferences (e.g., AI provider choice).                       |
+| `@jupyterlab/statedb`         | Persistent state storage                                     | **Medium**: For remembering panel state across sessions.                           |
+| `@jupyterlab/translation`     | Internationalization (i18n)                                  | **Low**: Optional, but good practice for accessibility.                            |
 
 ## 9. Common Pitfalls & How to Avoid Them
 
@@ -459,10 +482,10 @@ Now that you understand the architecture, here's your action plan:
 
 ## 11. Resources & References
 
-*   **Official JupyterLab Extension Tutorial**: https://jupyterlab.readthedocs.io/en/latest/extension/extension_tutorial.html
-*   **Lumino Documentation**: https://lumino.readthedocs.io/
-*   **JupyterLab GitHub Repository**: https://github.com/jupyterlab/jupyterlab
-*   **Extension Examples**: https://github.com/jupyterlab/extension-examples
+- **Official JupyterLab Extension Tutorial**: https://jupyterlab.readthedocs.io/en/latest/extension/extension_tutorial.html
+- **Lumino Documentation**: https://lumino.readthedocs.io/
+- **JupyterLab GitHub Repository**: https://github.com/jupyterlab/jupyterlab
+- **Extension Examples**: https://github.com/jupyterlab/extension-examples
 
 ---
 

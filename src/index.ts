@@ -12,20 +12,32 @@ import { requestAPI } from './request';
  */
 const plugin: JupyterFrontEndPlugin<void> = {
   id: 'jupyterlab-research-assistant-wwc-copilot:plugin',
-  description: 'A JupyterLab extension for academic research management and WWC quality assessment',
+  description:
+    'A JupyterLab extension for academic research management and WWC quality assessment',
   autoStart: true,
   optional: [ISettingRegistry],
-  activate: (app: JupyterFrontEnd, settingRegistry: ISettingRegistry | null) => {
-    console.log('JupyterLab extension jupyterlab-research-assistant-wwc-copilot is activated!');
+  activate: (
+    app: JupyterFrontEnd,
+    settingRegistry: ISettingRegistry | null
+  ) => {
+    console.log(
+      'JupyterLab extension jupyterlab-research-assistant-wwc-copilot is activated!'
+    );
 
     if (settingRegistry) {
       settingRegistry
         .load(plugin.id)
         .then(settings => {
-          console.log('jupyterlab-research-assistant-wwc-copilot settings loaded:', settings.composite);
+          console.log(
+            'jupyterlab-research-assistant-wwc-copilot settings loaded:',
+            settings.composite
+          );
         })
         .catch(reason => {
-          console.error('Failed to load settings for jupyterlab-research-assistant-wwc-copilot.', reason);
+          console.error(
+            'Failed to load settings for jupyterlab-research-assistant-wwc-copilot.',
+            reason
+          );
         });
     }
 

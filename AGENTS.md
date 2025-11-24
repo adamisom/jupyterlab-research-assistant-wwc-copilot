@@ -200,8 +200,10 @@ import { ReadonlyPartialJSONObject } from '@lumino/coreutils';
 
 // Command IDs
 export namespace CommandIDs {
-  export const openPanel = 'jupyterlab_research_assistant_wwc_copilot:open-panel';
-  export const refreshData = 'jupyterlab_research_assistant_wwc_copilot:refresh-data';
+  export const openPanel =
+    'jupyterlab_research_assistant_wwc_copilot:open-panel';
+  export const refreshData =
+    'jupyterlab_research_assistant_wwc_copilot:refresh-data';
 }
 
 // Command argument types

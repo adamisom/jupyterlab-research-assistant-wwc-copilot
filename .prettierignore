@@ -4,3 +4,5 @@ node_modules
 **/package.json
 !/package.json
 jupyterlab_research_assistant_wwc_copilot
+venv/share/jupyter/lab/static/**
+docs/**

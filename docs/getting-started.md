@@ -8,7 +8,7 @@ This is a gentle, step-by-step guide to get your JupyterLab development environm
 
 JupyterLab is a **monorepo**, which means all the code for its many packages lives in a single GitHub repository. You only need to clone one thing.
 
-*   **Repository**: `https://github.com/jupyterlab/jupyterlab`
+- **Repository**: `https://github.com/jupyterlab/jupyterlab`
 
 ---
 
@@ -61,8 +61,9 @@ pip install -e ".[dev]"
 ```
 
 **What this magic command does:**
-*   It installs all Python packages listed in the setup files.
-*   It runs `jlpm install` (JupyterLab's special package manager) to install all the JavaScript dependencies and link the local packages together.
+
+- It installs all Python packages listed in the setup files.
+- It runs `jlpm install` (JupyterLab's special package manager) to install all the JavaScript dependencies and link the local packages together.
 
 ### 4. Build the Project
 
@@ -84,12 +85,13 @@ To see your work, you need to run JupyterLab in a special development mode that 
 jupyter lab --dev-mode --watch
 ```
 
-*   `--dev-mode`: This tells JupyterLab to use the local source code you're editing, not the version that might be installed elsewhere on your system.
-*   `--watch`: This is the magic part. It watches for any changes you make to the frontend (TypeScript/React) code and automatically rebuilds it in the background.
+- `--dev-mode`: This tells JupyterLab to use the local source code you're editing, not the version that might be installed elsewhere on your system.
+- `--watch`: This is the magic part. It watches for any changes you make to the frontend (TypeScript/React) code and automatically rebuilds it in the background.
 
 Now, open your web browser to the URL it provides (usually `http://localhost:8888/`). You should see your very own, locally-running JupyterLab!
 
 **To test it:**
+
 1.  Open a code editor (like VS Code) in the `jupyterlab` directory.
 2.  Navigate to `packages/ui-components/src/components/Button.tsx`.
 3.  Find the `<button>` element and add a simple style change, like `style={{ border: '2px solid red' }}`.
@@ -109,7 +111,7 @@ Here are answers to common follow-up questions you might have after getting set 
 
 **1. What if I already have Python/Node.js installed? Do I need to use conda?**
 
-You don't *have* to, but it's **strongly recommended**. Using a `conda` environment prevents conflicts with other Python projects on your system. It creates a clean, isolated sandbox so you can be sure you're using the exact package versions JupyterLab needs.
+You don't _have_ to, but it's **strongly recommended**. Using a `conda` environment prevents conflicts with other Python projects on your system. It creates a clean, isolated sandbox so you can be sure you're using the exact package versions JupyterLab needs.
 
 **2. How do I know which Node.js version JupyterLab requires?**
 
@@ -121,9 +123,9 @@ Check the `"engines"` field in the `package.json` file at the root of the `jupyt
 
 **5. What if the build fails? What are common errors?**
 
-*   **Error**: `Integrity check failed`. **Fix**: Run `jlpm integrity`. This usually means your local package versions are out of sync.
-*   **Error**: `node-gyp` build errors. **Fix**: This often means you're missing system-level build tools (like `build-essential` on Linux, or Xcode Command Line Tools on macOS).
-*   **Error**: Out of memory. **Fix**: The build process can be memory-intensive. Try setting `NODE_OPTIONS=--max-old-space-size=8192` in your terminal before building.
+- **Error**: `Integrity check failed`. **Fix**: Run `jlpm integrity`. This usually means your local package versions are out of sync.
+- **Error**: `node-gyp` build errors. **Fix**: This often means you're missing system-level build tools (like `build-essential` on Linux, or Xcode Command Line Tools on macOS).
+- **Error**: Out of memory. **Fix**: The build process can be memory-intensive. Try setting `NODE_OPTIONS=--max-old-space-size=8192` in your terminal before building.
 
 ### Development Workflow
 
@@ -138,8 +140,8 @@ jlpm test
 
 **8. Do I need to rebuild every time I change Python code, or just TypeScript?**
 
-*   **TypeScript/React changes**: No. If you're running in `--watch` mode, the frontend will rebuild automatically in the background. Just save your file and refresh the browser.
-*   **Python changes**: Yes. You need to restart the JupyterLab server to see changes in your Python backend code.
+- **TypeScript/React changes**: No. If you're running in `--watch` mode, the frontend will rebuild automatically in the background. Just save your file and refresh the browser.
+- **Python changes**: Yes. You need to restart the JupyterLab server to see changes in your Python backend code.
 
 **9. How do I debug TypeScript/React code in the browser?**
 
@@ -158,16 +160,18 @@ For this project, you'll be creating a **new, separate repository** for your ext
 **12. How do JupyterLab's packages relate to each other?**
 
 Think of it as a pyramid:
-*   **Base**: `@lumino/...` packages provide the core widgets and layout system.
-*   **Mid-level**: `@jupyterlab/...` packages provide core services and components (e.g., `@jupyterlab/apputils`, `@jupyterlab/services`, `@jupyterlab/ui-components`).
-*   **High-level**: `@jupyterlab/...-extension` packages are "plugins" that take components from the mid-level and add them to the application (e.g., `@jupyterlab/notebook-extension` adds the notebook panel).
+
+- **Base**: `@lumino/...` packages provide the core widgets and layout system.
+- **Mid-level**: `@jupyterlab/...` packages provide core services and components (e.g., `@jupyterlab/apputils`, `@jupyterlab/services`, `@jupyterlab/ui-components`).
+- **High-level**: `@jupyterlab/...-extension` packages are "plugins" that take components from the mid-level and add them to the application (e.g., `@jupyterlab/notebook-extension` adds the notebook panel).
 
 **13. What are Lumino widgets and why does JupyterLab use them?**
 
 Lumino is a high-performance widget toolkit that provides the desktop-like feel of JupyterLab. It's responsible for:
-*   **Layouts**: Docking panels, splitters, tabs, and menus.
-*   **Messaging**: A system for widgets to communicate with each other without direct dependencies.
-*   **Performance**: It's designed to handle hundreds of on-screen elements efficiently.
+
+- **Layouts**: Docking panels, splitters, tabs, and menus.
+- **Messaging**: A system for widgets to communicate with each other without direct dependencies.
+- **Performance**: It's designed to handle hundreds of on-screen elements efficiently.
 
 JupyterLab uses Lumino instead of a pure React/Vue/Angular approach because these frameworks are not typically designed for the complex, stateful, desktop-like layouts that JupyterLab requires.
 
@@ -213,21 +217,23 @@ After this, every time you run `git commit`, the hooks will run first.
 **20. Should I open an issue before starting to code, or just submit a PR?**
 
 **Always open an issue first!** This is standard practice for major open-source projects. It allows you to:
-*   Discuss your proposed feature with maintainers.
-*   Get feedback on your approach before you write any code.
-*   Ensure your work aligns with the project's roadmap.
+
+- Discuss your proposed feature with maintainers.
+- Get feedback on your approach before you write any code.
+- Ensure your work aligns with the project's roadmap.
 
 **21. How do I write a good PR description?**
 
 Follow the PR template provided in the repository. A good description includes:
-*   A link to the issue it resolves.
-*   A clear summary of the changes.
-*   A description of how to test the changes manually.
-*   Screenshots or GIFs of the new UI, if applicable.
+
+- A link to the issue it resolves.
+- A clear summary of the changes.
+- A description of how to test the changes manually.
+- Screenshots or GIFs of the new UI, if applicable.
 
 **22. What's the typical review timeline?**
 
-It varies, but be patient. Maintainers are often volunteers. A week or two is not uncommon. If you don't hear anything after a couple of weeks, it's okay to post a polite 
+It varies, but be patient. Maintainers are often volunteers. A week or two is not uncommon. If you don't hear anything after a couple of weeks, it's okay to post a polite
 ping on the PR, like: "@mention-a-maintainer Just wanted to check in on this. Is there anything I can do to help move it forward?"
 
 **23. Can I work on both features in parallel, or should I finish one PR first?**
@@ -251,6 +257,7 @@ Create a new API handler in your Python server extension (e.g., `/api/research/s
 **27. How do I add a new sidebar panel to JupyterLab?**
 
 In your frontend plugin, you'll:
+
 1.  Create a new `Widget` (or `ReactWidget`) that contains your UI.
 2.  Give it a unique ID, title, and icon.
 3.  Use the `app.shell.add(widget, 'left', { rank: 200 });` command to add your widget to the left sidebar. The `rank` option controls its position relative to other icons.
