@@ -1,0 +1,54 @@
+graph TB
+    subgraph Frontend["Frontend (TypeScript/React)"]
+        RLP[Research Library Panel<br/>Sidebar Widget]
+        SWB[Synthesis Workbench<br/>Main Area Widget]
+        API[API Client<br/>ServerConnection]
+    end
+    
+    subgraph Backend["Backend (Python/Jupyter Server)"]
+        LH[/library Handler<br/>GET/POST]
+        IH[/import Handler<br/>POST]
+        SH[/synthesis Handler<br/>POST]
+        
+        PDF[PDF Parser<br/>PyMuPDF]
+        AIE[AI Extractor<br/>Metadata Extraction]
+        DB[(SQLite Database<br/>Papers & Metadata)]
+        MA[Meta-Analysis Engine<br/>statsmodels]
+    end
+    
+    subgraph External["External Services"]
+        SS[Semantic Scholar API<br/>Paper Discovery]
+        AIP[AI Provider<br/>Claude/GPT/Ollama]
+    end
+    
+    %% Frontend to API Client
+    RLP -->|requests papers| API
+    SWB -->|requests analysis| API
+    
+    %% API Client to Backend Handlers
+    API -->|GET/POST| LH
+    API -->|POST PDF| IH
+    API -->|POST analysis request| SH
+    
+    %% Backend Handler to Services
+    LH -->|query/insert| DB
+    IH -->|extract text| PDF
+    IH -->|extract metadata| AIE
+    AIE -->|store| DB
+    SH -->|fetch papers| DB
+    SH -->|compute stats| MA
+    
+    %% External Service Calls
+    AIE -->|API call| AIP
+    API -->|search papers| SS
+    
+    %% Styling
+    classDef frontendStyle fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+    classDef backendStyle fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    classDef externalStyle fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    classDef dbStyle fill:#e8f5e9,stroke:#388e3c,stroke-width:2px
+    
+    class RLP,SWB,API frontendStyle
+    class LH,IH,SH,PDF,AIE,MA backendStyle
+    class SS,AIP externalStyle
+    class DB dbStyle

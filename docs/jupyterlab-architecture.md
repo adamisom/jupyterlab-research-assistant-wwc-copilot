@@ -219,7 +219,7 @@ const otherPlugin: JupyterFrontEndPlugin<void> = {
 
 ## 5. Architecture Diagram for the WWC Co-Pilot
 
-![WWC Co-Pilot Architecture](https://private-us-east-1.manuscdn.com/sessionFile/GD2q1QUeS0HU1rV8UauXBA/sandbox/vUW3CxABzRzrGXfbnfnMRR-images_1764017696606_na1fn_L2hvbWUvdWJ1bnR1L3d3Y19hcmNoaXRlY3R1cmU.png?Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvR0QycTFRVWVTMEhVMXJWOFVhdVhCQS9zYW5kYm94L3ZVVzNDeEFCelJ6ckdYZmJuZm5NUlItaW1hZ2VzXzE3NjQwMTc2OTY2MDZfbmExZm5fTDJodmJXVXZkV0oxYm5SMUwzZDNZMTloY21Ob2FYUmxZM1IxY21VLnBuZyIsIkNvbmRpdGlvbiI6eyJEYXRlTGVzc1RoYW4iOnsiQVdTOkVwb2NoVGltZSI6MTc5ODc2MTYwMH19fV19&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=mGmna2CNiRCHtrE8iH-wBvM350GmiPqvS3YUBS19n9WzqyJDfqWAYmiTHodoHmiGDBm-pgVGPoqLvaocztvueSUSjrhB0p-~DRYlw~dMyAMPDecrZu-0BYCfaGPUe8tcvOP0P4o2wH5mSIqg9-kaWSb7OJRefIR~8SclvKme7e038Be~Rj73QdFPqIKXdp1Tf6j3-tJyy9Z4gLg0riL6qbDCaXegYBnneGMridGGHmmrHOBlmswuMTYz7vgy2em1RCzhD8aTkmkWxqGo9F-giAFxPzDjpIZnlFvoEJ~JERAY0OzpzxtTA0btVuK5AeN-OEjplSR~f7stXbrkNdrW9A__)
+See the [architecture diagram](./architecture.mmd) for a visual representation of the WWC Co-Pilot system architecture.
 
 ## 6. Specific Examples for the WWC Co-Pilot Features
 

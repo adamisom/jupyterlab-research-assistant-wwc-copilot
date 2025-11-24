@@ -109,7 +109,7 @@ This phase focuses on engaging with the JupyterLab community to gather feedback,
 
 **Key Activities**:
 
-1.  **Join Community Channels**: Join the JupyterLab Gitter chat (https://gitter.im/jupyterlab/jupyterlab) and Discourse forum (https://discourse.jupyter.org/).
+1.  **Join Community Channels**: Join the JupyterLab community on [Discourse](https://discourse.jupyter.org/) or [Matrix/Element](https://matrix.to/#/#jupyterlab:matrix.org).
 2.  **Introduce Yourself**: Post a brief introduction explaining your background in learning science and your interest in building research tools for JupyterLab.
 3.  **Post an RFC (Request for Comments)**: Share your feature proposals with the community to gather early feedback. Use the template below:
 
@@ -800,7 +800,7 @@ To ensure the tool is particularly useful for learning science research, the fol
 
 ### JupyterLab Community:
 
-- **Gitter chat**: https://gitter.im/jupyterlab/jupyterlab
+- **Matrix/Element chat**: https://matrix.to/#/#jupyterlab:matrix.org
 - **Discourse forum**: https://discourse.jupyter.org/
 - **GitHub discussions**: https://github.com/jupyterlab/jupyterlab/discussions
 
