@@ -77,7 +77,7 @@ This phase uses the official JupyterLab Extension Template to create your extens
     ```
 
     Answer the prompts:
-    - Extension name: `jupyterlab-research-assistant`
+    - Extension name: `jupyterlab-research-assistant-wwc-copilot`
     - Has server extension: `Yes`
     - Has frontend extension: `Yes`
 
@@ -90,9 +90,10 @@ This phase uses the official JupyterLab Extension Template to create your extens
 3.  **Link for Development**: Install your extension in development mode:
 
     ```bash
-    cd jupyterlab-research-assistant
+    cd jupyterlab-research-assistant-wwc-copilot
     pip install -e .
     jupyter labextension develop . --overwrite
+    jupyter server extension enable jupyterlab_research_assistant_wwc_copilot
     ```
 
 4.  **Test the Setup**: Run JupyterLab in development mode with auto-rebuild:
@@ -160,23 +161,25 @@ Questions for Community:
 
 ### Phase 1.1: Backend - Discovery, Processing, and Metadata Service
 
-**Suggested Directory Structure (`packages/research-assistant-server/`)**:
+**Actual Directory Structure (`jupyterlab_research_assistant_wwc_copilot/`)**:
 
 ```
-├── handlers/              # API endpoints
-│   ├── discovery.py      # Semantic Scholar search
-│   ├── library.py        # CRUD for local library
-│   └── import.py         # PDF import and processing
-├── services/               # Business logic
-│   ├── semantic_scholar.py # API client for Semantic Scholar
-│   ├── ai_extractor.py     # AI metadata extraction
-│   ├── pdf_parser.py       # Text extraction with PyMuPDF
-│   └── db_manager.py       # Database session management
-├── database/               # Database setup
-│   ├── models.py           # SQLAlchemy ORM models
-│   └── migrations/         # Alembic database migrations
+jupyterlab_research_assistant_wwc_copilot/  # Python package (underscores)
+├── __init__.py                              # Server extension entry point
+├── routes.py                                # API handlers (all in one file initially)
+├── services/                                 # Business logic
+│   ├── __init__.py
+│   ├── semantic_scholar.py                  # API client for Semantic Scholar
+│   ├── ai_extractor.py                      # AI metadata extraction
+│   ├── pdf_parser.py                        # Text extraction with PyMuPDF
+│   └── db_manager.py                       # Database session management
+├── database/                                # Database setup
+│   ├── __init__.py
+│   ├── models.py                            # SQLAlchemy ORM models
+│   └── migrations/                          # Alembic database migrations (future)
 └── tests/
-    ├── test_handlers.py
+    ├── __init__.py
+    ├── test_routes.py
     ├── test_services.py
     └── test_integration.py
 ```
@@ -191,34 +194,49 @@ This phase establishes the server-side foundation. It will be a JupyterLab serve
     - **Code Example (`backend/services/semantic_scholar.py`)**:
 
       ```python
+      # File: jupyterlab_research_assistant_wwc_copilot/services/semantic_scholar.py
       import requests
       from typing import List, Dict, Optional
+      import time
 
       class SemanticScholarAPI:
           BASE_URL = "https://api.semanticscholar.org/graph/v1"
-
+          
           def __init__(self, api_key: Optional[str] = None):
               self.session = requests.Session()
               if api_key:
                   self.session.headers.update({"x-api-key": api_key})
+              self.last_request_time = 0
+              self.min_request_interval = 0.3  # Rate limiting
 
-          def search_papers(self, query: str, year: str, limit: int = 20) -> List[Dict]:
-              """Search for papers using a query and year range."""
+          def _rate_limit(self):
+              """Simple rate limiting to avoid hitting API limits."""
+              current_time = time.time()
+              time_since_last = current_time - self.last_request_time
+              if time_since_last < self.min_request_interval:
+                  time.sleep(self.min_request_interval - time_since_last)
+              self.last_request_time = time.time()
+
+          def search_papers(self, query: str, year: Optional[str] = None, limit: int = 20) -> Dict:
+              """Search for papers using a query and optional year range."""
+              self._rate_limit()
               params = {
                   "query": query,
-                  "year": year,
-                  "limit": limit,
-                  "fields": "title,authors,year,abstract,doi,openAccessPdf"
+                  "limit": min(limit, 100),  # API max is 100
+                  "fields": "title,authors,year,abstract,doi,openAccessPdf,paperId,citationCount"
               }
-              response = self.session.get(f"{self.BASE_URL}/paper/search", params=params)
+              if year:
+                  params["year"] = year
+              response = self.session.get(f"{self.BASE_URL}/paper/search", params=params, timeout=10)
               response.raise_for_status()
               data = response.json()
-              return data.get("data", [])
+              return {"data": data.get("data", []), "total": data.get("total", 0)}
 
-          def get_paper_details(self, doi: str) -> Optional[Dict]:
-              """Fetch detailed information for a single paper by DOI."""
-              params = {"fields": "title,authors,year,abstract,doi,openAccessPdf,citationCount,referenceCount"}
-              response = self.session.get(f"{self.BASE_URL}/paper/DOI:{doi}", params=params)
+          def get_paper_details(self, paper_id: str) -> Optional[Dict]:
+              """Fetch detailed information for a single paper by Semantic Scholar ID."""
+              self._rate_limit()
+              params = {"fields": "title,authors,year,abstract,doi,openAccessPdf,paperId,citationCount"}
+              response = self.session.get(f"{self.BASE_URL}/paper/{paper_id}", params=params, timeout=10)
               if response.status_code == 404:
                   return None
               response.raise_for_status()
@@ -236,7 +254,7 @@ This phase establishes the server-side foundation. It will be a JupyterLab serve
     - **Alternative C (Specialized Non-LLM Tools)**: **GROBID**. Very fast for standard bibliographic data, but less flexible for custom learning science fields.
 
     **Recommended Path**: Implement support for **Alternative A** and **Alternative B**, allowing the user to choose their preferred method in the settings.
-    - **Code Example (`backend/extractors/ai_extractor.py`)**:
+    - **Code Example (`jupyterlab_research_assistant_wwc_copilot/services/ai_extractor.py`)**:
 
       ```python
       from openai import OpenAI # Works for both OpenAI and Anthropic-compatible APIs
@@ -294,25 +312,22 @@ This phase establishes the server-side foundation. It will be a JupyterLab serve
 
 ### Phase 1.2: Frontend - The Research Library Panel
 
-**Suggested Directory Structure (`packages/research-assistant/`)**:
+**Actual Directory Structure (`src/`)**:
 
 ```typescript
-├── src/
-│   ├── index.ts              // Extension entry point
-│   ├── plugin.ts             // JupyterLab plugin definition
-│   ├── widgets/              // React components
-│   │   ├── DiscoveryTab.tsx  // Search UI for Semantic Scholar
-│   │   ├── LibraryTab.tsx    // View for local library
-│   │   ├── PaperCard.tsx     // Component for a single paper
-│   │   └── DetailView.tsx    // Detailed view of a paper's metadata
-│   ├── services/
-│   │   ├── api.ts            // Backend API client
-│   │   └── state.ts          // State management (e.g., Zustand)
-│   ├── commands.ts           // Command palette definitions
-│   └── style/
-│       └── base.css          // Component styles
-└── tests/
-    └── widgets.spec.tsx      // Component tests
+src/
+├── index.ts                  // Extension entry point and plugin definition
+├── request.ts                // API request helper (already exists)
+├── api.ts                    // Typed API client functions
+├── widgets/                  // React components
+│   ├── ResearchLibraryPanel.tsx  // Main sidebar panel
+│   ├── DiscoveryTab.tsx      // Search UI for Semantic Scholar
+│   ├── LibraryTab.tsx        // View for local library
+│   ├── PaperCard.tsx         // Component for a single paper
+│   └── DetailView.tsx        // Detailed view of a paper's metadata
+├── commands.ts               // Command palette definitions (optional, can be in index.ts)
+└── __tests__/
+    └── *.spec.tsx            // Component tests
 ```
 
 This phase focuses on building the user-facing interface as a new panel in the JupyterLab sidebar, using TypeScript and React.
@@ -322,7 +337,7 @@ This phase focuses on building the user-facing interface as a new panel in the J
 1.  **Main Panel**: A new sidebar panel, registered with a custom icon, that serves as the main view for the research library.
 2.  **Discovery & Import Tab**: The default view, allowing users to find new papers.
     - **UI Mockup**: A search bar, filters for year and open access, and a results list.
-    - **Code Example (`frontend/widgets/DiscoveryTab.tsx`)**:
+    - **Code Example (`src/widgets/DiscoveryTab.tsx`)**:
 
       ```typescript
       import React, { useState } from 'react';
@@ -391,40 +406,47 @@ This phase focuses on integrating the extension into JupyterLab's command system
 
 1.  **Plugin Registration**: Register the extension with JupyterLab's plugin system using the `JupyterFrontEndPlugin` interface.
 2.  **Command Palette**: Add commands to the command palette for quick access:
-    - `research:search-papers` - Open the discovery tab
-    - `research:import-pdf` - Open file picker to import a local PDF
-    - `research:view-library` - Switch to library tab
-    - `research:export-library` - Export library as CSV/JSON
+    - `jupyterlab-research-assistant-wwc-copilot:open-library` - Open the research library panel
+    - `jupyterlab-research-assistant-wwc-copilot:import-pdf` - Open file picker to import a local PDF
+    - `jupyterlab-research-assistant-wwc-copilot:export-library` - Export library as CSV/JSON
 3.  **Main Menu Integration**: Add a "Research" menu to the main menu bar with the above commands.
 4.  **Keyboard Shortcuts**: Register keyboard shortcuts for frequently used commands (e.g., `Ctrl+Shift+R` for search).
 5.  **File Browser Context Menu**: Add a "Import to Research Library" option when right-clicking PDF files in the file browser.
 
-**Code Example (`frontend/plugin.ts`)**:
+**Code Example (`src/index.ts` - plugin registration)**:
 
 ```typescript
-import { JupyterFrontEndPlugin } from '@jupyterlab/application';
+// In src/index.ts
+import { JupyterFrontEnd, JupyterFrontEndPlugin } from '@jupyterlab/application';
 import { ICommandPalette } from '@jupyterlab/apputils';
+import { ResearchLibraryPanel } from './widgets/ResearchLibraryPanel';
+
+const PLUGIN_ID = 'jupyterlab-research-assistant-wwc-copilot:plugin';
 
 const plugin: JupyterFrontEndPlugin<void> = {
-  id: 'jupyterlab-research-assistant:plugin',
+  id: PLUGIN_ID,
   autoStart: true,
-  requires: [ICommandPalette],
-  activate: (app, palette: ICommandPalette) => {
-    const { commands } = app;
+  optional: [ICommandPalette],
+  activate: (app: JupyterFrontEnd, palette: ICommandPalette | null) => {
+    // Create panel
+    const panel = new ResearchLibraryPanel();
+    app.shell.add(panel, 'left', { rank: 300 });
 
-    // Register commands
-    commands.addCommand('research:search-papers', {
-      label: 'Search Academic Papers',
+    // Register command
+    app.commands.addCommand('jupyterlab-research-assistant-wwc-copilot:open-library', {
+      label: 'Open Research Library',
       execute: () => {
-        // Open discovery tab
+        app.shell.activateById(panel.id);
       }
     });
 
     // Add to palette
-    palette.addItem({
-      command: 'research:search-papers',
-      category: 'Research'
-    });
+    if (palette) {
+      palette.addItem({
+        command: 'jupyterlab-research-assistant-wwc-copilot:open-library',
+        category: 'Research Assistant'
+      });
+    }
   }
 };
 
@@ -462,7 +484,7 @@ export default plugin;
 
 ### Phase 2.1: Backend - The WWC & Synthesis Service
 
-**Suggested Directory Structure (`packages/synthesis-engine-server/`)**:
+**Directory Structure (add to `jupyterlab_research_assistant_wwc_copilot/`)**:
 
 ```
 ├── handlers/
@@ -486,7 +508,7 @@ This phase extends the backend server extension with new API endpoints and busin
 1.  **WWC Quality Assessment Engine**:
     - **The Core Logic**: This is the heart of the WWC Co-Pilot. It implements the decision rules from the WWC Handbook v5.0 as a series of functions.
     - **Implementation**: A Python class will take in study metadata (extracted in Stage 1) and user judgments to produce a full WWC assessment.
-    - **Code Example (`backend/services/wwc_assessor.py`)**: This is the detailed implementation from our research, showing how the handbook's rules are translated into code.
+    - **Code Example (`jupyterlab_research_assistant_wwc_copilot/services/wwc_assessor.py`)**: This is the detailed implementation from our research, showing how the handbook's rules are translated into code.
 
       ```python
       from dataclasses import dataclass, field
@@ -573,7 +595,7 @@ This phase extends the backend server extension with new API endpoints and busin
 3.  **Forest Plot Generation**:
     - **Primary Tool**: **`matplotlib`** will be used to generate a classic forest plot.
     - **Implementation**: The backend will generate the plot as a PNG or SVG image and send it to the frontend for display.
-    - **Code Example (`backend/services/visualizer.py`)**:
+    - **Code Example (`jupyterlab_research_assistant_wwc_copilot/services/visualizer.py`)**:
 
       ```python
       import matplotlib.pyplot as plt
@@ -608,7 +630,7 @@ This phase builds the UI for the synthesis engine, likely as a new main area wid
 1.  **Study Selection**: The research library panel will be updated to allow multi-select, with a "Synthesize Studies" button appearing when two or more papers are selected.
 2.  **WWC Co-Pilot Interface**: A dedicated view for a single paper that walks the user through the WWC assessment.
     - **UI Mockup**: A multi-step form with clear sections for Attrition, Baseline Equivalence, etc. It will use the data extracted in Stage 1 to pre-fill fields and show initial calculations.
-    - **Code Example (`frontend/widgets/WWCCoPilot.tsx`)**:
+    - **Code Example (`src/widgets/WWCCoPilot.tsx`)**:
 
       ```typescript
       import React, { useState, useEffect } from 'react';
