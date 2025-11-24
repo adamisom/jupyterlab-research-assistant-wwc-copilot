@@ -728,7 +728,7 @@ This phase builds the UI for the synthesis engine, likely as a new main area wid
 
 1.  **Publish to npm**: `npm publish` (for the frontend package)
 2.  **Publish to PyPI**: `python -m build && twine upload dist/*` (for the Python package)
-3.  **Submit to JupyterLab Extension Registry**: Open a PR to https://github.com/jupyterlab/extension-manager to list your extension
+3.  **Submit to JupyterLab Extension Registry**: Follow the [extension listing process](https://jupyterlab.readthedocs.io/en/stable/extension/extension_tutorial.html#publishing-your-extension) to list your extension
 4.  **Create GitHub Release**: Tag a release on GitHub with release notes
 5.  **Share Widely**: Post announcement on Discourse, social media, and relevant mailing lists
 
@@ -796,7 +796,7 @@ To ensure the tool is particularly useful for learning science research, the fol
 - **Main docs**: https://jupyterlab.readthedocs.io/
 - **Extension tutorial**: https://jupyterlab.readthedocs.io/en/stable/extension/extension_tutorial.html
 - **Contributing guide**: https://github.com/jupyterlab/jupyterlab/blob/main/CONTRIBUTING.md
-- **Architecture**: https://github.com/jupyterlab/jupyterlab/blob/main/ARCHITECTURE.md
+- **Architecture**: See the [JupyterLab documentation](https://jupyterlab.readthedocs.io/) for architecture details
 
 ### JupyterLab Community:
 
@@ -1465,7 +1465,7 @@ This extension provides semi-automated tools for all three tasks, scaffolding hu
 
 ## References
 
-[1] JupyterLab Developer Documentation. (2024). _JupyterLab_. Retrieved from https://jupyterlab.readthedocs.io/en/stable/developer/index.html
+[1] JupyterLab Developer Documentation. (2024). _JupyterLab_. Retrieved from https://jupyterlab.readthedocs.io/en/stable/extension/extension_dev.html
 
 [2] JupyterLab Contribution Guide. (2024). _JupyterLab GitHub_. Retrieved from https://github.com/jupyterlab/jupyterlab/blob/master/CONTRIBUTING.md
 
