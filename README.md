@@ -197,13 +197,6 @@ You can edit `AGENTS.md` to add project-specific conventions or adjust guideline
 
 Comprehensive documentation is available in the [`docs/`](./docs/) directory:
 
-### Implementation Guides
-
-- **[Stage 2 Enhancements Guide](./docs/stage-2-enhancements-implementation-guide.md)** ⭐ **IMPLEMENTATION REFERENCE**
-  - Implementation guide for Stage 2 enhancements (now complete)
-  - Enhanced WWC UI, subgroup analysis, publication bias assessment, advanced conflict detection, sensitivity analysis
-  - **Note**: All Stage 2 features (core + enhancements) are complete. See master-plan.md for full project details.
-
 ### Reference Documentation
 
 - **[Master Plan](./docs/master-plan.md)**: High-level project architecture and feature breakdown
