@@ -36,4 +36,3 @@ export function formatCI(
 ): string {
   return `[${formatNumber(lower, decimals)}, ${formatNumber(upper, decimals)}]`;
 }
-

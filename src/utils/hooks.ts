@@ -6,17 +6,17 @@ import { useState, useCallback } from 'react';
 
 /**
  * Hook for managing async operations with loading and error states.
- * 
+ *
  * @param operation - Async function to execute
  * @returns Tuple of [isLoading, execute, error]
  *   - isLoading: Boolean indicating if operation is in progress
  *   - execute: Function to execute the operation
  *   - error: Error object if operation failed, null otherwise
- * 
+ *
  * @example
  * ```typescript
  * const [isLoading, runMetaAnalysis, error] = useAsyncOperation(performMetaAnalysis);
- * 
+ *
  * const handleRun = async () => {
  *   const result = await runMetaAnalysis(paperIds);
  *   if (result) {
@@ -53,4 +53,3 @@ export function useAsyncOperation<T, Args extends unknown[]>(
 
   return [isLoading, execute, error];
 }
-

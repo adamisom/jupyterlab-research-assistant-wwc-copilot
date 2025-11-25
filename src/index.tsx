@@ -9,11 +9,7 @@ import { ISettingRegistry } from '@jupyterlab/settingregistry';
 import { ICommandPalette, WidgetTracker } from '@jupyterlab/apputils';
 import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
 
-import {
-  Dialog,
-  showDialog,
-  ReactWidget
-} from '@jupyterlab/apputils';
+import { Dialog, showDialog, ReactWidget } from '@jupyterlab/apputils';
 import { ReadonlyPartialJSONObject } from '@lumino/coreutils';
 import { requestAPI } from './request';
 import { ResearchLibraryPanel } from './widgets/ResearchLibraryPanel';
@@ -207,10 +203,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
         execute: (args: ReadonlyPartialJSONObject) => {
           const paperIds = (args.paperIds as number[]) || [];
           if (paperIds.length < 2) {
-            showError(
-              'Synthesis Workbench',
-              'Please select at least 2 papers'
-            );
+            showError('Synthesis Workbench', 'Please select at least 2 papers');
             return;
           }
           const workbench = new SynthesisWorkbench(paperIds);

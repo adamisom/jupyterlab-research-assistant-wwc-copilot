@@ -17,7 +17,8 @@ const mockCreateElement = jest.fn(() => ({
 
 beforeEach(() => {
   jest.clearAllMocks();
-  document.createElement = mockCreateElement as unknown as typeof document.createElement;
+  document.createElement =
+    mockCreateElement as unknown as typeof document.createElement;
   document.body.appendChild = mockAppendChild;
   document.body.removeChild = mockRemoveChild;
   window.URL.createObjectURL = jest.fn(() => 'blob:mock-url');
@@ -37,9 +38,7 @@ describe('download utilities', () => {
       expect(mockClick).toHaveBeenCalled();
       expect(mockRemoveChild).toHaveBeenCalled();
       expect(window.URL.createObjectURL).toHaveBeenCalledWith(blob);
-      expect(window.URL.revokeObjectURL).toHaveBeenCalledWith(
-        'blob:mock-url'
-      );
+      expect(window.URL.revokeObjectURL).toHaveBeenCalledWith('blob:mock-url');
     });
   });
 
@@ -60,7 +59,8 @@ describe('download utilities', () => {
 
       // Verify blob was created with proper JSON content
       expect(window.URL.createObjectURL).toHaveBeenCalled();
-      const blobCall = (window.URL.createObjectURL as jest.Mock).mock.calls[0][0];
+      const blobCall = (window.URL.createObjectURL as jest.Mock).mock
+        .calls[0][0];
       expect(blobCall).toBeInstanceOf(Blob);
       expect(blobCall.type).toBe('application/json');
     });
@@ -82,7 +82,8 @@ describe('download utilities', () => {
       downloadCSV(csvContent, 'test');
 
       expect(window.URL.createObjectURL).toHaveBeenCalled();
-      const blobCall = (window.URL.createObjectURL as jest.Mock).mock.calls[0][0];
+      const blobCall = (window.URL.createObjectURL as jest.Mock).mock
+        .calls[0][0];
       expect(blobCall).toBeInstanceOf(Blob);
       expect(blobCall.type).toBe('text/csv');
     });
@@ -118,4 +119,3 @@ describe('download utilities', () => {
     });
   });
 });
-

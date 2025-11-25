@@ -19,14 +19,11 @@ export namespace AppEvents {
   /**
    * Dispatch event to open synthesis workbench.
    */
-  export function dispatchOpenSynthesisWorkbench(
-    paperIds: number[]
-  ): void {
+  export function dispatchOpenSynthesisWorkbench(paperIds: number[]): void {
     window.dispatchEvent(
-      new CustomEvent<IOpenSynthesisWorkbenchDetail>(
-        OPEN_SYNTHESIS_WORKBENCH,
-        { detail: { paperIds } }
-      )
+      new CustomEvent<IOpenSynthesisWorkbenchDetail>(OPEN_SYNTHESIS_WORKBENCH, {
+        detail: { paperIds }
+      })
     );
   }
 
@@ -51,15 +48,12 @@ export namespace AppEvents {
   export function onOpenSynthesisWorkbench(
     handler: (detail: IOpenSynthesisWorkbenchDetail) => void
   ): () => void {
-    const listener = ((
-      event: CustomEvent<IOpenSynthesisWorkbenchDetail>
-    ) => {
+    const listener = ((event: CustomEvent<IOpenSynthesisWorkbenchDetail>) => {
       handler(event.detail);
     }) as EventListener;
 
     window.addEventListener(OPEN_SYNTHESIS_WORKBENCH, listener);
-    return () =>
-      window.removeEventListener(OPEN_SYNTHESIS_WORKBENCH, listener);
+    return () => window.removeEventListener(OPEN_SYNTHESIS_WORKBENCH, listener);
   }
 
   /**
@@ -77,4 +71,3 @@ export namespace AppEvents {
     return () => window.removeEventListener(OPEN_WWC_COPILOT, listener);
   }
 }
-

@@ -31,9 +31,7 @@ export const ConflictView: React.FC<ConflictViewProps> = ({ result }) => {
             >
               <div className="jp-jupyterlab-research-assistant-wwc-copilot-conflict-header">
                 <strong>Contradiction #{idx + 1}</strong>
-                <span>
-                  Confidence: {formatPercent(conflict.confidence, 1)}
-                </span>
+                <span>Confidence: {formatPercent(conflict.confidence, 1)}</span>
               </div>
               {conflict.paper1_title && conflict.paper2_title && (
                 <div className="jp-jupyterlab-research-assistant-wwc-copilot-conflict-papers">

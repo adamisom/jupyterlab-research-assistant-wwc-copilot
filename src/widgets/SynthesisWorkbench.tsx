@@ -110,7 +110,9 @@ const SynthesisWorkbenchComponent: React.FC<SynthesisWorkbenchProps> = ({
           }
         ]}
         activeTab={activeTab}
-        onTabChange={(tabId: string) => setActiveTab(tabId as 'meta-analysis' | 'conflicts')}
+        onTabChange={(tabId: string) =>
+          setActiveTab(tabId as 'meta-analysis' | 'conflicts')
+        }
       />
 
       <div className="jp-jupyterlab-research-assistant-wwc-copilot-synthesis-content">

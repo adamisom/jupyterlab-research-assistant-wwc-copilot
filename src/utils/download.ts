@@ -55,4 +55,3 @@ export async function downloadFromURL(
   const blob = await response.blob();
   downloadBlob(blob, filename);
 }
-

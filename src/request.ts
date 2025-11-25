@@ -51,7 +51,7 @@ export async function requestAPI<T>(
     throw new ServerConnection.NetworkError(networkError);
   }
 
-  let dataText = await response.text();
+  const dataText = await response.text();
   let data: unknown = dataText;
 
   if (dataText.length > 0) {

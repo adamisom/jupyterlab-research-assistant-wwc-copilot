@@ -53,8 +53,7 @@ export const WWCCoPilot: React.FC<WWCCoPilotProps> = ({
     runAssessment();
     // Note: assessmentError is handled by the hook's error state
     // We don't need it in dependencies as it's updated by the hook
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [paperId, judgments]);
+  }, [paperId, judgments, executeAssessment]);
 
   // Handle errors separately to avoid dependency issues
   useEffect(() => {
@@ -196,15 +195,11 @@ export const WWCCoPilot: React.FC<WWCCoPilotProps> = ({
             {assessment.overall_attrition !== undefined && (
               <div className="jp-jupyterlab-research-assistant-wwc-copilot-wwc-section">
                 <h4>Attrition</h4>
-                <p>
-                  Overall: {formatPercent(assessment.overall_attrition, 1)}
-                </p>
+                <p>Overall: {formatPercent(assessment.overall_attrition, 1)}</p>
                 {assessment.differential_attrition !== undefined && (
                   <p>
-                    Differential: {formatPercent(
-                      assessment.differential_attrition,
-                      1
-                    )}
+                    Differential:{' '}
+                    {formatPercent(assessment.differential_attrition, 1)}
                   </p>
                 )}
                 {assessment.is_high_attrition !== undefined && (

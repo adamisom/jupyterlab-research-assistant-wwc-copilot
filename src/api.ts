@@ -150,10 +150,7 @@ export async function exportLibrary(
   // Download file
   const blob = await response.blob();
   const { downloadBlob } = await import('./utils/download');
-  downloadBlob(
-    blob,
-    `library.${format === 'bibtex' ? 'bib' : format}`
-  );
+  downloadBlob(blob, `library.${format === 'bibtex' ? 'bib' : format}`);
 }
 
 // WWC Assessment Types and Functions

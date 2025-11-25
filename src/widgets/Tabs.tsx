@@ -28,9 +28,7 @@ export const Tabs: React.FC<TabsProps> = ({
       {tabs.map(tab => (
         <button
           key={tab.id}
-          className={
-            activeTab === tab.id ? activeClassName : inactiveClassName
-          }
+          className={activeTab === tab.id ? activeClassName : inactiveClassName}
           onClick={() => onTabChange(tab.id)}
         >
           {tab.label}
@@ -40,4 +38,3 @@ export const Tabs: React.FC<TabsProps> = ({
     </div>
   );
 };
-

@@ -3,22 +3,18 @@ import { AppEvents } from '../events';
 describe('AppEvents', () => {
   beforeEach(() => {
     // Clear any existing event listeners
-    window.removeEventListener(
-      AppEvents.OPEN_SYNTHESIS_WORKBENCH,
-      () => {}
-    );
+    window.removeEventListener(AppEvents.OPEN_SYNTHESIS_WORKBENCH, () => {});
     window.removeEventListener(AppEvents.OPEN_WWC_COPILOT, () => {});
   });
 
   describe('dispatchOpenSynthesisWorkbench', () => {
     it('should dispatch event with paper IDs', () => {
       const handler = jest.fn();
-      window.addEventListener(
-        AppEvents.OPEN_SYNTHESIS_WORKBENCH,
-        ((event: CustomEvent) => {
-          handler(event.detail);
-        }) as EventListener
-      );
+      window.addEventListener(AppEvents.OPEN_SYNTHESIS_WORKBENCH, ((
+        event: CustomEvent
+      ) => {
+        handler(event.detail);
+      }) as EventListener);
 
       const paperIds = [1, 2, 3];
       AppEvents.dispatchOpenSynthesisWorkbench(paperIds);
@@ -30,12 +26,11 @@ describe('AppEvents', () => {
   describe('dispatchOpenWWCCopilot', () => {
     it('should dispatch event with paper ID and title', () => {
       const handler = jest.fn();
-      window.addEventListener(
-        AppEvents.OPEN_WWC_COPILOT,
-        ((event: CustomEvent) => {
-          handler(event.detail);
-        }) as EventListener
-      );
+      window.addEventListener(AppEvents.OPEN_WWC_COPILOT, ((
+        event: CustomEvent
+      ) => {
+        handler(event.detail);
+      }) as EventListener);
 
       const paperId = 42;
       const paperTitle = 'Test Paper';
@@ -85,4 +80,3 @@ describe('AppEvents', () => {
     });
   });
 });
-

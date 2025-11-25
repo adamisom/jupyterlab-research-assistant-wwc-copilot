@@ -54,7 +54,9 @@ export const DetailView: React.FC<DetailViewProps> = ({ paper, onClose }) => {
             : [])
         ]}
         activeTab={activeTab}
-        onTabChange={(tabId: string) => setActiveTab(tabId as 'overview' | 'study' | 'learning' | 'wwc')}
+        onTabChange={(tabId: string) =>
+          setActiveTab(tabId as 'overview' | 'study' | 'learning' | 'wwc')
+        }
         className="jp-jupyterlab-research-assistant-wwc-copilot-detail-tabs"
         activeClassName="active"
         inactiveClassName=""

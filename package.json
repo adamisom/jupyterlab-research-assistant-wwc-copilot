@@ -157,6 +157,16 @@
                         "regex": "^I[A-Z]",
                         "match": true
                     }
+                },
+                {
+                    "selector": "interface",
+                    "filter": {
+                        "regex": "Props$",
+                        "match": true
+                    },
+                    "format": [
+                        "PascalCase"
+                    ]
                 }
             ],
             "@typescript-eslint/no-unused-vars": [
