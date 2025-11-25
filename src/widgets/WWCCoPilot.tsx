@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   runWWCAssessment,
   IWWCAssessment,
@@ -14,7 +14,12 @@ interface WWCCoPilotProps {
   onClose?: () => void;
 }
 
-type WizardStep = 'randomization' | 'attrition' | 'baseline' | 'adjustment' | 'review';
+type WizardStep =
+  | 'randomization'
+  | 'attrition'
+  | 'baseline'
+  | 'adjustment'
+  | 'review';
 
 export const WWCCoPilot: React.FC<WWCCoPilotProps> = ({
   paperId,
@@ -23,7 +28,6 @@ export const WWCCoPilot: React.FC<WWCCoPilotProps> = ({
 }) => {
   const [currentStep, setCurrentStep] = useState<WizardStep>('randomization');
   const [assessment, setAssessment] = useState<IWWCAssessment | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
   const [judgments, setJudgments] = useState<
     IWWCAssessmentRequest['judgments']
   >({
@@ -32,7 +36,13 @@ export const WWCCoPilot: React.FC<WWCCoPilotProps> = ({
     randomization_documented: undefined
   });
 
-  const steps: WizardStep[] = ['randomization', 'attrition', 'baseline', 'adjustment', 'review'];
+  const steps: WizardStep[] = [
+    'randomization',
+    'attrition',
+    'baseline',
+    'adjustment',
+    'review'
+  ];
   const stepLabels = {
     randomization: 'Randomization',
     attrition: 'Attrition',
@@ -50,8 +60,12 @@ export const WWCCoPilot: React.FC<WWCCoPilotProps> = ({
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        setJudgments(parsed.judgments || judgments);
-        setCurrentStep(parsed.currentStep || 'randomization');
+        if (parsed.judgments) {
+          setJudgments(parsed.judgments);
+        }
+        if (parsed.currentStep) {
+          setCurrentStep(parsed.currentStep);
+        }
       } catch (e) {
         console.error('Failed to load saved assessment:', e);
       }
@@ -59,10 +73,13 @@ export const WWCCoPilot: React.FC<WWCCoPilotProps> = ({
   }, [paperId]);
 
   const saveProgress = () => {
-    localStorage.setItem(`wwc-assessment-${paperId}`, JSON.stringify({
-      judgments,
-      currentStep
-    }));
+    localStorage.setItem(
+      `wwc-assessment-${paperId}`,
+      JSON.stringify({
+        judgments,
+        currentStep
+      })
+    );
   };
 
   const runAssessmentWithRequest = async (
@@ -76,35 +93,23 @@ export const WWCCoPilot: React.FC<WWCCoPilotProps> = ({
     return await runWWCAssessment(request);
   };
 
-  const [assessmentError, executeAssessment] = useAsyncOperation(
-    runAssessmentWithRequest
-  );
+  const [isAssessmentLoading, executeAssessment, assessmentError] =
+    useAsyncOperation(runAssessmentWithRequest);
 
-  const runAssessment = async () => {
-    setIsLoading(true);
-    try {
-      const result = await executeAssessment(paperId, judgments);
-      if (result) {
-        setAssessment(result);
-        saveProgress();
-      }
-    } catch (err) {
-      showError(
-        'WWC Assessment Error',
-        err instanceof Error ? err.message : 'Unknown error',
-        err instanceof Error ? err : undefined
-      );
-    } finally {
-      setIsLoading(false);
+  const runAssessment = useCallback(async () => {
+    const result = await executeAssessment(paperId, judgments);
+    if (result) {
+      setAssessment(result);
+      saveProgress();
     }
-  };
+  }, [paperId, judgments, executeAssessment]);
 
   // Auto-run assessment when judgments change (except on initial load)
   useEffect(() => {
     if (currentStep !== 'randomization') {
       runAssessment();
     }
-  }, [judgments, currentStep]);
+  }, [judgments, currentStep, runAssessment]);
 
   // Handle errors
   useEffect(() => {
@@ -185,7 +190,7 @@ export const WWCCoPilot: React.FC<WWCCoPilotProps> = ({
         </div>
       </div>
 
-      {isLoading && (
+      {isAssessmentLoading && (
         <div className="jp-jupyterlab-research-assistant-wwc-copilot-loading">
           Running assessment...
         </div>
@@ -196,7 +201,7 @@ export const WWCCoPilot: React.FC<WWCCoPilotProps> = ({
         {currentStep === 'randomization' && (
           <RandomizationStep
             randomizationDocumented={judgments.randomization_documented}
-            onChange={(value) => {
+            onChange={value => {
               setJudgments({ ...judgments, randomization_documented: value });
               saveProgress();
             }}
@@ -205,21 +210,22 @@ export const WWCCoPilot: React.FC<WWCCoPilotProps> = ({
         {currentStep === 'attrition' && (
           <AttritionStep
             boundary={judgments.chosen_attrition_boundary || 'cautious'}
-            onChange={(value) => {
+            onChange={value => {
               setJudgments({ ...judgments, chosen_attrition_boundary: value });
               saveProgress();
             }}
             assessment={assessment}
           />
         )}
-        {currentStep === 'baseline' && (
-          <BaselineStep assessment={assessment} />
-        )}
+        {currentStep === 'baseline' && <BaselineStep assessment={assessment} />}
         {currentStep === 'adjustment' && (
           <AdjustmentStep
             adjustmentValid={judgments.adjustment_strategy_is_valid}
-            onChange={(value) => {
-              setJudgments({ ...judgments, adjustment_strategy_is_valid: value });
+            onChange={value => {
+              setJudgments({
+                ...judgments,
+                adjustment_strategy_is_valid: value
+              });
               saveProgress();
             }}
           />
@@ -229,7 +235,7 @@ export const WWCCoPilot: React.FC<WWCCoPilotProps> = ({
             assessment={assessment}
             judgments={judgments}
             onRunAssessment={runAssessment}
-            isLoading={isLoading}
+            isLoading={isAssessmentLoading}
             getRatingColor={getRatingColor}
           />
         )}
@@ -254,10 +260,10 @@ export const WWCCoPilot: React.FC<WWCCoPilotProps> = ({
         ) : (
           <button
             onClick={runAssessment}
-            disabled={isLoading}
+            disabled={isAssessmentLoading}
             className="jp-jupyterlab-research-assistant-wwc-copilot-button"
           >
-            {isLoading ? 'Running...' : 'Run Assessment'}
+            {isAssessmentLoading ? 'Running...' : 'Run Assessment'}
           </button>
         )}
       </div>
@@ -274,8 +280,12 @@ const RandomizationStep: React.FC<{
     <h3>Step 1: Randomization</h3>
     <p>Was randomization properly documented in the study?</p>
     <select
-      value={randomizationDocumented === undefined ? '' : String(randomizationDocumented)}
-      onChange={(e) => onChange(e.target.value === 'true')}
+      value={
+        randomizationDocumented === undefined
+          ? ''
+          : String(randomizationDocumented)
+      }
+      onChange={e => onChange(e.target.value === 'true')}
       className="jp-jupyterlab-research-assistant-wwc-copilot-select"
     >
       <option value="">Not specified</option>
@@ -299,14 +309,15 @@ const AttritionStep: React.FC<{
       <label>Attrition Boundary:</label>
       <select
         value={boundary}
-        onChange={(e) => onChange(e.target.value as 'cautious' | 'optimistic')}
+        onChange={e => onChange(e.target.value as 'cautious' | 'optimistic')}
         className="jp-jupyterlab-research-assistant-wwc-copilot-select"
       >
         <option value="cautious">Cautious (default)</option>
         <option value="optimistic">Optimistic</option>
       </select>
       <p className="jp-jupyterlab-research-assistant-wwc-copilot-wwc-help">
-        Choose based on whether the intervention could affect who stays in the study.
+        Choose based on whether the intervention could affect who stays in the
+        study.
       </p>
     </div>
     {assessment && (
@@ -316,13 +327,17 @@ const AttritionStep: React.FC<{
           <p>Overall: {formatPercent(assessment.overall_attrition, 1)}</p>
         )}
         {assessment.differential_attrition !== undefined && (
-          <p>Differential: {formatPercent(assessment.differential_attrition, 1)}</p>
+          <p>
+            Differential: {formatPercent(assessment.differential_attrition, 1)}
+          </p>
         )}
         {assessment.is_high_attrition !== undefined && (
           <p>
             Status:{' '}
             <strong>
-              {assessment.is_high_attrition ? 'High Attrition' : 'Low Attrition'}
+              {assessment.is_high_attrition
+                ? 'High Attrition'
+                : 'Low Attrition'}
             </strong>
           </p>
         )}
@@ -331,13 +346,16 @@ const AttritionStep: React.FC<{
   </div>
 );
 
-const BaselineStep: React.FC<{ assessment: IWWCAssessment | null }> = ({ assessment }) => (
+const BaselineStep: React.FC<{ assessment: IWWCAssessment | null }> = ({
+  assessment
+}) => (
   <div className="jp-jupyterlab-research-assistant-wwc-copilot-wwc-step-content">
     <h3>Step 3: Baseline Equivalence</h3>
     {assessment?.baseline_effect_size !== undefined ? (
       <div className="jp-jupyterlab-research-assistant-wwc-copilot-wwc-section">
         <p>
-          Effect Size (Cohen's d): {formatNumber(assessment.baseline_effect_size, 3)}
+          Effect Size (Cohen's d):{' '}
+          {formatNumber(assessment.baseline_effect_size, 3)}
         </p>
         {assessment.baseline_equivalence_satisfied !== undefined && (
           <p>
@@ -351,7 +369,9 @@ const BaselineStep: React.FC<{ assessment: IWWCAssessment | null }> = ({ assessm
         )}
       </div>
     ) : (
-      <p>Baseline equivalence will be calculated after running the assessment.</p>
+      <p>
+        Baseline equivalence will be calculated after running the assessment.
+      </p>
     )}
   </div>
 );
@@ -365,7 +385,7 @@ const AdjustmentStep: React.FC<{
     <p>Was a valid statistical adjustment used?</p>
     <select
       value={adjustmentValid === undefined ? '' : String(adjustmentValid)}
-      onChange={(e) => onChange(e.target.value === 'true')}
+      onChange={e => onChange(e.target.value === 'true')}
       className="jp-jupyterlab-research-assistant-wwc-copilot-select"
     >
       <option value="">Not applicable</option>
@@ -384,15 +404,31 @@ const ReviewStep: React.FC<{
   onRunAssessment: () => void;
   isLoading: boolean;
   getRatingColor: (rating: string) => string;
-}> = ({ assessment, judgments, onRunAssessment, isLoading, getRatingColor }) => (
+}> = ({
+  assessment,
+  judgments,
+  onRunAssessment,
+  isLoading,
+  getRatingColor
+}) => (
   <div className="jp-jupyterlab-research-assistant-wwc-copilot-wwc-step-content">
     <h3>Step 5: Review & Finalize</h3>
     <div className="jp-jupyterlab-research-assistant-wwc-copilot-wwc-judgments">
       <h4>Your Judgments:</h4>
       <ul>
-        <li>Attrition Boundary: {judgments.chosen_attrition_boundary || 'cautious'}</li>
-        <li>Randomization Documented: {judgments.randomization_documented?.toString() || 'Not specified'}</li>
-        <li>Adjustment Valid: {judgments.adjustment_strategy_is_valid?.toString() || 'Not applicable'}</li>
+        <li>
+          Attrition Boundary:{' '}
+          {judgments.chosen_attrition_boundary || 'cautious'}
+        </li>
+        <li>
+          Randomization Documented:{' '}
+          {judgments.randomization_documented?.toString() || 'Not specified'}
+        </li>
+        <li>
+          Adjustment Valid:{' '}
+          {judgments.adjustment_strategy_is_valid?.toString() ||
+            'Not applicable'}
+        </li>
       </ul>
     </div>
     {assessment && (
