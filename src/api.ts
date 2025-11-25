@@ -272,11 +272,19 @@ export async function detectConflicts(
 }
 
 // Subgroup Analysis Types and Functions
+export interface ISubgroupComparison {
+  q_between: number | null;
+  df: number | null;
+  p_value: number | null;
+  interpretation: string;
+}
+
 export interface ISubgroupAnalysisResult {
   subgroups: Record<string, IMetaAnalysisResult>;
   overall: IMetaAnalysisResult;
   subgroup_variable: string;
   n_subgroups: number;
+  subgroup_comparison: ISubgroupComparison;
 }
 
 export async function performSubgroupAnalysis(
