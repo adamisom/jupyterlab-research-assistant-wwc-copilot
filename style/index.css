@@ -97,6 +97,7 @@
 
 .jp-jupyterlab-research-assistant-wwc-copilot-button:hover:not(:disabled) {
   background-color: var(--jp-brand-color0);
+  transition: background-color 0.2s ease-in-out;
 }
 
 /* Paper Card Styles */
@@ -108,16 +109,36 @@
 
 .jp-jupyterlab-research-assistant-wwc-copilot-paper-card {
   padding: 12px;
-  border: 1px solid var(--jp-border-color1);
-  border-radius: 4px;
-  background-color: var(--jp-layout-color1);
+  margin-bottom: 8px;
+  background-color: var(--jp-layout-color0);
+  border-left: 4px solid var(--jp-brand-color2);
+  border-radius: var(--jp-border-radius);
+  box-shadow: var(--jp-elevation-z1);
+  transition: all 0.2s ease-in-out;
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-paper-card:hover {
+  cursor: pointer;
+  background-color: var(--jp-layout-color2);
+  box-shadow: var(--jp-elevation-z4);
+  transform: translateY(-2px);
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-paper-card.jp-mod-selected {
+  border-left-color: var(--jp-brand-color1);
+  background-color: var(--jp-layout-color2);
 }
 
 .jp-jupyterlab-research-assistant-wwc-copilot-paper-title {
   margin: 0 0 8px;
-  font-size: var(--jp-ui-font-size1);
+  font-size: var(--jp-ui-font-size2);
   font-weight: 600;
-  color: var(--jp-content-font-color1);
+  color: var(--jp-ui-font-color1);
+  line-height: 1.3;
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-paper-title.jp-mod-clickable {
+  cursor: pointer;
 }
 
 .jp-jupyterlab-research-assistant-wwc-copilot-paper-meta {
@@ -140,6 +161,12 @@
   font-size: var(--jp-ui-font-size0);
   color: var(--jp-content-font-color2);
   line-height: 1.4;
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-paper-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
 }
 
 .jp-jupyterlab-research-assistant-wwc-copilot-import-button {
@@ -362,8 +389,8 @@
 
 /* Multi-Select Styles */
 .jp-jupyterlab-research-assistant-wwc-copilot-paper-card-selected {
-  border-color: var(--jp-brand-color1);
-  background-color: var(--jp-brand-color3);
+  border-left-color: var(--jp-brand-color1);
+  background-color: var(--jp-layout-color2);
 }
 
 .jp-jupyterlab-research-assistant-wwc-copilot-paper-card-checkbox {
@@ -497,9 +524,22 @@
 
 .jp-jupyterlab-research-assistant-wwc-copilot-wwc-rating {
   padding: 12px;
-  border-radius: 4px;
+  border-radius: var(--jp-border-radius);
   margin-bottom: 16px;
   text-align: center;
+  color: white;
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-wwc-rating.jp-type-meets-standards {
+  background-color: var(--jp-success-color1);
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-wwc-rating.jp-type-meets-with-reservations {
+  background-color: var(--jp-warn-color1);
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-wwc-rating.jp-type-does-not-meet {
+  background-color: var(--jp-error-color1);
 }
 
 .jp-jupyterlab-research-assistant-wwc-copilot-wwc-section {
@@ -622,8 +662,9 @@
   gap: 12px;
   padding: 16px;
   background-color: var(--jp-layout-color1);
-  border-radius: 4px;
+  border-radius: var(--jp-border-radius);
   border: 1px solid var(--jp-border-color1);
+  box-shadow: var(--jp-elevation-z2);
 }
 
 .jp-jupyterlab-research-assistant-wwc-copilot-meta-analysis-stat {
@@ -651,8 +692,14 @@
 .jp-jupyterlab-research-assistant-wwc-copilot-meta-analysis-plot {
   padding: 16px;
   background-color: var(--jp-layout-color1);
-  border-radius: 4px;
+  border-radius: var(--jp-border-radius);
   border: 1px solid var(--jp-border-color1);
+  box-shadow: var(--jp-elevation-z2);
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-plot-image {
+  max-width: 100%;
+  height: auto;
 }
 
 .jp-jupyterlab-research-assistant-wwc-copilot-meta-analysis-plot h4 {
@@ -1057,12 +1104,6 @@
   color: var(--jp-content-font-color1);
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-sensitivity-influence {
-  padding: 16px;
-  background-color: var(--jp-layout-color1);
-  border-radius: 4px;
-  border: 1px solid var(--jp-border-color1);
-}
 
 .jp-jupyterlab-research-assistant-wwc-copilot-sensitivity-influence h4 {
   margin: 0 0 12px;
@@ -1110,4 +1151,73 @@
 .jp-jupyterlab-research-assistant-wwc-copilot-finding-item li {
   margin-bottom: 4px;
   line-height: 1.4;
+}
+
+/* WWC Badge Styles */
+.jp-jupyterlab-research-assistant-wwc-copilot-wwcBadge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  margin-top: 8px;
+  text-transform: uppercase;
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-wwcBadge.jp-type-meets-standards {
+  background-color: var(--jp-success-color2);
+  color: var(--jp-success-color0);
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-wwcBadge.jp-type-meets-with-reservations {
+  background-color: var(--jp-warn-color2);
+  color: var(--jp-warn-color0);
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-wwcBadge.jp-type-does-not-meet {
+  background-color: var(--jp-error-color2);
+  color: var(--jp-error-color0);
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-wwcBadge.jp-type-not-assessed {
+  background-color: var(--jp-layout-color3);
+  color: var(--jp-ui-font-color2);
+}
+
+/* Utility Classes */
+.jp-jupyterlab-research-assistant-wwc-copilot-file-input {
+  display: none;
+}
+
+.jp-mod-file-upload-label {
+  display: inline-block;
+  cursor: pointer;
+}
+
+.jp-mod-high-difference {
+  color: var(--jp-error-color1);
+}
+
+/* Add transitions to tabs */
+.jp-jupyterlab-research-assistant-wwc-copilot-tab {
+  transition: all 0.2s ease-in-out;
+}
+
+/* Add elevation to containers */
+.jp-jupyterlab-research-assistant-wwc-copilot-meta-analysis-studies {
+  padding: 16px;
+  background-color: var(--jp-layout-color1);
+  border-radius: var(--jp-border-radius);
+  border: 1px solid var(--jp-border-color1);
+  box-shadow: var(--jp-elevation-z2);
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-sensitivity-overall,
+.jp-jupyterlab-research-assistant-wwc-copilot-sensitivity-loo,
+.jp-jupyterlab-research-assistant-wwc-copilot-sensitivity-influence {
+  padding: 16px;
+  background-color: var(--jp-layout-color1);
+  border-radius: var(--jp-border-radius);
+  border: 1px solid var(--jp-border-color1);
+  box-shadow: var(--jp-elevation-z2);
 }

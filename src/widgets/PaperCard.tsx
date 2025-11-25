@@ -36,9 +36,10 @@ export const PaperCard: React.FC<PaperCardProps> = ({
         </div>
       )}
       <h3
-        className="jp-jupyterlab-research-assistant-wwc-copilot-paper-title"
+        className={`jp-jupyterlab-research-assistant-wwc-copilot-paper-title ${
+          onViewDetails ? 'jp-mod-clickable' : ''
+        }`}
         onClick={onViewDetails}
-        style={{ cursor: onViewDetails ? 'pointer' : 'default' }}
       >
         {paper.title}
       </h3>
@@ -65,7 +66,7 @@ export const PaperCard: React.FC<PaperCardProps> = ({
           {paper.abstract.length > 200 ? '...' : ''}
         </div>
       )}
-      <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
+      <div className="jp-jupyterlab-research-assistant-wwc-copilot-paper-actions">
         {onViewDetails && (
           <button
             onClick={onViewDetails}

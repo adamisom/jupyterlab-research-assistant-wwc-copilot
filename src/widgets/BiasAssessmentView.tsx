@@ -55,7 +55,7 @@ export const BiasAssessmentView: React.FC<BiasAssessmentViewProps> = ({
             <img
               src={`data:image/png;base64,${result.funnel_plot}`}
               alt="Funnel Plot"
-              style={{ maxWidth: '100%', height: 'auto' }}
+              className="jp-jupyterlab-research-assistant-wwc-copilot-plot-image"
             />
           </div>
         </div>

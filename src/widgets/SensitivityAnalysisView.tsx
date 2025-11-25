@@ -45,12 +45,11 @@ export const SensitivityAnalysisView: React.FC<
                   <td>{formatNumber(loo.pooled_effect, 3)}</td>
                   <td>{formatCI(loo.ci_lower, loo.ci_upper, 3)}</td>
                   <td
-                    style={{
-                      color:
-                        Math.abs(loo.difference_from_overall) > 0.2
-                          ? '#f44336'
-                          : 'inherit'
-                    }}
+                    className={
+                      Math.abs(loo.difference_from_overall) > 0.2
+                        ? 'jp-mod-high-difference'
+                        : ''
+                    }
                   >
                     {loo.difference_from_overall > 0 ? '+' : ''}
                     {formatNumber(loo.difference_from_overall, 3)}

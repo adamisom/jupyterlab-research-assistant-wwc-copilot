@@ -182,13 +182,12 @@ export const LibraryTab: React.FC = () => {
           type="file"
           accept=".pdf,application/pdf"
           onChange={handleFileSelect}
-          style={{ display: 'none' }}
+          className="jp-jupyterlab-research-assistant-wwc-copilot-file-input"
           id="pdf-upload-input"
         />
         <label
           htmlFor="pdf-upload-input"
-          className="jp-jupyterlab-research-assistant-wwc-copilot-button"
-          style={{ display: 'inline-block', cursor: 'pointer' }}
+          className="jp-jupyterlab-research-assistant-wwc-copilot-button jp-mod-file-upload-label"
         >
           {isUploading ? 'Uploading...' : 'Upload PDF'}
         </label>

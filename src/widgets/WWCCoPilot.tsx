@@ -142,14 +142,14 @@ export const WWCCoPilot: React.FC<WWCCoPilotProps> = ({
     saveProgress();
   };
 
-  const getRatingColor = (rating: string) => {
+  const getRatingColorClass = (rating: string) => {
     if (rating.includes('Without Reservations')) {
-      return '#4caf50';
-    } // Green
+      return 'jp-type-meets-standards';
+    }
     if (rating.includes('With Reservations')) {
-      return '#ff9800';
-    } // Orange
-    return '#f44336'; // Red
+      return 'jp-type-meets-with-reservations';
+    }
+    return 'jp-type-does-not-meet';
   };
 
   return (
@@ -236,7 +236,7 @@ export const WWCCoPilot: React.FC<WWCCoPilotProps> = ({
             judgments={judgments}
             onRunAssessment={runAssessment}
             isLoading={isAssessmentLoading}
-            getRatingColor={getRatingColor}
+            getRatingColorClass={getRatingColorClass}
           />
         )}
       </div>
@@ -407,13 +407,13 @@ const ReviewStep: React.FC<{
   judgments: IWWCAssessmentRequest['judgments'];
   onRunAssessment: () => void;
   isLoading: boolean;
-  getRatingColor: (rating: string) => string;
+  getRatingColorClass: (rating: string) => string;
 }> = ({
   assessment,
   judgments,
   onRunAssessment,
   isLoading,
-  getRatingColor
+  getRatingColorClass
 }) => (
   <div className="jp-jupyterlab-research-assistant-wwc-copilot-wwc-step-content">
     <h3>Step 5: Review & Finalize</h3>
@@ -439,14 +439,7 @@ const ReviewStep: React.FC<{
       <div className="jp-jupyterlab-research-assistant-wwc-copilot-wwc-results">
         <h4>Final Rating</h4>
         <div
-          className="jp-jupyterlab-research-assistant-wwc-copilot-wwc-rating"
-          style={{
-            backgroundColor: getRatingColor(assessment.final_rating),
-            color: 'white',
-            padding: '12px',
-            borderRadius: '4px',
-            marginBottom: '16px'
-          }}
+          className={`jp-jupyterlab-research-assistant-wwc-copilot-wwc-rating ${getRatingColorClass(assessment.final_rating)}`}
         >
           <strong>Final Rating: {assessment.final_rating}</strong>
         </div>

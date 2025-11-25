@@ -1,0 +1,97 @@
+/*
+|-----------------------------------------------------------------------------|
+| Copyright (c) 2025, Your Name
+| Distributed under the terms of the Modified BSD License.
+|-----------------------------------------------------------------------------|
+*/
+
+/* Main panel styling */
+.jp-ResearchLibrary-panel {
+  padding: 8px;
+  background-color: var(--jp-layout-color1);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Toolbar styling */
+.jp-ResearchLibrary-toolbar {
+  flex: 0 0 auto;
+  border-bottom: var(--jp-border-width) solid var(--jp-border-color2);
+  padding: 4px;
+}
+
+/* Scroll container for the paper list */
+.jp-ResearchLibrary-paperListContainer {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 8px 4px 8px 8px;
+}
+
+/* Styling for each paper card in the list */
+.jp-ResearchLibrary-paperCard {
+  padding: 12px;
+  margin-bottom: 8px;
+  background-color: var(--jp-layout-color0);
+  border-left: 4px solid var(--jp-brand-color2);
+  border-radius: var(--jp-border-radius);
+  box-shadow: var(--jp-elevation-z1);
+  transition: all 0.2s ease-in-out;
+}
+
+.jp-ResearchLibrary-paperCard:hover {
+  cursor: pointer;
+  background-color: var(--jp-layout-color2);
+  box-shadow: var(--jp-elevation-z4);
+  transform: translateY(-2px);
+}
+
+.jp-ResearchLibrary-paperCard.jp-mod-selected {
+  border-left-color: var(--jp-brand-color1);
+  background-color: var(--jp-layout-color2);
+}
+
+/* Title of the paper */
+.jp-ResearchLibrary-paperTitle {
+  font-size: var(--jp-ui-font-size2);
+  font-weight: 600;
+  color: var(--jp-ui-font-color1);
+  margin-bottom: 4px;
+  line-height: 1.3;
+}
+
+/* Authors and year */
+.jp-ResearchLibrary-paperMeta {
+  font-size: var(--jp-ui-font-size0);
+  color: var(--jp-ui-font-color2);
+}
+
+/* WWC Status Badge */
+.jp-ResearchLibrary-wwcBadge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  margin-top: 8px;
+  text-transform: uppercase;
+}
+
+.jp-ResearchLibrary-wwcBadge.jp-type-meets-standards {
+  background-color: var(--jp-success-color2);
+  color: var(--jp-success-color0);
+}
+
+.jp-ResearchLibrary-wwcBadge.jp-type-meets-with-reservations {
+  background-color: var(--jp-warn-color2);
+  color: var(--jp-warn-color0);
+}
+
+.jp-ResearchLibrary-wwcBadge.jp-type-does-not-meet {
+  background-color: var(--jp-error-color2);
+  color: var(--jp-error-color0);
+}
+
+.jp-ResearchLibrary-wwcBadge.jp-type-not-assessed {
+  background-color: var(--jp-layout-color3);
+  color: var(--jp-ui-font-color2);
+}

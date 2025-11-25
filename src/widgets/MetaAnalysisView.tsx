@@ -47,7 +47,7 @@ export const MetaAnalysisView: React.FC<MetaAnalysisViewProps> = ({
           <img
             src={`data:image/png;base64,${result.forest_plot}`}
             alt="Forest Plot"
-            style={{ maxWidth: '100%', height: 'auto' }}
+            className="jp-jupyterlab-research-assistant-wwc-copilot-plot-image"
           />
         </div>
       )}

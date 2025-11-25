@@ -1,0 +1,98 @@
+/*
+|-----------------------------------------------------------------------------|
+| Copyright (c) 2025, Your Name
+| Distributed under the terms of the Modified BSD License.
+|-----------------------------------------------------------------------------|
+*/
+
+/* Main workbench area */
+.jp-SynthesisWorkbench {
+  padding: 16px;
+  background-color: var(--jp-layout-color1);
+  overflow-y: auto;
+}
+
+/* Container for a section of the workbench */
+.jp-SynthesisWorkbench-section {
+  margin-bottom: 24px;
+}
+
+.jp-SynthesisWorkbench-sectionTitle {
+  font-size: var(--jp-content-font-size3);
+  font-weight: 500;
+  border-bottom: var(--jp-border-width) solid var(--jp-border-color2);
+  padding-bottom: 8px;
+  margin-bottom: 16px;
+}
+
+/* Grid for stat cards */
+.jp-SynthesisWorkbench-statGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 16px;
+}
+
+/* Cards for displaying key stats (e.g., effect size) */
+.jp-SynthesisWorkbench-statCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background-color: var(--jp-layout-color0);
+  border-radius: var(--jp-border-radius);
+  box-shadow: var(--jp-elevation-z2);
+  text-align: center;
+}
+
+.jp-SynthesisWorkbench-statValue {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--jp-brand-color1);
+}
+
+.jp-SynthesisWorkbench-statLabel {
+  font-size: 12px;
+  color: var(--jp-ui-font-color2);
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+/* Container for the forest plot */
+.jp-SynthesisWorkbench-forestPlotContainer {
+  background-color: white; /* Plots often look best on a white background */
+  padding: 24px;
+  border-radius: var(--jp-border-radius);
+  margin-top: 16px;
+  box-shadow: var(--jp-elevation-z2);
+}
+
+/* Styling for the WWC Co-Pilot checklist */
+.jp-WWCCoPilot-checklistItem {
+  display: flex;
+  align-items: center;
+  padding: 12px 8px;
+  border-bottom: var(--jp-border-width) solid var(--jp-border-color2);
+  transition: background-color 0.2s ease;
+}
+
+.jp-WWCCoPilot-checklistItem:hover {
+  background-color: var(--jp-layout-color2);
+}
+
+.jp-WWCCoPilot-checklistItem-icon {
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.jp-WWCCoPilot-checklistItem-text {
+  flex-grow: 1;
+}
+
+.jp-WWCCoPilot-checklistItem.jp-mod-checked .jp-WWCCoPilot-checklistItem-icon {
+  color: var(--jp-success-color1);
+}
+
+.jp-WWCCoPilot-checklistItem.jp-mod-unchecked .jp-WWCCoPilot-checklistItem-icon {
+  color: var(--jp-ui-font-color3);
+}
