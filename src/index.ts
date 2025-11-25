@@ -8,9 +8,16 @@ import { ISettingRegistry } from '@jupyterlab/settingregistry';
 import { ICommandPalette, WidgetTracker } from '@jupyterlab/apputils';
 import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
 
-import { Dialog, showDialog } from '@jupyterlab/apputils';
+import {
+  Dialog,
+  showDialog,
+  ReactWidget,
+  showErrorMessage
+} from '@jupyterlab/apputils';
 import { requestAPI } from './request';
 import { ResearchLibraryPanel } from './widgets/ResearchLibraryPanel';
+import { SynthesisWorkbench } from './widgets/SynthesisWorkbench';
+import { WWCCoPilot } from './widgets/WWCCoPilot';
 import { exportLibrary, importPDF } from './api';
 import { showError, showSuccess } from './utils/notifications';
 
@@ -68,6 +75,11 @@ const plugin: JupyterFrontEndPlugin<void> = {
       namespace: 'research-library'
     });
 
+    // Create and track synthesis workbench widgets
+    const synthesisTracker = new WidgetTracker({
+      namespace: 'synthesis-workbench'
+    });
+
     const createPanel = () => {
       const panel = new ResearchLibraryPanel();
       tracker.add(panel);
@@ -80,6 +92,10 @@ const plugin: JupyterFrontEndPlugin<void> = {
       restorer.restore(tracker, {
         command: 'jupyterlab-research-assistant-wwc-copilot:open-library',
         name: () => 'research-library'
+      });
+      restorer.restore(synthesisTracker, {
+        command: 'jupyterlab-research-assistant-wwc-copilot:open-synthesis',
+        name: () => 'synthesis-workbench'
       });
     }
 
@@ -177,6 +193,77 @@ const plugin: JupyterFrontEndPlugin<void> = {
       }
     );
 
+    // Register synthesis workbench command
+    app.commands.addCommand(
+      'jupyterlab-research-assistant-wwc-copilot:open-synthesis',
+      {
+        label: 'Open Synthesis Workbench',
+        execute: (args: any) => {
+          const paperIds = (args.paperIds as number[]) || [];
+          if (paperIds.length < 2) {
+            showErrorMessage(
+              'Synthesis Workbench',
+              'Please select at least 2 papers'
+            );
+            return;
+          }
+          const workbench = new SynthesisWorkbench(paperIds);
+          synthesisTracker.add(workbench);
+          app.shell.add(workbench, 'main');
+          app.shell.activateById(workbench.id);
+        }
+      }
+    );
+
+    // Register WWC Co-Pilot command
+    app.commands.addCommand(
+      'jupyterlab-research-assistant-wwc-copilot:open-wwc',
+      {
+        label: 'Open WWC Co-Pilot',
+        execute: (args: any) => {
+          const paperId = args.paperId as number;
+          const paperTitle = (args.paperTitle as string) || 'Paper';
+          if (!paperId) {
+            showErrorMessage('WWC Co-Pilot', 'Paper ID is required');
+            return;
+          }
+
+          // Create a widget for WWC assessment
+          const wwcWidget = ReactWidget.create(
+            <WWCCoPilot
+              paperId={paperId}
+              paperTitle={paperTitle}
+              onClose={() => {
+                // Close the widget
+                const widget = app.shell.currentWidget;
+                if (widget && widget.id === 'wwc-copilot') {
+                  widget.close();
+                }
+              }}
+            />
+          );
+          wwcWidget.id = 'wwc-copilot';
+          wwcWidget.title.label = `WWC Co-Pilot: ${paperTitle}`;
+          wwcWidget.title.caption = 'WWC Quality Assessment';
+          wwcWidget.title.closable = true;
+
+          app.shell.add(wwcWidget, 'main');
+          app.shell.activateById(wwcWidget.id);
+        }
+      }
+    );
+
+    // Listen for custom event from LibraryTab to open synthesis workbench
+    window.addEventListener('open-synthesis-workbench', ((event: CustomEvent) => {
+      const paperIds = event.detail?.paperIds as number[];
+      if (paperIds && paperIds.length >= 2) {
+        app.commands.execute(
+          'jupyterlab-research-assistant-wwc-copilot:open-synthesis',
+          { paperIds }
+        );
+      }
+    }) as EventListener);
+
     // Add to command palette
     if (palette) {
       palette.addItem({
@@ -189,6 +276,14 @@ const plugin: JupyterFrontEndPlugin<void> = {
       });
       palette.addItem({
         command: 'jupyterlab-research-assistant-wwc-copilot:export-library',
+        category: 'Research Assistant'
+      });
+      palette.addItem({
+        command: 'jupyterlab-research-assistant-wwc-copilot:open-synthesis',
+        category: 'Research Assistant'
+      });
+      palette.addItem({
+        command: 'jupyterlab-research-assistant-wwc-copilot:open-wwc',
         category: 'Research Assistant'
       });
     }
