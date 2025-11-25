@@ -201,7 +201,13 @@ const plugin: JupyterFrontEndPlugin<void> = {
       {
         label: 'Open Synthesis Workbench',
         execute: (args: ReadonlyPartialJSONObject) => {
-          const paperIds = (args.paperIds as number[]) || [];
+          const paperIds = (args?.paperIds as number[]) || [];
+          // Silently return if called without paperIds (e.g., from command palette or restorer)
+          // Only show error if explicitly called with invalid paperIds (length 1)
+          if (paperIds.length === 0) {
+            // Called without arguments - likely from palette or restorer, don't show error
+            return;
+          }
           if (paperIds.length < 2) {
             showError('Synthesis Workbench', 'Please select at least 2 papers');
             return;
