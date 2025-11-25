@@ -270,3 +270,148 @@ export async function detectConflicts(
 
   return handleAPIResponse(response, 'Conflict detection failed');
 }
+
+// Subgroup Analysis Types and Functions
+export interface ISubgroupAnalysisResult {
+  subgroups: Record<string, IMetaAnalysisResult>;
+  overall: IMetaAnalysisResult;
+  subgroup_variable: string;
+  n_subgroups: number;
+}
+
+export async function performSubgroupAnalysis(
+  paperIds: number[],
+  subgroupVariable: string,
+  outcomeName?: string
+): Promise<ISubgroupAnalysisResult> {
+  const response = await requestAPI<IAPIResponse<ISubgroupAnalysisResult>>(
+    'subgroup-analysis',
+    {
+      method: 'POST',
+      body: JSON.stringify({
+        paper_ids: paperIds,
+        subgroup_variable: subgroupVariable,
+        outcome_name: outcomeName
+      })
+    }
+  );
+
+  if (response.status === 'error') {
+    throw new Error(response.message || 'Subgroup analysis failed');
+  }
+
+  if (!response.data) {
+    throw new Error('No subgroup analysis data returned');
+  }
+
+  return response.data;
+}
+
+// Publication Bias Assessment Types and Functions
+export interface IBiasAssessmentResult {
+  eggers_test: {
+    intercept: number | null;
+    intercept_se: number | null;
+    intercept_pvalue: number | null;
+    interpretation: string;
+  };
+  funnel_plot: string;
+  n_studies: number;
+}
+
+export async function assessPublicationBias(
+  paperIds: number[],
+  outcomeName?: string
+): Promise<IBiasAssessmentResult> {
+  const response = await requestAPI<IAPIResponse<IBiasAssessmentResult>>(
+    'bias-assessment',
+    {
+      method: 'POST',
+      body: JSON.stringify({
+        paper_ids: paperIds,
+        outcome_name: outcomeName
+      })
+    }
+  );
+
+  if (response.status === 'error') {
+    throw new Error(response.message || 'Bias assessment failed');
+  }
+
+  if (!response.data) {
+    throw new Error('No bias assessment data returned');
+  }
+
+  return response.data;
+}
+
+// Sensitivity Analysis Types and Functions
+export interface ISensitivityAnalysisResult {
+  overall_effect: number;
+  leave_one_out: Array<{
+    removed_study: string;
+    removed_paper_id?: number;
+    pooled_effect: number;
+    ci_lower: number;
+    ci_upper: number;
+    difference_from_overall: number;
+  }>;
+  influence_diagnostics: Array<{
+    study_label: string;
+    paper_id?: number;
+    influence_score: number;
+    weight: number;
+    effect_size: number;
+  }>;
+  n_studies: number;
+}
+
+export async function performSensitivityAnalysis(
+  paperIds: number[],
+  outcomeName?: string
+): Promise<ISensitivityAnalysisResult> {
+  const response = await requestAPI<IAPIResponse<ISensitivityAnalysisResult>>(
+    'sensitivity-analysis',
+    {
+      method: 'POST',
+      body: JSON.stringify({
+        paper_ids: paperIds,
+        outcome_name: outcomeName
+      })
+    }
+  );
+
+  if (response.status === 'error') {
+    throw new Error(response.message || 'Sensitivity analysis failed');
+  }
+
+  if (!response.data) {
+    throw new Error('No sensitivity analysis data returned');
+  }
+
+  return response.data;
+}
+
+// Enhanced Conflict Detection with Findings
+export interface IConflictDetectionWithFindingsResult
+  extends IConflictDetectionResult {
+  findings?: Record<number, string[]>; // Extracted findings by paper ID
+}
+
+export async function detectConflictsWithFindings(
+  paperIds: number[],
+  confidenceThreshold: number = 0.8
+): Promise<IConflictDetectionWithFindingsResult> {
+  const response = await requestAPI<
+    IAPIResponse<IConflictDetectionWithFindingsResult>
+  >('conflict-detection', {
+    method: 'POST',
+    body: JSON.stringify({
+      paper_ids: paperIds,
+      confidence_threshold: confidenceThreshold,
+      extract_findings: true
+    })
+  });
+
+  return handleAPIResponse(response, 'Conflict detection failed');
+}
