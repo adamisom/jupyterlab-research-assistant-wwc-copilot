@@ -1,11 +1,11 @@
 import React from 'react';
 import { IMetaAnalysisResult } from '../api';
 
-interface MetaAnalysisViewProps {
+interface IMetaAnalysisViewProps {
   result: IMetaAnalysisResult;
 }
 
-export const MetaAnalysisView: React.FC<MetaAnalysisViewProps> = ({
+export const MetaAnalysisView: React.FC<IMetaAnalysisViewProps> = ({
   result
 }) => {
   return (
@@ -82,4 +82,3 @@ export const MetaAnalysisView: React.FC<MetaAnalysisViewProps> = ({
     </div>
   );
 };
-

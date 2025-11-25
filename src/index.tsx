@@ -255,7 +255,9 @@ const plugin: JupyterFrontEndPlugin<void> = {
     );
 
     // Listen for custom event from LibraryTab to open synthesis workbench
-    window.addEventListener('open-synthesis-workbench', ((event: CustomEvent) => {
+    window.addEventListener('open-synthesis-workbench', ((
+      event: CustomEvent
+    ) => {
       const paperIds = event.detail?.paperIds as number[];
       if (paperIds && paperIds.length >= 2) {
         app.commands.execute(
@@ -270,10 +272,13 @@ const plugin: JupyterFrontEndPlugin<void> = {
       const paperId = event.detail?.paperId as number;
       const paperTitle = event.detail?.paperTitle as string;
       if (paperId) {
-        app.commands.execute('jupyterlab-research-assistant-wwc-copilot:open-wwc', {
-          paperId,
-          paperTitle: paperTitle || 'Paper'
-        });
+        app.commands.execute(
+          'jupyterlab-research-assistant-wwc-copilot:open-wwc',
+          {
+            paperId,
+            paperTitle: paperTitle || 'Paper'
+          }
+        );
       }
     }) as EventListener);
 

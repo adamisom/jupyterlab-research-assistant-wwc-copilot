@@ -6,13 +6,13 @@ import {
 } from '../api';
 import { showErrorMessage } from '@jupyterlab/apputils';
 
-interface WWCCoPilotProps {
+interface IWWCCoPilotProps {
   paperId: number;
   paperTitle: string;
   onClose?: () => void;
 }
 
-export const WWCCoPilot: React.FC<WWCCoPilotProps> = ({
+export const WWCCoPilot: React.FC<IWWCCoPilotProps> = ({
   paperId,
   paperTitle,
   onClose
@@ -51,8 +51,12 @@ export const WWCCoPilot: React.FC<WWCCoPilotProps> = ({
   };
 
   const getRatingColor = (rating: string) => {
-    if (rating.includes('Without Reservations')) return '#4caf50'; // Green
-    if (rating.includes('With Reservations')) return '#ff9800'; // Orange
+    if (rating.includes('Without Reservations')) {
+      return '#4caf50';
+    } // Green
+    if (rating.includes('With Reservations')) {
+      return '#ff9800';
+    } // Orange
     return '#f44336'; // Red
   };
 
@@ -175,7 +179,9 @@ export const WWCCoPilot: React.FC<WWCCoPilotProps> = ({
             {assessment.overall_attrition !== undefined && (
               <div className="jp-jupyterlab-research-assistant-wwc-copilot-wwc-section">
                 <h4>Attrition</h4>
-                <p>Overall: {(assessment.overall_attrition * 100).toFixed(1)}%</p>
+                <p>
+                  Overall: {(assessment.overall_attrition * 100).toFixed(1)}%
+                </p>
                 {assessment.differential_attrition !== undefined && (
                   <p>
                     Differential:{' '}
@@ -231,4 +237,3 @@ export const WWCCoPilot: React.FC<WWCCoPilotProps> = ({
     </div>
   );
 };
-

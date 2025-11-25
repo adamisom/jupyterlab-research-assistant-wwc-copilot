@@ -1,11 +1,11 @@
 import React from 'react';
 import { IConflictDetectionResult } from '../api';
 
-interface ConflictViewProps {
+interface IConflictViewProps {
   result: IConflictDetectionResult;
 }
 
-export const ConflictView: React.FC<ConflictViewProps> = ({ result }) => {
+export const ConflictView: React.FC<IConflictViewProps> = ({ result }) => {
   return (
     <div className="jp-jupyterlab-research-assistant-wwc-copilot-conflicts">
       <h3>Conflict Detection Results</h3>
@@ -59,4 +59,3 @@ export const ConflictView: React.FC<ConflictViewProps> = ({ result }) => {
     </div>
   );
 };
-

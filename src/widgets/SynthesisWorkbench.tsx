@@ -10,18 +10,18 @@ import { MetaAnalysisView } from './MetaAnalysisView';
 import { ConflictView } from './ConflictView';
 import { showErrorMessage } from '@jupyterlab/apputils';
 
-interface SynthesisWorkbenchProps {
+interface ISynthesisWorkbenchProps {
   paperIds: number[];
   onClose?: () => void;
 }
 
-const SynthesisWorkbenchComponent: React.FC<SynthesisWorkbenchProps> = ({
+const SynthesisWorkbenchComponent: React.FC<ISynthesisWorkbenchProps> = ({
   paperIds,
   onClose
 }) => {
-  const [activeTab, setActiveTab] = useState<
-    'meta-analysis' | 'conflicts'
-  >('meta-analysis');
+  const [activeTab, setActiveTab] = useState<'meta-analysis' | 'conflicts'>(
+    'meta-analysis'
+  );
   const [metaAnalysisResult, setMetaAnalysisResult] =
     useState<IMetaAnalysisResult | null>(null);
   const [conflictResult, setConflictResult] =
@@ -143,7 +143,9 @@ export class SynthesisWorkbench extends ReactWidget {
   constructor(paperIds: number[]) {
     super();
     this.paperIds = paperIds;
-    this.addClass('jp-jupyterlab-research-assistant-wwc-copilot-synthesis-widget');
+    this.addClass(
+      'jp-jupyterlab-research-assistant-wwc-copilot-synthesis-widget'
+    );
     this.id = 'synthesis-workbench';
     this.title.label = 'Synthesis Workbench';
     this.title.caption = 'Meta-Analysis & Conflict Detection';
@@ -154,4 +156,3 @@ export class SynthesisWorkbench extends ReactWidget {
     return <SynthesisWorkbenchComponent paperIds={this.paperIds} />;
   }
 }
-
