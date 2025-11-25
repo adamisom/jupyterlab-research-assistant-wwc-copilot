@@ -56,7 +56,7 @@ export const DiscoveryTab: React.FC = () => {
         onQueryChange={setQuery}
         onSearch={handleSearch}
         isLoading={isLoading}
-        placeholder="Search Semantic Scholar..."
+        placeholder="Search Semantic Scholar / OpenAlex..."
         additionalInputs={
           <input
             type="text"
