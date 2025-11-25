@@ -12,7 +12,7 @@ in [jupyter_server_test_config.py](./jupyter_server_test_config.py).
 
 The default configuration will produce video for failing tests and an HTML report.
 
-> There is a UI mode that you may like; see [that video](https://www.youtube.com/watch?v=jF0yA-JLQW0).
+> There is a UI mode that you may like; search "What's new in Playwright 1.32" on YouTube
 
 ## Run the tests
 
