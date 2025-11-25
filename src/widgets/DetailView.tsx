@@ -22,16 +22,16 @@ export const DetailView: React.FC<DetailViewProps> = ({ paper, onClose }) => {
   };
 
   return (
-    <div className="jp-jupyterlab-research-assistant-wwc-copilot-detail-view">
-      <div className="jp-jupyterlab-research-assistant-wwc-copilot-detail-header">
+    <div className="jp-WWCExtension-detail-view">
+      <div className="jp-WWCExtension-detail-header">
         <button
           onClick={onClose}
-          className="jp-jupyterlab-research-assistant-wwc-copilot-close-button"
+          className="jp-WWCExtension-close-button"
         >
           ×
         </button>
         <h2>{paper.title}</h2>
-        <div className="jp-jupyterlab-research-assistant-wwc-copilot-detail-meta">
+        <div className="jp-WWCExtension-detail-meta">
           {paper.authors && paper.authors.length > 0 && (
             <div>
               Authors:{' '}
@@ -68,16 +68,16 @@ export const DetailView: React.FC<DetailViewProps> = ({ paper, onClose }) => {
         onTabChange={(tabId: string) =>
           setActiveTab(tabId as 'overview' | 'study' | 'learning' | 'wwc')
         }
-        className="jp-jupyterlab-research-assistant-wwc-copilot-detail-tabs"
+        className="jp-WWCExtension-detail-tabs"
         activeClassName="active"
         inactiveClassName=""
       />
 
-      <div className="jp-jupyterlab-research-assistant-wwc-copilot-detail-content">
+      <div className="jp-WWCExtension-detail-content">
         {activeTab === 'overview' && (
           <div>
             {paper.abstract && (
-              <div className="jp-jupyterlab-research-assistant-wwc-copilot-detail-section">
+              <div className="jp-WWCExtension-detail-section">
                 <h3>Abstract</h3>
                 <p>{paper.abstract}</p>
               </div>
@@ -87,11 +87,11 @@ export const DetailView: React.FC<DetailViewProps> = ({ paper, onClose }) => {
 
         {activeTab === 'study' && paper.study_metadata && (
           <div>
-            <div className="jp-jupyterlab-research-assistant-wwc-copilot-detail-section">
+            <div className="jp-WWCExtension-detail-section">
               <h3>Methodology</h3>
               <p>{paper.study_metadata.methodology || 'Not specified'}</p>
             </div>
-            <div className="jp-jupyterlab-research-assistant-wwc-copilot-detail-section">
+            <div className="jp-WWCExtension-detail-section">
               <h3>Sample Sizes</h3>
               <p>
                 Baseline: {paper.study_metadata.sample_size_baseline || 'N/A'}
@@ -101,7 +101,7 @@ export const DetailView: React.FC<DetailViewProps> = ({ paper, onClose }) => {
               </p>
             </div>
             {paper.study_metadata.effect_sizes && (
-              <div className="jp-jupyterlab-research-assistant-wwc-copilot-detail-section">
+              <div className="jp-WWCExtension-detail-section">
                 <h3>Effect Sizes</h3>
                 <table>
                   <thead>
@@ -130,14 +130,14 @@ export const DetailView: React.FC<DetailViewProps> = ({ paper, onClose }) => {
 
         {activeTab === 'learning' && paper.learning_science_metadata && (
           <div>
-            <div className="jp-jupyterlab-research-assistant-wwc-copilot-detail-section">
+            <div className="jp-WWCExtension-detail-section">
               <h3>Learning Domain</h3>
               <p>
                 {paper.learning_science_metadata.learning_domain ||
                   'Not specified'}
               </p>
             </div>
-            <div className="jp-jupyterlab-research-assistant-wwc-copilot-detail-section">
+            <div className="jp-WWCExtension-detail-section">
               <h3>Intervention Type</h3>
               <p>
                 {paper.learning_science_metadata.intervention_type ||
@@ -148,13 +148,13 @@ export const DetailView: React.FC<DetailViewProps> = ({ paper, onClose }) => {
         )}
       </div>
 
-      <div className="jp-jupyterlab-research-assistant-wwc-copilot-detail-actions">
+      <div className="jp-WWCExtension-detail-actions">
         {paper.id !== undefined && (
           <button
             onClick={() => {
               AppEvents.dispatchOpenWWCCopilot(paper.id!, paper.title);
             }}
-            className="jp-jupyterlab-research-assistant-wwc-copilot-button"
+            className="jp-WWCExtension-button"
           >
             Open WWC Co-Pilot
           </button>
@@ -162,7 +162,7 @@ export const DetailView: React.FC<DetailViewProps> = ({ paper, onClose }) => {
         {paper.pdf_path && (
           <button
             onClick={openPDF}
-            className="jp-jupyterlab-research-assistant-wwc-copilot-button"
+            className="jp-WWCExtension-button"
           >
             Open PDF
           </button>

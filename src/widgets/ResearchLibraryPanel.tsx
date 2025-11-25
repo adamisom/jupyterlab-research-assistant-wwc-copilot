@@ -9,10 +9,10 @@ const ResearchLibraryPanelComponent: React.FC = () => {
   );
 
   return (
-    <div className="jp-jupyterlab-research-assistant-wwc-copilot-panel">
-      <div className="jp-jupyterlab-research-assistant-wwc-copilot-tabs">
+    <div className="jp-WWCExtension-panel">
+      <div className="jp-WWCExtension-tabs">
         <button
-          className={`jp-jupyterlab-research-assistant-wwc-copilot-tab ${
+          className={`jp-WWCExtension-tab ${
             activeTab === 'discovery' ? 'active' : ''
           }`}
           onClick={() => setActiveTab('discovery')}
@@ -20,7 +20,7 @@ const ResearchLibraryPanelComponent: React.FC = () => {
           Discovery
         </button>
         <button
-          className={`jp-jupyterlab-research-assistant-wwc-copilot-tab ${
+          className={`jp-WWCExtension-tab ${
             activeTab === 'library' ? 'active' : ''
           }`}
           onClick={() => setActiveTab('library')}
@@ -28,7 +28,7 @@ const ResearchLibraryPanelComponent: React.FC = () => {
           Library
         </button>
       </div>
-      <div className="jp-jupyterlab-research-assistant-wwc-copilot-content">
+      <div className="jp-WWCExtension-content">
         {activeTab === 'discovery' && <DiscoveryTab />}
         {activeTab === 'library' && <LibraryTab />}
       </div>
@@ -39,7 +39,7 @@ const ResearchLibraryPanelComponent: React.FC = () => {
 export class ResearchLibraryPanel extends ReactWidget {
   constructor() {
     super();
-    this.addClass('jp-jupyterlab-research-assistant-wwc-copilot-panel-widget');
+    this.addClass('jp-WWCExtension-panel-widget');
     this.id = 'research-library-panel';
     this.title.label = 'Research Library';
     this.title.caption = 'Academic Research Library';

@@ -138,7 +138,7 @@ export const LibraryTab: React.FC = () => {
   }
 
   return (
-    <div className="jp-jupyterlab-research-assistant-wwc-copilot-library">
+    <div className="jp-WWCExtension-library">
       <SearchBar
         query={searchQuery}
         onQueryChange={setSearchQuery}
@@ -165,7 +165,7 @@ export const LibraryTab: React.FC = () => {
                 e.target.value = ''; // Reset
               }
             }}
-            className="jp-jupyterlab-research-assistant-wwc-copilot-select"
+            className="jp-WWCExtension-select"
           >
             <option value="">Export...</option>
             <option value="json">Export as JSON</option>
@@ -176,18 +176,18 @@ export const LibraryTab: React.FC = () => {
       />
 
       {/* PDF Upload Section */}
-      <div className="jp-jupyterlab-research-assistant-wwc-copilot-upload-section">
+      <div className="jp-WWCExtension-upload-section">
         <input
           ref={fileInputRef}
           type="file"
           accept=".pdf,application/pdf"
           onChange={handleFileSelect}
-          className="jp-jupyterlab-research-assistant-wwc-copilot-file-input"
+          className="jp-WWCExtension-file-input"
           id="pdf-upload-input"
         />
         <label
           htmlFor="pdf-upload-input"
-          className="jp-jupyterlab-research-assistant-wwc-copilot-button jp-mod-file-upload-label"
+          className="jp-WWCExtension-button jp-mod-file-upload-label"
         >
           {isUploading ? 'Uploading...' : 'Upload PDF'}
         </label>
@@ -197,10 +197,10 @@ export const LibraryTab: React.FC = () => {
 
       {/* Synthesis button - show when 2+ papers selected */}
       {selectedPapers.size >= 2 && (
-        <div className="jp-jupyterlab-research-assistant-wwc-copilot-synthesis-button-container">
+        <div className="jp-WWCExtension-synthesis-button-container">
           <button
             onClick={handleOpenSynthesis}
-            className="jp-jupyterlab-research-assistant-wwc-copilot-button jp-jupyterlab-research-assistant-wwc-copilot-synthesis-button"
+            className="jp-WWCExtension-button jp-WWCExtension-synthesis-button"
           >
             Synthesize {selectedPapers.size} Studies
           </button>
@@ -209,9 +209,9 @@ export const LibraryTab: React.FC = () => {
 
       {isLoading && <LoadingState />}
 
-      <div className="jp-jupyterlab-research-assistant-wwc-copilot-papers">
+      <div className="jp-WWCExtension-papers">
         {papers.length === 0 && !isLoading && (
-          <div className="jp-jupyterlab-research-assistant-wwc-copilot-empty">
+          <div className="jp-WWCExtension-empty">
             No papers found. Use the Discovery tab to search and import papers,
             or upload a PDF above.
           </div>

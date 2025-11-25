@@ -10,23 +10,23 @@ export const SubgroupAnalysisView: React.FC<SubgroupAnalysisViewProps> = ({
   result
 }) => {
   return (
-    <div className="jp-jupyterlab-research-assistant-wwc-copilot-subgroup-analysis">
+    <div className="jp-WWCExtension-subgroup-analysis">
       <h3>Subgroup Analysis: {result.subgroup_variable}</h3>
 
       {/* Overall Results */}
-      <div className="jp-jupyterlab-research-assistant-wwc-copilot-subgroup-overall">
+      <div className="jp-WWCExtension-subgroup-overall">
         <h4>Overall Meta-Analysis (All Studies)</h4>
         <MetaAnalysisView result={result.overall} />
       </div>
 
       {/* Subgroup Results */}
-      <div className="jp-jupyterlab-research-assistant-wwc-copilot-subgroup-results">
+      <div className="jp-WWCExtension-subgroup-results">
         <h4>Results by Subgroup</h4>
         {Object.entries(result.subgroups).map(
           ([subgroupName, subgroupResult]) => (
             <div
               key={subgroupName}
-              className="jp-jupyterlab-research-assistant-wwc-copilot-subgroup-item"
+              className="jp-WWCExtension-subgroup-item"
             >
               <h5>
                 {subgroupName} (n={subgroupResult.n_studies})

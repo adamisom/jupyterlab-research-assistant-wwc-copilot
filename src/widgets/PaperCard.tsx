@@ -18,59 +18,59 @@ export const PaperCard: React.FC<PaperCardProps> = ({
 }) => {
   return (
     <div
-      className={`jp-jupyterlab-research-assistant-wwc-copilot-paper-card ${
+      className={`jp-WWCExtension-paper-card ${
         selected
-          ? 'jp-jupyterlab-research-assistant-wwc-copilot-paper-card-selected'
+          ? 'jp-WWCExtension-paper-card-selected'
           : ''
       }`}
     >
       {onToggleSelection && (
-        <div className="jp-jupyterlab-research-assistant-wwc-copilot-paper-card-checkbox">
+        <div className="jp-WWCExtension-paper-card-checkbox">
           <input
             type="checkbox"
             checked={selected}
             onChange={onToggleSelection}
-            className="jp-jupyterlab-research-assistant-wwc-copilot-checkbox"
+            className="jp-WWCExtension-checkbox"
             onClick={e => e.stopPropagation()}
           />
         </div>
       )}
       <h3
-        className={`jp-jupyterlab-research-assistant-wwc-copilot-paper-title ${
+        className={`jp-WWCExtension-paper-title ${
           onViewDetails ? 'jp-mod-clickable' : ''
         }`}
         onClick={onViewDetails}
       >
         {paper.title}
       </h3>
-      <div className="jp-jupyterlab-research-assistant-wwc-copilot-paper-meta">
+      <div className="jp-WWCExtension-paper-meta">
         {paper.authors && paper.authors.length > 0 && (
-          <div className="jp-jupyterlab-research-assistant-wwc-copilot-paper-authors">
+          <div className="jp-WWCExtension-paper-authors">
             Authors: {paper.authors.join(', ')}
           </div>
         )}
         {paper.year && (
-          <div className="jp-jupyterlab-research-assistant-wwc-copilot-paper-year">
+          <div className="jp-WWCExtension-paper-year">
             Year: {paper.year}
           </div>
         )}
         {paper.citation_count !== undefined && (
-          <div className="jp-jupyterlab-research-assistant-wwc-copilot-paper-citations">
+          <div className="jp-WWCExtension-paper-citations">
             Citations: {paper.citation_count}
           </div>
         )}
       </div>
       {paper.abstract && (
-        <div className="jp-jupyterlab-research-assistant-wwc-copilot-paper-abstract">
+        <div className="jp-WWCExtension-paper-abstract">
           {paper.abstract.substring(0, 200)}
           {paper.abstract.length > 200 ? '...' : ''}
         </div>
       )}
-      <div className="jp-jupyterlab-research-assistant-wwc-copilot-paper-actions">
+      <div className="jp-WWCExtension-paper-actions">
         {onViewDetails && (
           <button
             onClick={onViewDetails}
-            className="jp-jupyterlab-research-assistant-wwc-copilot-button"
+            className="jp-WWCExtension-button"
           >
             View Details
           </button>
@@ -78,7 +78,7 @@ export const PaperCard: React.FC<PaperCardProps> = ({
         {onImport && (
           <button
             onClick={onImport}
-            className="jp-jupyterlab-research-assistant-wwc-copilot-button jp-jupyterlab-research-assistant-wwc-copilot-import-button"
+            className="jp-WWCExtension-button jp-WWCExtension-import-button"
           >
             Import to Library
           </button>

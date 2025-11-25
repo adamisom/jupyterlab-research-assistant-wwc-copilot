@@ -10,7 +10,7 @@ export const ErrorDisplay: React.FC<ErrorDisplayProps> = ({ error }) => {
   }
 
   return (
-    <div className="jp-jupyterlab-research-assistant-wwc-copilot-error">
+    <div className="jp-WWCExtension-error">
       Error: {error}
     </div>
   );

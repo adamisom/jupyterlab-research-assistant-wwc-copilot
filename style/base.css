@@ -5,20 +5,20 @@
 */
 
 /* Research Library Panel Styles */
-.jp-jupyterlab-research-assistant-wwc-copilot-panel {
+.jp-WWCExtension-panel {
   display: flex;
   flex-direction: column;
   height: 100%;
   padding: 8px;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-tabs {
+.jp-WWCExtension-tabs {
   display: flex;
   border-bottom: 1px solid var(--jp-border-color1);
   margin-bottom: 8px;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-tab {
+.jp-WWCExtension-tab {
   background: none;
   border: none;
   padding: 8px 16px;
@@ -29,31 +29,31 @@
   transition: all 0.2s ease-in-out;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-tab:hover {
+.jp-WWCExtension-tab:hover {
   color: var(--jp-content-font-color1);
   background-color: var(--jp-layout-color2);
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-tab.active {
+.jp-WWCExtension-tab.active {
   color: var(--jp-content-font-color1);
   border-bottom-color: var(--jp-brand-color1);
   font-weight: 600;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-content {
+.jp-WWCExtension-content {
   flex: 1;
   overflow-y: auto;
 }
 
 /* Search Bar Styles */
-.jp-jupyterlab-research-assistant-wwc-copilot-search-bar {
+.jp-WWCExtension-search-bar {
   display: flex;
   gap: 8px;
   margin-bottom: 16px;
   flex-wrap: wrap;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-input {
+.jp-WWCExtension-input {
   flex: 1;
   min-width: 150px;
   padding: 6px 8px;
@@ -65,12 +65,12 @@
   transition: border-color 0.2s ease-in-out, outline 0.2s ease-in-out;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-input:focus {
+.jp-WWCExtension-input:focus {
   outline: 1px solid var(--jp-brand-color1);
   outline-offset: -1px;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-select {
+.jp-WWCExtension-select {
   padding: 6px 8px;
   border: 1px solid var(--jp-border-color1);
   border-radius: var(--jp-border-radius);
@@ -81,12 +81,12 @@
   transition: border-color 0.2s ease-in-out, outline 0.2s ease-in-out;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-select:focus {
+.jp-WWCExtension-select:focus {
   outline: 1px solid var(--jp-brand-color1);
   outline-offset: -1px;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-button {
+.jp-WWCExtension-button {
   padding: 6px 16px;
   border: 1px solid var(--jp-border-color1);
   border-radius: var(--jp-border-radius);
@@ -98,23 +98,23 @@
   transition: all 0.2s ease-in-out;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-button:disabled {
+.jp-WWCExtension-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-button:hover:not(:disabled) {
+.jp-WWCExtension-button:hover:not(:disabled) {
   background-color: var(--jp-brand-color0);
 }
 
 /* Paper Card Styles */
-.jp-jupyterlab-research-assistant-wwc-copilot-papers {
+.jp-WWCExtension-papers {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-paper-card {
+.jp-WWCExtension-paper-card {
   padding: 12px;
   margin-bottom: 8px;
   background-color: var(--jp-layout-color0);
@@ -124,19 +124,19 @@
   transition: all 0.2s ease-in-out;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-paper-card:hover {
+.jp-WWCExtension-paper-card:hover {
   cursor: pointer;
   background-color: var(--jp-layout-color2);
   box-shadow: var(--jp-elevation-z4);
   transform: translateY(-2px);
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-paper-card.jp-mod-selected {
+.jp-WWCExtension-paper-card.jp-mod-selected {
   border-left-color: var(--jp-brand-color1);
   background-color: var(--jp-layout-color2);
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-paper-title {
+.jp-WWCExtension-paper-title {
   margin: 0 0 8px;
   font-size: var(--jp-ui-font-size2);
   font-weight: 600;
@@ -144,11 +144,11 @@
   line-height: 1.4;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-paper-title.jp-mod-clickable {
+.jp-WWCExtension-paper-title.jp-mod-clickable {
   cursor: pointer;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-paper-meta {
+.jp-WWCExtension-paper-meta {
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -158,32 +158,32 @@
   line-height: 1.5;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-paper-authors,
-.jp-jupyterlab-research-assistant-wwc-copilot-paper-year,
-.jp-jupyterlab-research-assistant-wwc-copilot-paper-citations {
+.jp-WWCExtension-paper-authors,
+.jp-WWCExtension-paper-year,
+.jp-WWCExtension-paper-citations {
   margin: 0;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-paper-abstract {
+.jp-WWCExtension-paper-abstract {
   margin: 8px 0;
   font-size: var(--jp-ui-font-size0);
   color: var(--jp-ui-font-color2);
   line-height: 1.5;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-paper-actions {
+.jp-WWCExtension-paper-actions {
   display: flex;
   gap: 8px;
   margin-top: 8px;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-import-button {
+.jp-WWCExtension-import-button {
   margin-top: 8px;
   width: 100%;
 }
 
 /* Error and Loading Styles */
-.jp-jupyterlab-research-assistant-wwc-copilot-error {
+.jp-WWCExtension-error {
   padding: 8px;
   margin-bottom: 16px;
   background-color: var(--jp-error-color3);
@@ -193,7 +193,7 @@
   line-height: 1.5;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-loading {
+.jp-WWCExtension-loading {
   padding: 16px;
   text-align: center;
   color: var(--jp-content-font-color2);
@@ -201,7 +201,7 @@
   line-height: 1.5;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-empty {
+.jp-WWCExtension-empty {
   padding: 32px;
   text-align: center;
   color: var(--jp-content-font-color2);
@@ -210,21 +210,21 @@
 }
 
 /* Discovery and Library Tab Specific Styles */
-.jp-jupyterlab-research-assistant-wwc-copilot-discovery,
-.jp-jupyterlab-research-assistant-wwc-copilot-library {
+.jp-WWCExtension-discovery,
+.jp-WWCExtension-library {
   display: flex;
   flex-direction: column;
   height: 100%;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-results {
+.jp-WWCExtension-results {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
 /* Skeleton Loaders */
-.jp-jupyterlab-research-assistant-wwc-copilot-skeleton {
+.jp-WWCExtension-skeleton {
   padding: 12px;
   border: 1px solid var(--jp-border-color1);
   border-radius: var(--jp-border-radius);
@@ -232,7 +232,7 @@
   animation: pulse 1.5s ease-in-out infinite;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-skeleton-title {
+.jp-WWCExtension-skeleton-title {
   height: 20px;
   width: 80%;
   background-color: var(--jp-border-color2);
@@ -240,7 +240,7 @@
   margin-bottom: 8px;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-skeleton-line {
+.jp-WWCExtension-skeleton-line {
   height: 14px;
   width: 100%;
   background-color: var(--jp-border-color2);
@@ -248,7 +248,7 @@
   margin-bottom: 4px;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-skeleton-line.short {
+.jp-WWCExtension-skeleton-line.short {
   width: 60%;
 }
 
@@ -264,7 +264,7 @@
 }
 
 /* PDF Upload Section */
-.jp-jupyterlab-research-assistant-wwc-copilot-upload-section {
+.jp-WWCExtension-upload-section {
   margin-bottom: 16px;
   padding: 8px;
   border: 1px dashed var(--jp-border-color1);
@@ -272,24 +272,24 @@
   text-align: center;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-upload-section label {
+.jp-WWCExtension-upload-section label {
   margin: 0;
 }
 
 /* Detail View Styles */
 
-.jp-jupyterlab-research-assistant-wwc-copilot-detail-view {
+.jp-WWCExtension-detail-view {
   display: flex;
   flex-direction: column;
   height: 100%;
   padding: 8px;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-detail-header {
+.jp-WWCExtension-detail-header {
   margin-bottom: 16px;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-close-button {
+.jp-WWCExtension-close-button {
   float: right;
   background: none;
   border: none;
@@ -303,13 +303,13 @@
   transition: all 0.2s ease-in-out;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-close-button:hover {
+.jp-WWCExtension-close-button:hover {
   color: var(--jp-content-font-color1);
   background-color: var(--jp-layout-color2);
   border-radius: var(--jp-border-radius);
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-detail-header h2 {
+.jp-WWCExtension-detail-header h2 {
   margin: 0 0 8px;
   font-size: var(--jp-ui-font-size2);
   font-weight: 600;
@@ -317,7 +317,7 @@
   line-height: 1.3;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-detail-meta {
+.jp-WWCExtension-detail-meta {
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -326,14 +326,14 @@
   line-height: 1.5;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-detail-tabs {
+.jp-WWCExtension-detail-tabs {
   display: flex;
   border-bottom: 1px solid var(--jp-border-color1);
   margin-bottom: 16px;
   gap: 8px;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-detail-tabs button {
+.jp-WWCExtension-detail-tabs button {
   background: none;
   border: none;
   padding: 8px 16px;
@@ -344,27 +344,27 @@
   transition: all 0.2s ease-in-out;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-detail-tabs button:hover {
+.jp-WWCExtension-detail-tabs button:hover {
   color: var(--jp-content-font-color1);
   background-color: var(--jp-layout-color2);
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-detail-tabs button.active {
+.jp-WWCExtension-detail-tabs button.active {
   color: var(--jp-content-font-color1);
   border-bottom-color: var(--jp-brand-color1);
   font-weight: 600;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-detail-content {
+.jp-WWCExtension-detail-content {
   flex: 1;
   overflow-y: auto;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-detail-section {
+.jp-WWCExtension-detail-section {
   margin-bottom: 24px;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-detail-section h3 {
+.jp-WWCExtension-detail-section h3 {
   margin: 0 0 8px;
   font-size: var(--jp-ui-font-size1);
   font-weight: 600;
@@ -372,59 +372,59 @@
   line-height: 1.3;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-detail-section p {
+.jp-WWCExtension-detail-section p {
   margin: 0 0 8px;
   color: var(--jp-content-font-color2);
   line-height: 1.6;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-detail-section table {
+.jp-WWCExtension-detail-section table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 8px;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-detail-section th,
-.jp-jupyterlab-research-assistant-wwc-copilot-detail-section td {
+.jp-WWCExtension-detail-section th,
+.jp-WWCExtension-detail-section td {
   padding: 8px;
   text-align: left;
   border-bottom: 1px solid var(--jp-border-color1);
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-detail-section th {
+.jp-WWCExtension-detail-section th {
   font-weight: 600;
   color: var(--jp-content-font-color1);
   background-color: var(--jp-layout-color2);
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-detail-actions {
+.jp-WWCExtension-detail-actions {
   margin-top: 16px;
   padding-top: 16px;
   border-top: 1px solid var(--jp-border-color1);
 }
 
 /* Multi-Select Styles */
-.jp-jupyterlab-research-assistant-wwc-copilot-paper-card-selected {
+.jp-WWCExtension-paper-card-selected {
   border-left-color: var(--jp-brand-color1);
   background-color: var(--jp-layout-color2);
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-paper-card-checkbox {
+.jp-WWCExtension-paper-card-checkbox {
   margin-bottom: 8px;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-checkbox {
+.jp-WWCExtension-checkbox {
   cursor: pointer;
   margin-right: 8px;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-synthesis-button-container {
+.jp-WWCExtension-synthesis-button-container {
   margin-bottom: 16px;
   padding: 8px;
   text-align: center;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-synthesis-button {
+.jp-WWCExtension-synthesis-button {
   background-color: var(--jp-brand-color1);
   color: var(--jp-ui-inverse-font-color1);
   font-weight: 600;
@@ -432,7 +432,7 @@
 }
 
 /* WWC Co-Pilot Styles */
-.jp-jupyterlab-research-assistant-wwc-copilot-wwc {
+.jp-WWCExtension-wwc {
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -440,7 +440,7 @@
   overflow-y: auto;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-wwc-header {
+.jp-WWCExtension-wwc-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -449,7 +449,7 @@
   border-bottom: 1px solid var(--jp-border-color1);
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-wwc-header h2 {
+.jp-WWCExtension-wwc-header h2 {
   margin: 0;
   font-size: var(--jp-ui-font-size2);
   font-weight: 600;
@@ -457,7 +457,7 @@
   line-height: 1.3;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-close {
+.jp-WWCExtension-close {
   background: none;
   border: none;
   font-size: 24px;
@@ -471,12 +471,12 @@
   transition: all 0.2s ease-in-out;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-close:hover {
+.jp-WWCExtension-close:hover {
   color: var(--jp-content-font-color1);
   background-color: var(--jp-layout-color2);
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-wwc-judgments {
+.jp-WWCExtension-wwc-judgments {
   margin-bottom: 24px;
   padding: 16px;
   background-color: var(--jp-layout-color1);
@@ -485,7 +485,7 @@
   box-shadow: var(--jp-elevation-z1);
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-wwc-judgments h3 {
+.jp-WWCExtension-wwc-judgments h3 {
   margin: 0 0 16px;
   font-size: var(--jp-ui-font-size1);
   font-weight: 600;
@@ -493,11 +493,11 @@
   line-height: 1.3;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-wwc-field {
+.jp-WWCExtension-wwc-field {
   margin-bottom: 16px;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-wwc-field label {
+.jp-WWCExtension-wwc-field label {
   display: block;
   margin-bottom: 6px;
   font-size: var(--jp-ui-font-size1);
@@ -506,7 +506,7 @@
   line-height: 1.5;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-wwc-field select {
+.jp-WWCExtension-wwc-field select {
   width: 100%;
   padding: 6px 8px;
   border: 1px solid var(--jp-border-color1);
@@ -518,12 +518,12 @@
   transition: border-color 0.2s ease-in-out, outline 0.2s ease-in-out;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-wwc-field select:focus {
+.jp-WWCExtension-wwc-field select:focus {
   outline: 1px solid var(--jp-brand-color1);
   outline-offset: -1px;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-wwc-help {
+.jp-WWCExtension-wwc-help {
   margin: 4px 0 0;
   font-size: var(--jp-ui-font-size0);
   color: var(--jp-content-font-color2);
@@ -531,7 +531,7 @@
   line-height: 1.5;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-wwc-results {
+.jp-WWCExtension-wwc-results {
   padding: 16px;
   background-color: var(--jp-layout-color1);
   border-radius: var(--jp-border-radius);
@@ -539,7 +539,7 @@
   box-shadow: var(--jp-elevation-z1);
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-wwc-results h3 {
+.jp-WWCExtension-wwc-results h3 {
   margin: 0 0 16px;
   font-size: var(--jp-ui-font-size1);
   font-weight: 600;
@@ -547,7 +547,7 @@
   line-height: 1.3;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-wwc-rating {
+.jp-WWCExtension-wwc-rating {
   padding: 12px;
   border-radius: var(--jp-border-radius);
   margin-bottom: 16px;
@@ -555,29 +555,29 @@
   color: white;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-wwc-rating.jp-type-meets-standards {
+.jp-WWCExtension-wwc-rating.jp-type-meets-standards {
   background-color: var(--jp-success-color1);
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-wwc-rating.jp-type-meets-with-reservations {
+.jp-WWCExtension-wwc-rating.jp-type-meets-with-reservations {
   background-color: var(--jp-warn-color1);
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-wwc-rating.jp-type-does-not-meet {
+.jp-WWCExtension-wwc-rating.jp-type-does-not-meet {
   background-color: var(--jp-error-color1);
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-wwc-section {
+.jp-WWCExtension-wwc-section {
   margin-bottom: 16px;
   padding-bottom: 16px;
   border-bottom: 1px solid var(--jp-border-color2);
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-wwc-section:last-child {
+.jp-WWCExtension-wwc-section:last-child {
   border-bottom: none;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-wwc-section h4 {
+.jp-WWCExtension-wwc-section h4 {
   margin: 0 0 8px;
   font-size: var(--jp-ui-font-size1);
   font-weight: 600;
@@ -585,18 +585,18 @@
   line-height: 1.3;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-wwc-section p {
+.jp-WWCExtension-wwc-section p {
   margin: 4px 0;
   color: var(--jp-content-font-color2);
   font-size: var(--jp-ui-font-size1);
   line-height: 1.5;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-wwc-justification {
+.jp-WWCExtension-wwc-justification {
   margin-top: 16px;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-wwc-justification h4 {
+.jp-WWCExtension-wwc-justification h4 {
   margin: 0 0 8px;
   font-size: var(--jp-ui-font-size1);
   font-weight: 600;
@@ -604,19 +604,19 @@
   line-height: 1.3;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-wwc-justification ul {
+.jp-WWCExtension-wwc-justification ul {
   margin: 0;
   padding-left: 20px;
   color: var(--jp-content-font-color2);
   line-height: 1.5;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-wwc-justification li {
+.jp-WWCExtension-wwc-justification li {
   margin-bottom: 4px;
 }
 
 /* Synthesis Workbench Styles */
-.jp-jupyterlab-research-assistant-wwc-copilot-synthesis {
+.jp-WWCExtension-synthesis {
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -624,7 +624,7 @@
   overflow-y: auto;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-synthesis-header {
+.jp-WWCExtension-synthesis-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -633,7 +633,7 @@
   border-bottom: 1px solid var(--jp-border-color1);
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-synthesis-header h2 {
+.jp-WWCExtension-synthesis-header h2 {
   margin: 0;
   font-size: var(--jp-ui-font-size2);
   font-weight: 600;
@@ -641,31 +641,31 @@
   line-height: 1.3;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-synthesis-actions {
+.jp-WWCExtension-synthesis-actions {
   display: flex;
   gap: 12px;
   margin-bottom: 24px;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-synthesis-tabs {
+.jp-WWCExtension-synthesis-tabs {
   display: flex;
   gap: 8px;
   margin-bottom: 16px;
   border-bottom: 1px solid var(--jp-border-color1);
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-tab-active {
+.jp-WWCExtension-tab-active {
   color: var(--jp-content-font-color1);
   border-bottom-color: var(--jp-brand-color1);
   font-weight: 600;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-synthesis-content {
+.jp-WWCExtension-synthesis-content {
   flex: 1;
   overflow-y: auto;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-synthesis-empty {
+.jp-WWCExtension-synthesis-empty {
   padding: 32px;
   text-align: center;
   color: var(--jp-content-font-color2);
@@ -674,13 +674,13 @@
 }
 
 /* Meta-Analysis View Styles */
-.jp-jupyterlab-research-assistant-wwc-copilot-meta-analysis {
+.jp-WWCExtension-meta-analysis {
   display: flex;
   flex-direction: column;
   gap: 24px;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-meta-analysis h3 {
+.jp-WWCExtension-meta-analysis h3 {
   margin: 0 0 16px;
   font-size: var(--jp-ui-font-size2);
   font-weight: 600;
@@ -689,7 +689,7 @@
 }
 
 /* Stat Cards Grid Layout */
-.jp-jupyterlab-research-assistant-wwc-copilot-meta-analysis-summary {
+.jp-WWCExtension-meta-analysis-summary {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 16px;
@@ -700,7 +700,7 @@
   box-shadow: var(--jp-elevation-z2);
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-meta-analysis-stat {
+.jp-WWCExtension-meta-analysis-stat {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -713,12 +713,12 @@
   transition: all 0.2s ease-in-out;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-meta-analysis-stat:hover {
+.jp-WWCExtension-meta-analysis-stat:hover {
   box-shadow: var(--jp-elevation-z2);
   transform: translateY(-2px);
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-meta-analysis-stat strong {
+.jp-WWCExtension-meta-analysis-stat strong {
   color: var(--jp-content-font-color1);
   font-weight: 600;
   font-size: var(--jp-ui-font-size0);
@@ -727,7 +727,7 @@
   line-height: 1.4;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-meta-analysis-stat span {
+.jp-WWCExtension-meta-analysis-stat span {
   color: var(--jp-brand-color1);
   font-family: var(--jp-code-font-family);
   font-size: 28px;
@@ -735,7 +735,7 @@
   line-height: 1.2;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-meta-analysis-plot {
+.jp-WWCExtension-meta-analysis-plot {
   padding: 16px;
   background-color: var(--jp-layout-color1);
   border-radius: var(--jp-border-radius);
@@ -743,12 +743,12 @@
   box-shadow: var(--jp-elevation-z2);
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-plot-image {
+.jp-WWCExtension-plot-image {
   max-width: 100%;
   height: auto;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-meta-analysis-plot h4 {
+.jp-WWCExtension-meta-analysis-plot h4 {
   margin: 0 0 12px;
   font-size: var(--jp-ui-font-size1);
   font-weight: 600;
@@ -756,7 +756,7 @@
   line-height: 1.3;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-meta-analysis-studies {
+.jp-WWCExtension-meta-analysis-studies {
   padding: 16px;
   background-color: var(--jp-layout-color1);
   border-radius: var(--jp-border-radius);
@@ -764,7 +764,7 @@
   box-shadow: var(--jp-elevation-z2);
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-meta-analysis-studies h4 {
+.jp-WWCExtension-meta-analysis-studies h4 {
   margin: 0 0 12px;
   font-size: var(--jp-ui-font-size1);
   font-weight: 600;
@@ -772,17 +772,17 @@
   line-height: 1.3;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-table {
+.jp-WWCExtension-table {
   width: 100%;
   border-collapse: collapse;
   font-size: var(--jp-ui-font-size1);
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-table thead {
+.jp-WWCExtension-table thead {
   background-color: var(--jp-layout-color2);
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-table th {
+.jp-WWCExtension-table th {
   padding: 8px 12px;
   text-align: left;
   font-weight: 600;
@@ -791,7 +791,7 @@
   line-height: 1.4;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-table td {
+.jp-WWCExtension-table td {
   padding: 8px 12px;
   color: var(--jp-content-font-color2);
   border-bottom: 1px solid var(--jp-border-color2);
@@ -799,18 +799,18 @@
   transition: background-color 0.2s ease-in-out;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-table tbody tr:hover {
+.jp-WWCExtension-table tbody tr:hover {
   background-color: var(--jp-layout-color2);
 }
 
 /* Conflict View Styles */
-.jp-jupyterlab-research-assistant-wwc-copilot-conflicts {
+.jp-WWCExtension-conflicts {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-conflicts h3 {
+.jp-WWCExtension-conflicts h3 {
   margin: 0 0 16px;
   font-size: var(--jp-ui-font-size2);
   font-weight: 600;
@@ -818,7 +818,7 @@
   line-height: 1.3;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-conflicts-summary {
+.jp-WWCExtension-conflicts-summary {
   padding: 12px;
   background-color: var(--jp-layout-color1);
   border-radius: var(--jp-border-radius);
@@ -826,14 +826,14 @@
   box-shadow: var(--jp-elevation-z1);
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-conflicts-summary p {
+.jp-WWCExtension-conflicts-summary p {
   margin: 0;
   color: var(--jp-content-font-color2);
   font-size: var(--jp-ui-font-size1);
   line-height: 1.5;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-conflicts-empty {
+.jp-WWCExtension-conflicts-empty {
   padding: 32px;
   text-align: center;
   color: var(--jp-content-font-color2);
@@ -841,13 +841,13 @@
   line-height: 1.5;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-conflicts-list {
+.jp-WWCExtension-conflicts-list {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-conflict-item {
+.jp-WWCExtension-conflict-item {
   padding: 16px;
   background-color: var(--jp-layout-color1);
   border-radius: var(--jp-border-radius);
@@ -857,11 +857,11 @@
   transition: all 0.2s ease-in-out;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-conflict-item:hover {
+.jp-WWCExtension-conflict-item:hover {
   box-shadow: var(--jp-elevation-z2);
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-conflict-header {
+.jp-WWCExtension-conflict-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -870,46 +870,46 @@
   border-bottom: 1px solid var(--jp-border-color2);
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-conflict-header strong {
+.jp-WWCExtension-conflict-header strong {
   color: var(--jp-content-font-color1);
   font-size: var(--jp-ui-font-size1);
   font-weight: 600;
   line-height: 1.3;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-conflict-header span {
+.jp-WWCExtension-conflict-header span {
   color: var(--jp-content-font-color2);
   font-size: var(--jp-ui-font-size0);
   font-family: var(--jp-code-font-family);
   line-height: 1.4;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-conflict-papers {
+.jp-WWCExtension-conflict-papers {
   margin-bottom: 12px;
   padding: 8px;
   background-color: var(--jp-layout-color2);
   border-radius: var(--jp-border-radius);
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-conflict-papers div {
+.jp-WWCExtension-conflict-papers div {
   margin: 4px 0;
   color: var(--jp-content-font-color2);
   font-size: var(--jp-ui-font-size0);
   line-height: 1.5;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-conflict-papers strong {
+.jp-WWCExtension-conflict-papers strong {
   color: var(--jp-content-font-color1);
   font-weight: 600;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-conflict-findings {
+.jp-WWCExtension-conflict-findings {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-conflict-findings div {
+.jp-WWCExtension-conflict-findings div {
   padding: 8px;
   background-color: var(--jp-layout-color2);
   border-radius: var(--jp-border-radius);
@@ -918,7 +918,7 @@
   line-height: 1.5;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-conflict-findings strong {
+.jp-WWCExtension-conflict-findings strong {
   color: var(--jp-content-font-color1);
   font-weight: 600;
   display: block;
@@ -926,11 +926,11 @@
 }
 
 /* WWC Wizard Progress Indicator */
-.jp-jupyterlab-research-assistant-wwc-copilot-wwc-progress {
+.jp-WWCExtension-wwc-progress {
   margin-bottom: 24px;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-wwc-progress-bar {
+.jp-WWCExtension-wwc-progress-bar {
   height: 4px;
   background-color: var(--jp-border-color2);
   border-radius: var(--jp-border-radius);
@@ -938,19 +938,19 @@
   overflow: hidden;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-wwc-progress-fill {
+.jp-WWCExtension-wwc-progress-fill {
   height: 100%;
   background-color: var(--jp-brand-color1);
   transition: width 0.3s ease;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-wwc-steps {
+.jp-WWCExtension-wwc-steps {
   display: flex;
   justify-content: space-between;
   gap: 8px;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-step {
+.jp-WWCExtension-step {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -963,21 +963,21 @@
   transition: all 0.2s ease-in-out;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-step:hover {
+.jp-WWCExtension-step:hover {
   background-color: var(--jp-layout-color2);
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-step.active {
+.jp-WWCExtension-step.active {
   border-color: var(--jp-brand-color1);
   background-color: var(--jp-brand-color3);
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-step.completed {
+.jp-WWCExtension-step.completed {
   border-color: var(--jp-success-color1);
   background-color: var(--jp-success-color3);
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-step .step-number {
+.jp-WWCExtension-step .step-number {
   width: 24px;
   height: 24px;
   border-radius: 50%;
@@ -991,24 +991,24 @@
   transition: all 0.2s ease-in-out;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-step.active .step-number {
+.jp-WWCExtension-step.active .step-number {
   background-color: var(--jp-brand-color1);
   color: white;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-step.completed .step-number {
+.jp-WWCExtension-step.completed .step-number {
   background-color: var(--jp-success-color1);
   color: white;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-step .step-label {
+.jp-WWCExtension-step .step-label {
   font-size: var(--jp-ui-font-size0);
   color: var(--jp-content-font-color2);
   text-align: center;
   line-height: 1.4;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-wwc-navigation {
+.jp-WWCExtension-wwc-navigation {
   display: flex;
   justify-content: space-between;
   margin-top: 24px;
@@ -1016,7 +1016,7 @@
   border-top: 1px solid var(--jp-border-color1);
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-wwc-step-content {
+.jp-WWCExtension-wwc-step-content {
   padding: 16px;
   background-color: var(--jp-layout-color1);
   border-radius: var(--jp-border-radius);
@@ -1024,7 +1024,7 @@
   box-shadow: var(--jp-elevation-z1);
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-wwc-step-content h3 {
+.jp-WWCExtension-wwc-step-content h3 {
   margin: 0 0 16px;
   font-size: var(--jp-ui-font-size2);
   font-weight: 600;
@@ -1033,13 +1033,13 @@
 }
 
 /* Subgroup Analysis Styles */
-.jp-jupyterlab-research-assistant-wwc-copilot-subgroup-analysis {
+.jp-WWCExtension-subgroup-analysis {
   display: flex;
   flex-direction: column;
   gap: 24px;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-subgroup-analysis h3 {
+.jp-WWCExtension-subgroup-analysis h3 {
   margin: 0 0 16px;
   font-size: var(--jp-ui-font-size2);
   font-weight: 600;
@@ -1047,7 +1047,7 @@
   line-height: 1.3;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-subgroup-overall {
+.jp-WWCExtension-subgroup-overall {
   padding: 16px;
   background-color: var(--jp-layout-color1);
   border-radius: var(--jp-border-radius);
@@ -1055,7 +1055,7 @@
   box-shadow: var(--jp-elevation-z2);
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-subgroup-overall h4 {
+.jp-WWCExtension-subgroup-overall h4 {
   margin: 0 0 12px;
   font-size: var(--jp-ui-font-size1);
   font-weight: 600;
@@ -1063,13 +1063,13 @@
   line-height: 1.3;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-subgroup-results {
+.jp-WWCExtension-subgroup-results {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-subgroup-results h4 {
+.jp-WWCExtension-subgroup-results h4 {
   margin: 0 0 12px;
   font-size: var(--jp-ui-font-size1);
   font-weight: 600;
@@ -1077,7 +1077,7 @@
   line-height: 1.3;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-subgroup-item {
+.jp-WWCExtension-subgroup-item {
   padding: 16px;
   background-color: var(--jp-layout-color1);
   border-radius: var(--jp-border-radius);
@@ -1086,11 +1086,11 @@
   transition: all 0.2s ease-in-out;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-subgroup-item:hover {
+.jp-WWCExtension-subgroup-item:hover {
   box-shadow: var(--jp-elevation-z2);
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-subgroup-item h5 {
+.jp-WWCExtension-subgroup-item h5 {
   margin: 0 0 12px;
   font-size: var(--jp-ui-font-size1);
   font-weight: 600;
@@ -1098,20 +1098,20 @@
   line-height: 1.3;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-subgroup-controls {
+.jp-WWCExtension-subgroup-controls {
   display: flex;
   gap: 8px;
   align-items: center;
 }
 
 /* Bias Assessment Styles */
-.jp-jupyterlab-research-assistant-wwc-copilot-bias-assessment {
+.jp-WWCExtension-bias-assessment {
   display: flex;
   flex-direction: column;
   gap: 24px;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-bias-assessment h3 {
+.jp-WWCExtension-bias-assessment h3 {
   margin: 0 0 16px;
   font-size: var(--jp-ui-font-size2);
   font-weight: 600;
@@ -1119,7 +1119,7 @@
   line-height: 1.3;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-eggers-test {
+.jp-WWCExtension-eggers-test {
   padding: 16px;
   background-color: var(--jp-layout-color1);
   border-radius: var(--jp-border-radius);
@@ -1127,7 +1127,7 @@
   box-shadow: var(--jp-elevation-z2);
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-eggers-test h4 {
+.jp-WWCExtension-eggers-test h4 {
   margin: 0 0 12px;
   font-size: var(--jp-ui-font-size1);
   font-weight: 600;
@@ -1135,7 +1135,7 @@
   line-height: 1.3;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-funnel-plot {
+.jp-WWCExtension-funnel-plot {
   padding: 16px;
   background-color: var(--jp-layout-color1);
   border-radius: var(--jp-border-radius);
@@ -1143,7 +1143,7 @@
   box-shadow: var(--jp-elevation-z2);
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-funnel-plot h4 {
+.jp-WWCExtension-funnel-plot h4 {
   margin: 0 0 12px;
   font-size: var(--jp-ui-font-size1);
   font-weight: 600;
@@ -1152,13 +1152,13 @@
 }
 
 /* Sensitivity Analysis Styles */
-.jp-jupyterlab-research-assistant-wwc-copilot-sensitivity-analysis {
+.jp-WWCExtension-sensitivity-analysis {
   display: flex;
   flex-direction: column;
   gap: 24px;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-sensitivity-analysis h3 {
+.jp-WWCExtension-sensitivity-analysis h3 {
   margin: 0 0 16px;
   font-size: var(--jp-ui-font-size2);
   font-weight: 600;
@@ -1166,9 +1166,9 @@
   line-height: 1.3;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-sensitivity-overall,
-.jp-jupyterlab-research-assistant-wwc-copilot-sensitivity-loo,
-.jp-jupyterlab-research-assistant-wwc-copilot-sensitivity-influence {
+.jp-WWCExtension-sensitivity-overall,
+.jp-WWCExtension-sensitivity-loo,
+.jp-WWCExtension-sensitivity-influence {
   padding: 16px;
   background-color: var(--jp-layout-color1);
   border-radius: var(--jp-border-radius);
@@ -1176,9 +1176,9 @@
   box-shadow: var(--jp-elevation-z2);
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-sensitivity-overall h4,
-.jp-jupyterlab-research-assistant-wwc-copilot-sensitivity-loo h4,
-.jp-jupyterlab-research-assistant-wwc-copilot-sensitivity-influence h4 {
+.jp-WWCExtension-sensitivity-overall h4,
+.jp-WWCExtension-sensitivity-loo h4,
+.jp-WWCExtension-sensitivity-influence h4 {
   margin: 0 0 12px;
   font-size: var(--jp-ui-font-size1);
   font-weight: 600;
@@ -1187,7 +1187,7 @@
 }
 
 /* Findings Preview Styles */
-.jp-jupyterlab-research-assistant-wwc-copilot-findings-preview {
+.jp-WWCExtension-findings-preview {
   padding: 16px;
   background-color: var(--jp-layout-color1);
   border-radius: var(--jp-border-radius);
@@ -1196,7 +1196,7 @@
   box-shadow: var(--jp-elevation-z1);
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-findings-preview h4 {
+.jp-WWCExtension-findings-preview h4 {
   margin: 0 0 12px;
   font-size: var(--jp-ui-font-size1);
   font-weight: 600;
@@ -1204,14 +1204,14 @@
   line-height: 1.3;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-finding-item {
+.jp-WWCExtension-finding-item {
   margin-bottom: 16px;
   padding: 12px;
   background-color: var(--jp-layout-color2);
   border-radius: var(--jp-border-radius);
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-finding-item strong {
+.jp-WWCExtension-finding-item strong {
   color: var(--jp-content-font-color1);
   font-weight: 600;
   display: block;
@@ -1219,19 +1219,19 @@
   line-height: 1.3;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-finding-item ul {
+.jp-WWCExtension-finding-item ul {
   margin: 0;
   padding-left: 20px;
   color: var(--jp-content-font-color2);
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-finding-item li {
+.jp-WWCExtension-finding-item li {
   margin-bottom: 4px;
   line-height: 1.5;
 }
 
 /* WWC Badge Styles */
-.jp-jupyterlab-research-assistant-wwc-copilot-wwcBadge {
+.jp-WWCExtension-wwcBadge {
   display: inline-block;
   padding: 2px 8px;
   border-radius: 12px;
@@ -1242,28 +1242,28 @@
   line-height: 1.4;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-wwcBadge.jp-type-meets-standards {
+.jp-WWCExtension-wwcBadge.jp-type-meets-standards {
   background-color: var(--jp-success-color2);
   color: var(--jp-success-color0);
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-wwcBadge.jp-type-meets-with-reservations {
+.jp-WWCExtension-wwcBadge.jp-type-meets-with-reservations {
   background-color: var(--jp-warn-color2);
   color: var(--jp-warn-color0);
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-wwcBadge.jp-type-does-not-meet {
+.jp-WWCExtension-wwcBadge.jp-type-does-not-meet {
   background-color: var(--jp-error-color2);
   color: var(--jp-error-color0);
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-wwcBadge.jp-type-not-assessed {
+.jp-WWCExtension-wwcBadge.jp-type-not-assessed {
   background-color: var(--jp-layout-color3);
   color: var(--jp-ui-font-color2);
 }
 
 /* Utility Classes */
-.jp-jupyterlab-research-assistant-wwc-copilot-file-input {
+.jp-WWCExtension-file-input {
   display: none;
 }
 

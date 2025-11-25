@@ -9,15 +9,15 @@ export const BiasAssessmentView: React.FC<BiasAssessmentViewProps> = ({
   result
 }) => {
   return (
-    <div className="jp-jupyterlab-research-assistant-wwc-copilot-bias-assessment">
+    <div className="jp-WWCExtension-bias-assessment">
       <h3>Publication Bias Assessment</h3>
 
       {/* Egger's Test Results */}
-      <div className="jp-jupyterlab-research-assistant-wwc-copilot-eggers-test">
+      <div className="jp-WWCExtension-eggers-test">
         <h4>Egger's Test</h4>
         {result.eggers_test.intercept_pvalue !== null ? (
-          <div className="jp-jupyterlab-research-assistant-wwc-copilot-meta-analysis-summary">
-            <div className="jp-jupyterlab-research-assistant-wwc-copilot-meta-analysis-stat">
+          <div className="jp-WWCExtension-meta-analysis-summary">
+            <div className="jp-WWCExtension-meta-analysis-stat">
               <strong>Intercept:</strong>
               <span>
                 {result.eggers_test.intercept !== null
@@ -25,7 +25,7 @@ export const BiasAssessmentView: React.FC<BiasAssessmentViewProps> = ({
                   : 'N/A'}
               </span>
             </div>
-            <div className="jp-jupyterlab-research-assistant-wwc-copilot-meta-analysis-stat">
+            <div className="jp-WWCExtension-meta-analysis-stat">
               <strong>Standard Error:</strong>
               <span>
                 {result.eggers_test.intercept_se !== null
@@ -33,11 +33,11 @@ export const BiasAssessmentView: React.FC<BiasAssessmentViewProps> = ({
                   : 'N/A'}
               </span>
             </div>
-            <div className="jp-jupyterlab-research-assistant-wwc-copilot-meta-analysis-stat">
+            <div className="jp-WWCExtension-meta-analysis-stat">
               <strong>P-value:</strong>
               <span>{result.eggers_test.intercept_pvalue.toFixed(4)}</span>
             </div>
-            <div className="jp-jupyterlab-research-assistant-wwc-copilot-meta-analysis-stat">
+            <div className="jp-WWCExtension-meta-analysis-stat">
               <strong>Interpretation:</strong>
               <span>{result.eggers_test.interpretation}</span>
             </div>
@@ -49,13 +49,13 @@ export const BiasAssessmentView: React.FC<BiasAssessmentViewProps> = ({
 
       {/* Funnel Plot */}
       {result.funnel_plot && (
-        <div className="jp-jupyterlab-research-assistant-wwc-copilot-funnel-plot">
+        <div className="jp-WWCExtension-funnel-plot">
           <h4>Funnel Plot</h4>
-          <div className="jp-jupyterlab-research-assistant-wwc-copilot-meta-analysis-plot">
+          <div className="jp-WWCExtension-meta-analysis-plot">
             <img
               src={`data:image/png;base64,${result.funnel_plot}`}
               alt="Funnel Plot"
-              className="jp-jupyterlab-research-assistant-wwc-copilot-plot-image"
+              className="jp-WWCExtension-plot-image"
             />
           </div>
         </div>

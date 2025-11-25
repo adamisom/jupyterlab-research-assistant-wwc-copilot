@@ -16,10 +16,10 @@ export const ConflictView: React.FC<ConflictViewProps> = ({ result }) => {
     Object.keys(result.findings).length > 0;
 
   return (
-    <div className="jp-jupyterlab-research-assistant-wwc-copilot-conflicts">
+    <div className="jp-WWCExtension-conflicts">
       <h3>Conflict Detection Results</h3>
 
-      <div className="jp-jupyterlab-research-assistant-wwc-copilot-conflicts-summary">
+      <div className="jp-WWCExtension-conflicts-summary">
         <p>
           Found <strong>{result.n_contradictions}</strong> contradictions across{' '}
           <strong>{result.n_papers}</strong> papers.
@@ -28,12 +28,12 @@ export const ConflictView: React.FC<ConflictViewProps> = ({ result }) => {
 
       {/* Findings Preview */}
       {hasFindings && (
-        <div className="jp-jupyterlab-research-assistant-wwc-copilot-findings-preview">
+        <div className="jp-WWCExtension-findings-preview">
           <h4>Extracted Key Findings</h4>
           {Object.entries(result.findings!).map(([paperId, paperFindings]) => (
             <div
               key={paperId}
-              className="jp-jupyterlab-research-assistant-wwc-copilot-finding-item"
+              className="jp-WWCExtension-finding-item"
             >
               <strong>Paper {paperId}:</strong>
               <ul>
@@ -47,22 +47,22 @@ export const ConflictView: React.FC<ConflictViewProps> = ({ result }) => {
       )}
 
       {result.contradictions.length === 0 ? (
-        <div className="jp-jupyterlab-research-assistant-wwc-copilot-conflicts-empty">
+        <div className="jp-WWCExtension-conflicts-empty">
           No contradictions detected.
         </div>
       ) : (
-        <div className="jp-jupyterlab-research-assistant-wwc-copilot-conflicts-list">
+        <div className="jp-WWCExtension-conflicts-list">
           {result.contradictions.map((conflict, idx) => (
             <div
               key={idx}
-              className="jp-jupyterlab-research-assistant-wwc-copilot-conflict-item"
+              className="jp-WWCExtension-conflict-item"
             >
-              <div className="jp-jupyterlab-research-assistant-wwc-copilot-conflict-header">
+              <div className="jp-WWCExtension-conflict-header">
                 <strong>Contradiction #{idx + 1}</strong>
                 <span>Confidence: {formatPercent(conflict.confidence, 1)}</span>
               </div>
               {conflict.paper1_title && conflict.paper2_title && (
-                <div className="jp-jupyterlab-research-assistant-wwc-copilot-conflict-papers">
+                <div className="jp-WWCExtension-conflict-papers">
                   <div>
                     <strong>Paper 1:</strong> {conflict.paper1_title}
                   </div>
@@ -71,7 +71,7 @@ export const ConflictView: React.FC<ConflictViewProps> = ({ result }) => {
                   </div>
                 </div>
               )}
-              <div className="jp-jupyterlab-research-assistant-wwc-copilot-conflict-findings">
+              <div className="jp-WWCExtension-conflict-findings">
                 <div>
                   <strong>Finding 1:</strong> {conflict.finding1}
                 </div>

@@ -19,9 +19,9 @@ export const Tabs: React.FC<TabsProps> = ({
   tabs,
   activeTab,
   onTabChange,
-  className = 'jp-jupyterlab-research-assistant-wwc-copilot-synthesis-tabs',
-  activeClassName = 'jp-jupyterlab-research-assistant-wwc-copilot-tab-active',
-  inactiveClassName = 'jp-jupyterlab-research-assistant-wwc-copilot-tab'
+  className = 'jp-WWCExtension-synthesis-tabs',
+  activeClassName = 'jp-WWCExtension-tab-active',
+  inactiveClassName = 'jp-WWCExtension-tab'
 }) => {
   return (
     <div className={className}>

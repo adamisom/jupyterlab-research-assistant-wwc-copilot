@@ -153,13 +153,13 @@ export const WWCCoPilot: React.FC<WWCCoPilotProps> = ({
   };
 
   return (
-    <div className="jp-jupyterlab-research-assistant-wwc-copilot-wwc">
-      <div className="jp-jupyterlab-research-assistant-wwc-copilot-wwc-header">
+    <div className="jp-WWCExtension-wwc">
+      <div className="jp-WWCExtension-wwc-header">
         <h2>WWC Co-Pilot: {paperTitle}</h2>
         {onClose && (
           <button
             onClick={onClose}
-            className="jp-jupyterlab-research-assistant-wwc-copilot-close"
+            className="jp-WWCExtension-close"
           >
             ×
           </button>
@@ -167,18 +167,18 @@ export const WWCCoPilot: React.FC<WWCCoPilotProps> = ({
       </div>
 
       {/* Progress Indicator */}
-      <div className="jp-jupyterlab-research-assistant-wwc-copilot-wwc-progress">
-        <div className="jp-jupyterlab-research-assistant-wwc-copilot-wwc-progress-bar">
+      <div className="jp-WWCExtension-wwc-progress">
+        <div className="jp-WWCExtension-wwc-progress-bar">
           <div
-            className="jp-jupyterlab-research-assistant-wwc-copilot-wwc-progress-fill"
+            className="jp-WWCExtension-wwc-progress-fill"
             style={{ width: `${progress}%` }}
           />
         </div>
-        <div className="jp-jupyterlab-research-assistant-wwc-copilot-wwc-steps">
+        <div className="jp-WWCExtension-wwc-steps">
           {steps.map((step, idx) => (
             <button
               key={step}
-              className={`jp-jupyterlab-research-assistant-wwc-copilot-step ${
+              className={`jp-WWCExtension-step ${
                 currentStep === step ? 'active' : ''
               } ${getStepIndex(currentStep) > idx ? 'completed' : ''}`}
               onClick={() => handleStepChange(step)}
@@ -191,13 +191,13 @@ export const WWCCoPilot: React.FC<WWCCoPilotProps> = ({
       </div>
 
       {isAssessmentLoading && (
-        <div className="jp-jupyterlab-research-assistant-wwc-copilot-loading">
+        <div className="jp-WWCExtension-loading">
           Running assessment...
         </div>
       )}
 
       {/* Step Content */}
-      <div className="jp-jupyterlab-research-assistant-wwc-copilot-wwc-content">
+      <div className="jp-WWCExtension-wwc-content">
         {currentStep === 'randomization' && (
           <RandomizationStep
             randomizationDocumented={judgments.randomization_documented}
@@ -242,18 +242,18 @@ export const WWCCoPilot: React.FC<WWCCoPilotProps> = ({
       </div>
 
       {/* Navigation Buttons */}
-      <div className="jp-jupyterlab-research-assistant-wwc-copilot-wwc-navigation">
+      <div className="jp-WWCExtension-wwc-navigation">
         <button
           onClick={handlePrevious}
           disabled={currentStep === steps[0]}
-          className="jp-jupyterlab-research-assistant-wwc-copilot-button"
+          className="jp-WWCExtension-button"
         >
           Previous
         </button>
         {currentStep !== steps[steps.length - 1] ? (
           <button
             onClick={handleNext}
-            className="jp-jupyterlab-research-assistant-wwc-copilot-button"
+            className="jp-WWCExtension-button"
           >
             Next
           </button>
@@ -261,7 +261,7 @@ export const WWCCoPilot: React.FC<WWCCoPilotProps> = ({
           <button
             onClick={runAssessment}
             disabled={isAssessmentLoading}
-            className="jp-jupyterlab-research-assistant-wwc-copilot-button"
+            className="jp-WWCExtension-button"
           >
             {isAssessmentLoading ? 'Running...' : 'Run Assessment'}
           </button>
@@ -276,7 +276,7 @@ const RandomizationStep: React.FC<{
   randomizationDocumented?: boolean;
   onChange: (value: boolean) => void;
 }> = ({ randomizationDocumented, onChange }) => (
-  <div className="jp-jupyterlab-research-assistant-wwc-copilot-wwc-step-content">
+  <div className="jp-WWCExtension-wwc-step-content">
     <h3>Step 1: Randomization</h3>
     <p>Was randomization properly documented in the study?</p>
     <select
@@ -286,13 +286,13 @@ const RandomizationStep: React.FC<{
           : String(randomizationDocumented)
       }
       onChange={e => onChange(e.target.value === 'true')}
-      className="jp-jupyterlab-research-assistant-wwc-copilot-select"
+      className="jp-WWCExtension-select"
     >
       <option value="">Not specified</option>
       <option value="true">Yes</option>
       <option value="false">No</option>
     </select>
-    <p className="jp-jupyterlab-research-assistant-wwc-copilot-wwc-help">
+    <p className="jp-WWCExtension-wwc-help">
       Randomization must be clearly described in the study methodology.
     </p>
   </div>
@@ -303,25 +303,25 @@ const AttritionStep: React.FC<{
   onChange: (value: 'cautious' | 'optimistic') => void;
   assessment: IWWCAssessment | null;
 }> = ({ boundary, onChange, assessment }) => (
-  <div className="jp-jupyterlab-research-assistant-wwc-copilot-wwc-step-content">
+  <div className="jp-WWCExtension-wwc-step-content">
     <h3>Step 2: Attrition</h3>
-    <div className="jp-jupyterlab-research-assistant-wwc-copilot-wwc-field">
+    <div className="jp-WWCExtension-wwc-field">
       <label>Attrition Boundary:</label>
       <select
         value={boundary}
         onChange={e => onChange(e.target.value as 'cautious' | 'optimistic')}
-        className="jp-jupyterlab-research-assistant-wwc-copilot-select"
+        className="jp-WWCExtension-select"
       >
         <option value="cautious">Cautious (default)</option>
         <option value="optimistic">Optimistic</option>
       </select>
-      <p className="jp-jupyterlab-research-assistant-wwc-copilot-wwc-help">
+      <p className="jp-WWCExtension-wwc-help">
         Choose based on whether the intervention could affect who stays in the
         study.
       </p>
     </div>
     {assessment && (
-      <div className="jp-jupyterlab-research-assistant-wwc-copilot-wwc-section">
+      <div className="jp-WWCExtension-wwc-section">
         <h4>Attrition Results</h4>
         {assessment.overall_attrition !== null &&
           assessment.overall_attrition !== undefined && (
@@ -352,11 +352,11 @@ const AttritionStep: React.FC<{
 const BaselineStep: React.FC<{ assessment: IWWCAssessment | null }> = ({
   assessment
 }) => (
-  <div className="jp-jupyterlab-research-assistant-wwc-copilot-wwc-step-content">
+  <div className="jp-WWCExtension-wwc-step-content">
     <h3>Step 3: Baseline Equivalence</h3>
     {assessment?.baseline_effect_size !== null &&
     assessment?.baseline_effect_size !== undefined ? (
-      <div className="jp-jupyterlab-research-assistant-wwc-copilot-wwc-section">
+      <div className="jp-WWCExtension-wwc-section">
         <p>
           Effect Size (Cohen's d):{' '}
           {formatNumber(assessment.baseline_effect_size, 3)}
@@ -384,19 +384,19 @@ const AdjustmentStep: React.FC<{
   adjustmentValid?: boolean;
   onChange: (value: boolean) => void;
 }> = ({ adjustmentValid, onChange }) => (
-  <div className="jp-jupyterlab-research-assistant-wwc-copilot-wwc-step-content">
+  <div className="jp-WWCExtension-wwc-step-content">
     <h3>Step 4: Statistical Adjustment</h3>
     <p>Was a valid statistical adjustment used?</p>
     <select
       value={adjustmentValid === undefined ? '' : String(adjustmentValid)}
       onChange={e => onChange(e.target.value === 'true')}
-      className="jp-jupyterlab-research-assistant-wwc-copilot-select"
+      className="jp-WWCExtension-select"
     >
       <option value="">Not applicable</option>
       <option value="true">Yes</option>
       <option value="false">No</option>
     </select>
-    <p className="jp-jupyterlab-research-assistant-wwc-copilot-wwc-help">
+    <p className="jp-WWCExtension-wwc-help">
       Required for studies with high attrition or baseline differences.
     </p>
   </div>
@@ -415,9 +415,9 @@ const ReviewStep: React.FC<{
   isLoading,
   getRatingColorClass
 }) => (
-  <div className="jp-jupyterlab-research-assistant-wwc-copilot-wwc-step-content">
+  <div className="jp-WWCExtension-wwc-step-content">
     <h3>Step 5: Review & Finalize</h3>
-    <div className="jp-jupyterlab-research-assistant-wwc-copilot-wwc-judgments">
+    <div className="jp-WWCExtension-wwc-judgments">
       <h4>Your Judgments:</h4>
       <ul>
         <li>
@@ -436,14 +436,14 @@ const ReviewStep: React.FC<{
       </ul>
     </div>
     {assessment && (
-      <div className="jp-jupyterlab-research-assistant-wwc-copilot-wwc-results">
+      <div className="jp-WWCExtension-wwc-results">
         <h4>Final Rating</h4>
         <div
-          className={`jp-jupyterlab-research-assistant-wwc-copilot-wwc-rating ${getRatingColorClass(assessment.final_rating)}`}
+          className={`jp-WWCExtension-wwc-rating ${getRatingColorClass(assessment.final_rating)}`}
         >
           <strong>Final Rating: {assessment.final_rating}</strong>
         </div>
-        <div className="jp-jupyterlab-research-assistant-wwc-copilot-wwc-justification">
+        <div className="jp-WWCExtension-wwc-justification">
           <h4>Justification</h4>
           <ul>
             {assessment.rating_justification.map((reason, idx) => (

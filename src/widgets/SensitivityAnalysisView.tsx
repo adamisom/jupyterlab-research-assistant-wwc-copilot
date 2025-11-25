@@ -10,14 +10,14 @@ export const SensitivityAnalysisView: React.FC<
   SensitivityAnalysisViewProps
 > = ({ result }) => {
   return (
-    <div className="jp-jupyterlab-research-assistant-wwc-copilot-sensitivity-analysis">
+    <div className="jp-WWCExtension-sensitivity-analysis">
       <h3>Sensitivity Analysis</h3>
 
       {/* Overall Effect */}
-      <div className="jp-jupyterlab-research-assistant-wwc-copilot-sensitivity-overall">
+      <div className="jp-WWCExtension-sensitivity-overall">
         <h4>Overall Effect (All Studies)</h4>
-        <div className="jp-jupyterlab-research-assistant-wwc-copilot-meta-analysis-summary">
-          <div className="jp-jupyterlab-research-assistant-wwc-copilot-meta-analysis-stat">
+        <div className="jp-WWCExtension-meta-analysis-summary">
+          <div className="jp-WWCExtension-meta-analysis-stat">
             <strong>Pooled Effect:</strong>
             <span>{formatNumber(result.overall_effect, 3)}</span>
           </div>
@@ -25,11 +25,11 @@ export const SensitivityAnalysisView: React.FC<
       </div>
 
       {/* Leave-One-Out Results */}
-      <div className="jp-jupyterlab-research-assistant-wwc-copilot-sensitivity-loo">
+      <div className="jp-WWCExtension-sensitivity-loo">
         <h4>Leave-One-Out Analysis</h4>
         <p>Effect size when each study is removed:</p>
-        <div className="jp-jupyterlab-research-assistant-wwc-copilot-meta-analysis-studies">
-          <table className="jp-jupyterlab-research-assistant-wwc-copilot-table">
+        <div className="jp-WWCExtension-meta-analysis-studies">
+          <table className="jp-WWCExtension-table">
             <thead>
               <tr>
                 <th>Removed Study</th>
@@ -62,11 +62,11 @@ export const SensitivityAnalysisView: React.FC<
       </div>
 
       {/* Influence Diagnostics */}
-      <div className="jp-jupyterlab-research-assistant-wwc-copilot-sensitivity-influence">
+      <div className="jp-WWCExtension-sensitivity-influence">
         <h4>Influence Diagnostics</h4>
         <p>Studies ranked by influence on overall result:</p>
-        <div className="jp-jupyterlab-research-assistant-wwc-copilot-meta-analysis-studies">
-          <table className="jp-jupyterlab-research-assistant-wwc-copilot-table">
+        <div className="jp-WWCExtension-meta-analysis-studies">
+          <table className="jp-WWCExtension-table">
             <thead>
               <tr>
                 <th>Study</th>

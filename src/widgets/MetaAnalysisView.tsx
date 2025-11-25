@@ -10,31 +10,31 @@ export const MetaAnalysisView: React.FC<MetaAnalysisViewProps> = ({
   result
 }) => {
   return (
-    <div className="jp-jupyterlab-research-assistant-wwc-copilot-meta-analysis">
+    <div className="jp-WWCExtension-meta-analysis">
       <h3>Meta-Analysis Results</h3>
 
       {/* Summary Statistics */}
-      <div className="jp-jupyterlab-research-assistant-wwc-copilot-meta-analysis-summary">
-        <div className="jp-jupyterlab-research-assistant-wwc-copilot-meta-analysis-stat">
+      <div className="jp-WWCExtension-meta-analysis-summary">
+        <div className="jp-WWCExtension-meta-analysis-stat">
           <strong>Pooled Effect Size:</strong>
           <span>d = {formatNumber(result.pooled_effect, 3)}</span>
         </div>
-        <div className="jp-jupyterlab-research-assistant-wwc-copilot-meta-analysis-stat">
+        <div className="jp-WWCExtension-meta-analysis-stat">
           <strong>95% Confidence Interval:</strong>
           <span>{formatCI(result.ci_lower, result.ci_upper, 3)}</span>
         </div>
-        <div className="jp-jupyterlab-research-assistant-wwc-copilot-meta-analysis-stat">
+        <div className="jp-WWCExtension-meta-analysis-stat">
           <strong>P-value:</strong>
           <span>{formatNumber(result.p_value, 4)}</span>
         </div>
-        <div className="jp-jupyterlab-research-assistant-wwc-copilot-meta-analysis-stat">
+        <div className="jp-WWCExtension-meta-analysis-stat">
           <strong>I² (Heterogeneity):</strong>
           <span>
             {formatNumber(result.i_squared, 1)}% -{' '}
             {result.heterogeneity_interpretation || 'N/A'}
           </span>
         </div>
-        <div className="jp-jupyterlab-research-assistant-wwc-copilot-meta-analysis-stat">
+        <div className="jp-WWCExtension-meta-analysis-stat">
           <strong>Number of Studies:</strong>
           <span>{result.n_studies}</span>
         </div>
@@ -42,20 +42,20 @@ export const MetaAnalysisView: React.FC<MetaAnalysisViewProps> = ({
 
       {/* Forest Plot */}
       {result.forest_plot && (
-        <div className="jp-jupyterlab-research-assistant-wwc-copilot-meta-analysis-plot">
+        <div className="jp-WWCExtension-meta-analysis-plot">
           <h4>Forest Plot</h4>
           <img
             src={`data:image/png;base64,${result.forest_plot}`}
             alt="Forest Plot"
-            className="jp-jupyterlab-research-assistant-wwc-copilot-plot-image"
+            className="jp-WWCExtension-plot-image"
           />
         </div>
       )}
 
       {/* Individual Study Results */}
-      <div className="jp-jupyterlab-research-assistant-wwc-copilot-meta-analysis-studies">
+      <div className="jp-WWCExtension-meta-analysis-studies">
         <h4>Individual Studies</h4>
-        <table className="jp-jupyterlab-research-assistant-wwc-copilot-table">
+        <table className="jp-WWCExtension-table">
           <thead>
             <tr>
               <th>Study</th>

@@ -20,7 +20,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   searchButtonText = 'Search'
 }) => {
   return (
-    <div className="jp-jupyterlab-research-assistant-wwc-copilot-search-bar">
+    <div className="jp-WWCExtension-search-bar">
       <input
         type="text"
         value={query}
@@ -31,13 +31,13 @@ export const SearchBar: React.FC<SearchBarProps> = ({
           }
         }}
         placeholder={placeholder}
-        className="jp-jupyterlab-research-assistant-wwc-copilot-input"
+        className="jp-WWCExtension-input"
       />
       {additionalInputs}
       <button
         onClick={onSearch}
         disabled={isLoading || !query.trim()}
-        className="jp-jupyterlab-research-assistant-wwc-copilot-button"
+        className="jp-WWCExtension-button"
       >
         {isLoading ? 'Searching...' : searchButtonText}
       </button>

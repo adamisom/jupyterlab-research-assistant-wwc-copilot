@@ -50,7 +50,7 @@ export const DiscoveryTab: React.FC = () => {
   };
 
   return (
-    <div className="jp-jupyterlab-research-assistant-wwc-copilot-discovery">
+    <div className="jp-WWCExtension-discovery">
       <SearchBar
         query={query}
         onQueryChange={setQuery}
@@ -63,7 +63,7 @@ export const DiscoveryTab: React.FC = () => {
             value={year}
             onChange={e => setYear(e.target.value)}
             placeholder="Year (e.g., 2020-2024)"
-            className="jp-jupyterlab-research-assistant-wwc-copilot-input"
+            className="jp-WWCExtension-input"
           />
         }
       />
@@ -73,7 +73,7 @@ export const DiscoveryTab: React.FC = () => {
       {isLoading && <LoadingState />}
 
       {!isLoading && (
-        <div className="jp-jupyterlab-research-assistant-wwc-copilot-results">
+        <div className="jp-WWCExtension-results">
           {results.map(paper => (
             <PaperCard
               key={getPaperKey(paper)}

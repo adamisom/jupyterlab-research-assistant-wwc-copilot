@@ -141,39 +141,39 @@ const SynthesisWorkbenchComponent: React.FC<SynthesisWorkbenchProps> = ({
   };
 
   return (
-    <div className="jp-jupyterlab-research-assistant-wwc-copilot-synthesis">
-      <div className="jp-jupyterlab-research-assistant-wwc-copilot-synthesis-header">
+    <div className="jp-WWCExtension-synthesis">
+      <div className="jp-WWCExtension-synthesis-header">
         <h2>Synthesis Workbench ({paperIds.length} studies)</h2>
         {onClose && (
           <button
             onClick={onClose}
-            className="jp-jupyterlab-research-assistant-wwc-copilot-close"
+            className="jp-WWCExtension-close"
           >
             ×
           </button>
         )}
       </div>
 
-      <div className="jp-jupyterlab-research-assistant-wwc-copilot-synthesis-actions">
+      <div className="jp-WWCExtension-synthesis-actions">
         <button
           onClick={handleRunMetaAnalysis}
           disabled={isLoading}
-          className="jp-jupyterlab-research-assistant-wwc-copilot-button"
+          className="jp-WWCExtension-button"
         >
           Run Meta-Analysis
         </button>
         <button
           onClick={handleDetectConflicts}
           disabled={isLoading}
-          className="jp-jupyterlab-research-assistant-wwc-copilot-button"
+          className="jp-WWCExtension-button"
         >
           Detect Conflicts
         </button>
-        <div className="jp-jupyterlab-research-assistant-wwc-copilot-subgroup-controls">
+        <div className="jp-WWCExtension-subgroup-controls">
           <select
             value={subgroupVariable}
             onChange={e => setSubgroupVariable(e.target.value)}
-            className="jp-jupyterlab-research-assistant-wwc-copilot-select"
+            className="jp-WWCExtension-select"
           >
             <option value="">Select Subgroup Variable...</option>
             <option value="age_group">Age Group</option>
@@ -183,7 +183,7 @@ const SynthesisWorkbenchComponent: React.FC<SynthesisWorkbenchProps> = ({
           <button
             onClick={handleRunSubgroupAnalysis}
             disabled={isLoading || !subgroupVariable}
-            className="jp-jupyterlab-research-assistant-wwc-copilot-button"
+            className="jp-WWCExtension-button"
           >
             Run Subgroup Analysis
           </button>
@@ -191,21 +191,21 @@ const SynthesisWorkbenchComponent: React.FC<SynthesisWorkbenchProps> = ({
         <button
           onClick={handleAssessBias}
           disabled={isLoading || !metaAnalysisResult}
-          className="jp-jupyterlab-research-assistant-wwc-copilot-button"
+          className="jp-WWCExtension-button"
         >
           Assess Publication Bias
         </button>
         <button
           onClick={handleRunSensitivityAnalysis}
           disabled={isLoading || !metaAnalysisResult}
-          className="jp-jupyterlab-research-assistant-wwc-copilot-button"
+          className="jp-WWCExtension-button"
         >
           Sensitivity Analysis
         </button>
       </div>
 
       {isLoading && (
-        <div className="jp-jupyterlab-research-assistant-wwc-copilot-loading">
+        <div className="jp-WWCExtension-loading">
           Processing...
         </div>
       )}
@@ -230,7 +230,7 @@ const SynthesisWorkbenchComponent: React.FC<SynthesisWorkbenchProps> = ({
         onTabChange={(tabId: string) => setActiveTab(tabId as SynthesisTab)}
       />
 
-      <div className="jp-jupyterlab-research-assistant-wwc-copilot-synthesis-content">
+      <div className="jp-WWCExtension-synthesis-content">
         {activeTab === 'meta-analysis' && metaAnalysisResult && (
           <MetaAnalysisView result={metaAnalysisResult} />
         )}
@@ -251,7 +251,7 @@ const SynthesisWorkbenchComponent: React.FC<SynthesisWorkbenchProps> = ({
           !subgroupResult &&
           !biasResult &&
           !sensitivityResult && (
-            <div className="jp-jupyterlab-research-assistant-wwc-copilot-synthesis-empty">
+            <div className="jp-WWCExtension-synthesis-empty">
               Click "Run Meta-Analysis" or "Detect Conflicts" to begin.
             </div>
           )}
@@ -267,7 +267,7 @@ export class SynthesisWorkbench extends ReactWidget {
     super();
     this.paperIds = paperIds;
     this.addClass(
-      'jp-jupyterlab-research-assistant-wwc-copilot-synthesis-widget'
+      'jp-WWCExtension-synthesis-widget'
     );
     this.id = 'synthesis-workbench';
     this.title.label = 'Synthesis Workbench';
