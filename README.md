@@ -4,6 +4,11 @@
 
 A JupyterLab extension for academic research management and WWC quality assessment
 
+This extension provides two main features:
+
+- **Research Library & Discovery Engine** (Stage 1 - ✅ Complete): Discover, import, and manage academic papers with Semantic Scholar integration, PDF parsing, and AI-powered metadata extraction
+- **WWC Co-Pilot & Synthesis Engine** (Stage 2 - 📋 Implementation Guide Available): Perform rigorous WWC quality assessments, meta-analysis, and conflict detection across multiple studies
+
 This extension is composed of a Python package named `jupyterlab_research_assistant_wwc_copilot`
 for the server extension and a NPM package named `jupyterlab-research-assistant-wwc-copilot`
 for the frontend extension.
@@ -11,6 +16,15 @@ for the frontend extension.
 ## Requirements
 
 - JupyterLab >= 4.0.0
+- Python >= 3.9
+- Node.js (for development)
+
+### Optional Dependencies
+
+For advanced features:
+
+- **AI Metadata Extraction**: Requires API keys for Claude, OpenAI, or local Ollama instance
+- **Conflict Detection**: Requires `transformers` library (optional, can be installed separately)
 
 ## Install
 
@@ -179,6 +193,52 @@ You can edit `AGENTS.md` to add project-specific conventions or adjust guideline
 
 **Note**: `AGENTS.md` is living documentation. Update it when you change conventions, add dependencies, or discover new patterns. Include `AGENTS.md` updates in commits that modify workflows or coding standards.
 
-### Packaging the extension
+## Documentation
+
+Comprehensive documentation is available in the [`docs/`](./docs/) directory:
+
+### Implementation Guides
+
+- **[Stage 2 Implementation Guide](./docs/stage-2-implementation-guide.md)** ⭐ **START HERE FOR STAGE 2**
+  - Step-by-step guide for implementing WWC Co-Pilot & Synthesis Engine features
+  - Complete project structure, backend/frontend implementation, testing checkpoints
+  - **Note**: Stage 1 (Research Library) is complete. See master-plan.md for Stage 1 details.
+
+### Reference Documentation
+
+- **[Master Plan](./docs/master-plan.md)**: High-level project architecture and feature breakdown
+- **[JupyterLab Architecture](./docs/jupyterlab-architecture.md)**: Deep dive into JupyterLab extension patterns
+- **[Quick Reference](./docs/quick-reference.md)**: Essential commands for building and testing
+- **[Getting Started](./docs/getting-started.md)**: JupyterLab core development environment setup (for understanding JupyterLab, not this extension)
+
+### Key Naming Conventions
+
+- **Python package**: `jupyterlab_research_assistant_wwc_copilot` (underscores)
+- **NPM package**: `jupyterlab-research-assistant-wwc-copilot` (dashes)
+- **Plugin ID**: `jupyterlab-research-assistant-wwc-copilot:plugin`
+- **Command IDs**: `jupyterlab-research-assistant-wwc-copilot:command-name`
+- **API Routes**: `/jupyterlab-research-assistant-wwc-copilot/endpoint-name`
+
+### Implementation Workflow
+
+1. **Setup** (one-time):
+
+   ```bash
+   pip install -e ".[dev,test]"
+   jupyter labextension develop . --overwrite
+   jupyter server extension enable jupyterlab_research_assistant_wwc_copilot
+   ```
+
+2. **Development**:
+   - Frontend: `jlpm watch` (auto-rebuilds) + refresh browser
+   - Backend: Make changes + restart JupyterLab
+
+3. **Testing**: Follow checkpoints in `stage-2-implementation-guide.md` after each feature
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for a detailed list of changes.
+
+## Packaging the extension
 
 See [RELEASE](RELEASE.md)
