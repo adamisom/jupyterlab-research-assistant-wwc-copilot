@@ -111,9 +111,25 @@ export async function importPaper(paper: IPaper): Promise<IPaper> {
   return response.data;
 }
 
-export async function importPDF(file: File): Promise<IPaper> {
+export async function importPDF(
+  file: File,
+  aiConfig?: {
+    enabled?: boolean;
+    provider?: string;
+    apiKey?: string;
+    model?: string;
+    ollamaUrl?: string;
+  }
+): Promise<IPaper> {
   const formData = new FormData();
   formData.append('file', file);
+  if (aiConfig) {
+    // Append as a file-like object so backend can read it from request.files
+    const aiConfigBlob = new Blob([JSON.stringify(aiConfig)], {
+      type: 'application/json'
+    });
+    formData.append('aiConfig', aiConfigBlob, 'aiConfig.json');
+  }
 
   const response = await requestAPI<IAPIResponse<IPaper>>('import', {
     method: 'POST',

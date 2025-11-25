@@ -61,6 +61,8 @@ export const LibraryTab: React.FC = () => {
     setError(null);
 
     try {
+      // Get AI config from settings if available
+      // For now, pass undefined - settings will be read on backend
       const importedPaper = await importPDF(file);
       // Refresh library to show new paper
       await loadLibrary();

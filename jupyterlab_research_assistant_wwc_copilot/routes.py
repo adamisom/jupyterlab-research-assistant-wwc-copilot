@@ -162,7 +162,23 @@ class ImportHandler(APIHandler):
             }
 
             # AI extraction (if enabled)
-            ai_config = self._get_ai_config()
+            # Try to get from form data first (passed from frontend), then fall back to settings
+            ai_config = None
+            if "aiConfig" in self.request.files:
+                try:
+                    ai_config_data = self.request.files["aiConfig"][0]["body"]
+                    if isinstance(ai_config_data, bytes):
+                        ai_config_str = ai_config_data.decode("utf-8")
+                    else:
+                        ai_config_str = str(ai_config_data)
+                    ai_config = json.loads(ai_config_str)
+                except (json.JSONDecodeError, KeyError, IndexError, TypeError):
+                    pass
+            
+            # Fall back to settings if not provided in request
+            if not ai_config:
+                ai_config = self._get_ai_config()
+            
             if ai_config and ai_config.get("enabled"):
                 try:
                     extractor = AIExtractor(

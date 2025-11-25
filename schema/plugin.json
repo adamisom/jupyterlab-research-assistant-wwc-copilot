@@ -1,5 +1,11 @@
 {
-  "jupyter.lab.shortcuts": [],
+  "jupyter.lab.shortcuts": [
+    {
+      "command": "jupyterlab-research-assistant-wwc-copilot:open-library",
+      "keys": ["Ctrl Shift R"],
+      "selector": "body"
+    }
+  ],
   "title": "Research Assistant",
   "description": "Settings for the Research Assistant extension",
   "type": "object",
