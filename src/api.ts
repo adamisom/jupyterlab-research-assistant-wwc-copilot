@@ -149,14 +149,11 @@ export async function exportLibrary(
 
   // Download file
   const blob = await response.blob();
-  const downloadUrl = window.URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = downloadUrl;
-  a.download = `library.${format === 'bibtex' ? 'bib' : format}`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  window.URL.revokeObjectURL(downloadUrl);
+  const { downloadBlob } = await import('./utils/download');
+  downloadBlob(
+    blob,
+    `library.${format === 'bibtex' ? 'bib' : format}`
+  );
 }
 
 // WWC Assessment Types and Functions
@@ -196,15 +193,7 @@ export async function runWWCAssessment(
     }
   );
 
-  if (response.status === 'error') {
-    throw new Error(response.message || 'WWC assessment failed');
-  }
-
-  if (!response.data) {
-    throw new Error('No assessment data returned');
-  }
-
-  return response.data;
+  return handleAPIResponse(response, 'WWC assessment failed');
 }
 
 // Meta-Analysis Types and Functions
@@ -248,15 +237,7 @@ export async function performMetaAnalysis(
     }
   );
 
-  if (response.status === 'error') {
-    throw new Error(response.message || 'Meta-analysis failed');
-  }
-
-  if (!response.data) {
-    throw new Error('No meta-analysis data returned');
-  }
-
-  return response.data;
+  return handleAPIResponse(response, 'Meta-analysis failed');
 }
 
 // Conflict Detection Types and Functions
@@ -290,13 +271,5 @@ export async function detectConflicts(
     }
   );
 
-  if (response.status === 'error') {
-    throw new Error(response.message || 'Conflict detection failed');
-  }
-
-  if (!response.data) {
-    throw new Error('No conflict detection data returned');
-  }
-
-  return response.data;
+  return handleAPIResponse(response, 'Conflict detection failed');
 }

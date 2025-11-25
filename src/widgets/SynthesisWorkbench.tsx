@@ -8,14 +8,15 @@ import {
 } from '../api';
 import { MetaAnalysisView } from './MetaAnalysisView';
 import { ConflictView } from './ConflictView';
-import { showErrorMessage } from '@jupyterlab/apputils';
+import { showError } from '../utils/notifications';
+import { Tabs } from './Tabs';
 
-interface ISynthesisWorkbenchProps {
+interface SynthesisWorkbenchProps {
   paperIds: number[];
   onClose?: () => void;
 }
 
-const SynthesisWorkbenchComponent: React.FC<ISynthesisWorkbenchProps> = ({
+const SynthesisWorkbenchComponent: React.FC<SynthesisWorkbenchProps> = ({
   paperIds,
   onClose
 }) => {
@@ -35,9 +36,10 @@ const SynthesisWorkbenchComponent: React.FC<ISynthesisWorkbenchProps> = ({
       setMetaAnalysisResult(result);
       setActiveTab('meta-analysis');
     } catch (err) {
-      showErrorMessage(
+      showError(
         'Meta-Analysis Error',
-        err instanceof Error ? err.message : 'Unknown error'
+        err instanceof Error ? err.message : 'Unknown error',
+        err instanceof Error ? err : undefined
       );
     } finally {
       setIsLoading(false);
@@ -51,9 +53,10 @@ const SynthesisWorkbenchComponent: React.FC<ISynthesisWorkbenchProps> = ({
       setConflictResult(result);
       setActiveTab('conflicts');
     } catch (err) {
-      showErrorMessage(
+      showError(
         'Conflict Detection Error',
-        err instanceof Error ? err.message : 'Unknown error'
+        err instanceof Error ? err.message : 'Unknown error',
+        err instanceof Error ? err : undefined
       );
     } finally {
       setIsLoading(false);
@@ -97,28 +100,18 @@ const SynthesisWorkbenchComponent: React.FC<ISynthesisWorkbenchProps> = ({
         </div>
       )}
 
-      <div className="jp-jupyterlab-research-assistant-wwc-copilot-synthesis-tabs">
-        <button
-          className={
-            activeTab === 'meta-analysis'
-              ? 'jp-jupyterlab-research-assistant-wwc-copilot-tab-active'
-              : 'jp-jupyterlab-research-assistant-wwc-copilot-tab'
+      <Tabs
+        tabs={[
+          { id: 'meta-analysis', label: 'Meta-Analysis' },
+          {
+            id: 'conflicts',
+            label: 'Conflicts',
+            badge: conflictResult?.n_contradictions || 0
           }
-          onClick={() => setActiveTab('meta-analysis')}
-        >
-          Meta-Analysis
-        </button>
-        <button
-          className={
-            activeTab === 'conflicts'
-              ? 'jp-jupyterlab-research-assistant-wwc-copilot-tab-active'
-              : 'jp-jupyterlab-research-assistant-wwc-copilot-tab'
-          }
-          onClick={() => setActiveTab('conflicts')}
-        >
-          Conflicts ({conflictResult?.n_contradictions || 0})
-        </button>
-      </div>
+        ]}
+        activeTab={activeTab}
+        onTabChange={(tabId: string) => setActiveTab(tabId as 'meta-analysis' | 'conflicts')}
+      />
 
       <div className="jp-jupyterlab-research-assistant-wwc-copilot-synthesis-content">
         {activeTab === 'meta-analysis' && metaAnalysisResult && (

@@ -1,3 +1,5 @@
+import { ServerConnection } from '@jupyterlab/services';
+
 /**
  * Retry a function with exponential backoff.
  * @param fn - Function to retry
@@ -19,8 +21,8 @@ export async function retryWithBackoff<T>(
       lastError = error instanceof Error ? error : new Error(String(error));
 
       // Don't retry on 4xx errors (client errors)
-      if (error instanceof Error && 'status' in error) {
-        const status = (error as any).status;
+      if (error instanceof ServerConnection.ResponseError) {
+        const status = error.response.status;
         if (status >= 400 && status < 500) {
           throw error;
         }

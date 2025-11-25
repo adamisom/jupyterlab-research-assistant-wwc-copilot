@@ -1,11 +1,12 @@
 import React from 'react';
 import { IConflictDetectionResult } from '../api';
+import { formatPercent } from '../utils/format';
 
-interface IConflictViewProps {
+interface ConflictViewProps {
   result: IConflictDetectionResult;
 }
 
-export const ConflictView: React.FC<IConflictViewProps> = ({ result }) => {
+export const ConflictView: React.FC<ConflictViewProps> = ({ result }) => {
   return (
     <div className="jp-jupyterlab-research-assistant-wwc-copilot-conflicts">
       <h3>Conflict Detection Results</h3>
@@ -31,7 +32,7 @@ export const ConflictView: React.FC<IConflictViewProps> = ({ result }) => {
               <div className="jp-jupyterlab-research-assistant-wwc-copilot-conflict-header">
                 <strong>Contradiction #{idx + 1}</strong>
                 <span>
-                  Confidence: {(conflict.confidence * 100).toFixed(1)}%
+                  Confidence: {formatPercent(conflict.confidence, 1)}
                 </span>
               </div>
               {conflict.paper1_title && conflict.paper2_title && (

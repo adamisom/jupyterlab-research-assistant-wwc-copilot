@@ -13,6 +13,7 @@ import { ErrorDisplay } from './ErrorDisplay';
 import { LoadingState } from './LoadingState';
 import { DetailView } from './DetailView';
 import { getPaperKey } from '../utils/paper';
+import { AppEvents } from '../utils/events';
 
 export const LibraryTab: React.FC = () => {
   const [papers, setPapers] = useState<IPaper[]>([]);
@@ -121,15 +122,9 @@ export const LibraryTab: React.FC = () => {
   };
 
   const handleOpenSynthesis = () => {
-    // This will be wired up to the command in Phase 2.12
     const paperIds = Array.from(selectedPapers);
     if (paperIds.length >= 2) {
-      // Dispatch custom event that will be handled by the plugin
-      window.dispatchEvent(
-        new CustomEvent('open-synthesis-workbench', {
-          detail: { paperIds }
-        })
-      );
+      AppEvents.dispatchOpenSynthesisWorkbench(paperIds);
     }
   };
 

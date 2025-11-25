@@ -1,11 +1,12 @@
 import React from 'react';
 import { IMetaAnalysisResult } from '../api';
+import { formatPercent, formatNumber, formatCI } from '../utils/format';
 
-interface IMetaAnalysisViewProps {
+interface MetaAnalysisViewProps {
   result: IMetaAnalysisResult;
 }
 
-export const MetaAnalysisView: React.FC<IMetaAnalysisViewProps> = ({
+export const MetaAnalysisView: React.FC<MetaAnalysisViewProps> = ({
   result
 }) => {
   return (
@@ -16,22 +17,20 @@ export const MetaAnalysisView: React.FC<IMetaAnalysisViewProps> = ({
       <div className="jp-jupyterlab-research-assistant-wwc-copilot-meta-analysis-summary">
         <div className="jp-jupyterlab-research-assistant-wwc-copilot-meta-analysis-stat">
           <strong>Pooled Effect Size:</strong>
-          <span>d = {result.pooled_effect.toFixed(3)}</span>
+          <span>d = {formatNumber(result.pooled_effect, 3)}</span>
         </div>
         <div className="jp-jupyterlab-research-assistant-wwc-copilot-meta-analysis-stat">
           <strong>95% Confidence Interval:</strong>
-          <span>
-            [{result.ci_lower.toFixed(3)}, {result.ci_upper.toFixed(3)}]
-          </span>
+          <span>{formatCI(result.ci_lower, result.ci_upper, 3)}</span>
         </div>
         <div className="jp-jupyterlab-research-assistant-wwc-copilot-meta-analysis-stat">
           <strong>P-value:</strong>
-          <span>{result.p_value.toFixed(4)}</span>
+          <span>{formatNumber(result.p_value, 4)}</span>
         </div>
         <div className="jp-jupyterlab-research-assistant-wwc-copilot-meta-analysis-stat">
           <strong>I² (Heterogeneity):</strong>
           <span>
-            {result.i_squared.toFixed(1)}% -{' '}
+            {formatNumber(result.i_squared, 1)}% -{' '}
             {result.heterogeneity_interpretation || 'N/A'}
           </span>
         </div>
@@ -69,11 +68,9 @@ export const MetaAnalysisView: React.FC<IMetaAnalysisViewProps> = ({
             {result.studies.map((study, idx) => (
               <tr key={idx}>
                 <td>{study.study_label}</td>
-                <td>{study.effect_size.toFixed(3)}</td>
-                <td>
-                  [{study.ci_lower.toFixed(3)}, {study.ci_upper.toFixed(3)}]
-                </td>
-                <td>{(study.weight * 100).toFixed(1)}%</td>
+                <td>{formatNumber(study.effect_size, 3)}</td>
+                <td>{formatCI(study.ci_lower, study.ci_upper, 3)}</td>
+                <td>{formatPercent(study.weight, 1)}</td>
               </tr>
             ))}
           </tbody>

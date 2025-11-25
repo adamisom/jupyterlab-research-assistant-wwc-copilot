@@ -4,21 +4,22 @@ import {
   IWWCAssessment,
   IWWCAssessmentRequest
 } from '../api';
-import { showErrorMessage } from '@jupyterlab/apputils';
+import { showError } from '../utils/notifications';
+import { useAsyncOperation } from '../utils/hooks';
+import { formatPercent, formatNumber } from '../utils/format';
 
-interface IWWCCoPilotProps {
+interface WWCCoPilotProps {
   paperId: number;
   paperTitle: string;
   onClose?: () => void;
 }
 
-export const WWCCoPilot: React.FC<IWWCCoPilotProps> = ({
+export const WWCCoPilot: React.FC<WWCCoPilotProps> = ({
   paperId,
   paperTitle,
   onClose
 }) => {
   const [assessment, setAssessment] = useState<IWWCAssessment | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
   const [judgments, setJudgments] = useState<
     IWWCAssessmentRequest['judgments']
   >({
@@ -27,28 +28,44 @@ export const WWCCoPilot: React.FC<IWWCCoPilotProps> = ({
     randomization_documented: undefined
   });
 
+  const runAssessmentWithRequest = async (
+    paperId: number,
+    judgments: IWWCAssessmentRequest['judgments']
+  ): Promise<IWWCAssessment> => {
+    const request: IWWCAssessmentRequest = {
+      paper_id: paperId,
+      judgments
+    };
+    return await runWWCAssessment(request);
+  };
+
+  const [isLoading, executeAssessment, assessmentError] = useAsyncOperation(
+    runAssessmentWithRequest
+  );
+
   useEffect(() => {
+    const runAssessment = async () => {
+      const result = await executeAssessment(paperId, judgments);
+      if (result) {
+        setAssessment(result);
+      }
+    };
     runAssessment();
+    // Note: assessmentError is handled by the hook's error state
+    // We don't need it in dependencies as it's updated by the hook
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [paperId, judgments]);
 
-  const runAssessment = async () => {
-    setIsLoading(true);
-    try {
-      const request: IWWCAssessmentRequest = {
-        paper_id: paperId,
-        judgments
-      };
-      const result = await runWWCAssessment(request);
-      setAssessment(result);
-    } catch (err) {
-      showErrorMessage(
+  // Handle errors separately to avoid dependency issues
+  useEffect(() => {
+    if (assessmentError) {
+      showError(
         'WWC Assessment Error',
-        err instanceof Error ? err.message : 'Unknown error'
+        assessmentError.message,
+        assessmentError
       );
-    } finally {
-      setIsLoading(false);
     }
-  };
+  }, [assessmentError]);
 
   const getRatingColor = (rating: string) => {
     if (rating.includes('Without Reservations')) {
@@ -180,12 +197,14 @@ export const WWCCoPilot: React.FC<IWWCCoPilotProps> = ({
               <div className="jp-jupyterlab-research-assistant-wwc-copilot-wwc-section">
                 <h4>Attrition</h4>
                 <p>
-                  Overall: {(assessment.overall_attrition * 100).toFixed(1)}%
+                  Overall: {formatPercent(assessment.overall_attrition, 1)}
                 </p>
                 {assessment.differential_attrition !== undefined && (
                   <p>
-                    Differential:{' '}
-                    {(assessment.differential_attrition * 100).toFixed(1)}%
+                    Differential: {formatPercent(
+                      assessment.differential_attrition,
+                      1
+                    )}
                   </p>
                 )}
                 {assessment.is_high_attrition !== undefined && (
@@ -207,7 +226,7 @@ export const WWCCoPilot: React.FC<IWWCCoPilotProps> = ({
                 <h4>Baseline Equivalence</h4>
                 <p>
                   Effect Size (Cohen's d):{' '}
-                  {assessment.baseline_effect_size.toFixed(3)}
+                  {formatNumber(assessment.baseline_effect_size, 3)}
                 </p>
                 {assessment.baseline_equivalence_satisfied !== undefined && (
                   <p>

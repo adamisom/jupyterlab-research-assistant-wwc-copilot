@@ -1,11 +1,11 @@
 import React from 'react';
 import { SkeletonLoader } from './SkeletonLoader';
 
-interface ILoadingStateProps {
+interface LoadingStateProps {
   count?: number;
 }
 
-export const LoadingState: React.FC<ILoadingStateProps> = ({ count = 3 }) => {
+export const LoadingState: React.FC<LoadingStateProps> = ({ count = 3 }) => {
   return (
     <div>
       {Array.from({ length: count }).map((_, index) => (

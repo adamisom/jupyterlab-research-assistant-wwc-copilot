@@ -1,6 +1,6 @@
 import React from 'react';
 
-interface ISearchBarProps {
+interface SearchBarProps {
   query: string;
   onQueryChange: (query: string) => void;
   onSearch: () => void;
@@ -10,7 +10,7 @@ interface ISearchBarProps {
   searchButtonText?: string;
 }
 
-export const SearchBar: React.FC<ISearchBarProps> = ({
+export const SearchBar: React.FC<SearchBarProps> = ({
   query,
   onQueryChange,
   onSearch,

@@ -45,22 +45,30 @@ export async function requestAPI<T>(
       settings
     );
   } catch (error) {
-    throw new ServerConnection.NetworkError(error as any);
+    // NetworkError constructor accepts unknown error type
+    const networkError =
+      error instanceof TypeError ? error : new TypeError(String(error));
+    throw new ServerConnection.NetworkError(networkError);
   }
 
-  let data: any = await response.text();
+  let dataText = await response.text();
+  let data: unknown = dataText;
 
-  if (data.length > 0) {
+  if (dataText.length > 0) {
     try {
-      data = JSON.parse(data);
+      data = JSON.parse(dataText);
     } catch (error) {
       console.error('Not a JSON response body.', response, error);
     }
   }
 
   if (!response.ok) {
-    throw new ServerConnection.ResponseError(response, data.message || data);
+    const errorMessage =
+      (data && typeof data === 'object' && 'message' in data
+        ? String((data as { message: unknown }).message)
+        : String(data)) || 'Request failed';
+    throw new ServerConnection.ResponseError(response, errorMessage);
   }
 
-  return data;
+  return data as T;
 }

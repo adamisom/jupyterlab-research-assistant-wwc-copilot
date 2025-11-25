@@ -1,12 +1,15 @@
 import React from 'react';
 import { IPaper } from '../api';
+import { AppEvents } from '../utils/events';
+import { Tabs } from './Tabs';
+import { formatNumber } from '../utils/format';
 
-interface IDetailViewProps {
+interface DetailViewProps {
   paper: IPaper;
   onClose: () => void;
 }
 
-export const DetailView: React.FC<IDetailViewProps> = ({ paper, onClose }) => {
+export const DetailView: React.FC<DetailViewProps> = ({ paper, onClose }) => {
   const [activeTab, setActiveTab] = React.useState<
     'overview' | 'study' | 'learning' | 'wwc'
   >('overview');
@@ -40,30 +43,22 @@ export const DetailView: React.FC<IDetailViewProps> = ({ paper, onClose }) => {
         </div>
       </div>
 
-      <div className="jp-jupyterlab-research-assistant-wwc-copilot-detail-tabs">
-        <button
-          className={activeTab === 'overview' ? 'active' : ''}
-          onClick={() => setActiveTab('overview')}
-        >
-          Overview
-        </button>
-        {paper.study_metadata && (
-          <button
-            className={activeTab === 'study' ? 'active' : ''}
-            onClick={() => setActiveTab('study')}
-          >
-            Study Metadata
-          </button>
-        )}
-        {paper.learning_science_metadata && (
-          <button
-            className={activeTab === 'learning' ? 'active' : ''}
-            onClick={() => setActiveTab('learning')}
-          >
-            Learning Science
-          </button>
-        )}
-      </div>
+      <Tabs
+        tabs={[
+          { id: 'overview', label: 'Overview' },
+          ...(paper.study_metadata
+            ? [{ id: 'study', label: 'Study Metadata' }]
+            : []),
+          ...(paper.learning_science_metadata
+            ? [{ id: 'learning', label: 'Learning Science' }]
+            : [])
+        ]}
+        activeTab={activeTab}
+        onTabChange={(tabId: string) => setActiveTab(tabId as 'overview' | 'study' | 'learning' | 'wwc')}
+        className="jp-jupyterlab-research-assistant-wwc-copilot-detail-tabs"
+        activeClassName="active"
+        inactiveClassName=""
+      />
 
       <div className="jp-jupyterlab-research-assistant-wwc-copilot-detail-content">
         {activeTab === 'overview' && (
@@ -108,8 +103,8 @@ export const DetailView: React.FC<IDetailViewProps> = ({ paper, onClose }) => {
                       ([outcome, es]) => (
                         <tr key={outcome}>
                           <td>{outcome}</td>
-                          <td>{es.d.toFixed(2)}</td>
-                          <td>{es.se.toFixed(2)}</td>
+                          <td>{formatNumber(es.d, 2)}</td>
+                          <td>{formatNumber(es.se, 2)}</td>
                         </tr>
                       )
                     )}
@@ -144,15 +139,7 @@ export const DetailView: React.FC<IDetailViewProps> = ({ paper, onClose }) => {
         {paper.id !== undefined && (
           <button
             onClick={() => {
-              // Dispatch custom event to open WWC Co-Pilot
-              window.dispatchEvent(
-                new CustomEvent('open-wwc-copilot', {
-                  detail: {
-                    paperId: paper.id,
-                    paperTitle: paper.title
-                  }
-                })
-              );
+              AppEvents.dispatchOpenWWCCopilot(paper.id!, paper.title);
             }}
             className="jp-jupyterlab-research-assistant-wwc-copilot-button"
           >

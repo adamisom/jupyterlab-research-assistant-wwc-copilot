@@ -1,7 +1,7 @@
 import React from 'react';
 import { IPaper } from '../api';
 
-interface IPaperCardProps {
+interface PaperCardProps {
   paper: IPaper;
   onImport?: () => void;
   onViewDetails?: () => void;
@@ -9,7 +9,7 @@ interface IPaperCardProps {
   onToggleSelection?: () => void;
 }
 
-export const PaperCard: React.FC<IPaperCardProps> = ({
+export const PaperCard: React.FC<PaperCardProps> = ({
   paper,
   onImport,
   onViewDetails,

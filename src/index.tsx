@@ -12,15 +12,16 @@ import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
 import {
   Dialog,
   showDialog,
-  ReactWidget,
-  showErrorMessage
+  ReactWidget
 } from '@jupyterlab/apputils';
+import { ReadonlyPartialJSONObject } from '@lumino/coreutils';
 import { requestAPI } from './request';
 import { ResearchLibraryPanel } from './widgets/ResearchLibraryPanel';
 import { SynthesisWorkbench } from './widgets/SynthesisWorkbench';
 import { WWCCoPilot } from './widgets/WWCCoPilot';
 import { exportLibrary, importPDF } from './api';
 import { showError, showSuccess } from './utils/notifications';
+import { AppEvents } from './utils/events';
 
 /**
  * Initialization data for the jupyterlab-research-assistant-wwc-copilot extension.
@@ -48,7 +49,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
     );
 
     // Store settings for use in commands
-    let aiConfig: any = null;
+    let aiConfig: ReadonlyPartialJSONObject | null = null;
     if (settingRegistry) {
       settingRegistry
         .load(plugin.id)
@@ -58,9 +59,13 @@ const plugin: JupyterFrontEndPlugin<void> = {
             settings.composite
           );
           // Extract AI extraction config
-          const composite = settings.composite as any;
-          if (composite.aiExtraction) {
-            aiConfig = composite.aiExtraction;
+          const composite = settings.composite as ReadonlyPartialJSONObject;
+          if (
+            composite &&
+            'aiExtraction' in composite &&
+            composite.aiExtraction
+          ) {
+            aiConfig = composite.aiExtraction as ReadonlyPartialJSONObject;
           }
         })
         .catch(reason => {
@@ -129,7 +134,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
             const file = (e.target as HTMLInputElement).files?.[0];
             if (file) {
               try {
-                await importPDF(file, aiConfig);
+                await importPDF(file, aiConfig || undefined);
                 showSuccess(
                   'PDF Imported',
                   `Successfully imported: ${file.name}`
@@ -199,10 +204,10 @@ const plugin: JupyterFrontEndPlugin<void> = {
       'jupyterlab-research-assistant-wwc-copilot:open-synthesis',
       {
         label: 'Open Synthesis Workbench',
-        execute: (args: any) => {
+        execute: (args: ReadonlyPartialJSONObject) => {
           const paperIds = (args.paperIds as number[]) || [];
           if (paperIds.length < 2) {
-            showErrorMessage(
+            showError(
               'Synthesis Workbench',
               'Please select at least 2 papers'
             );
@@ -221,11 +226,11 @@ const plugin: JupyterFrontEndPlugin<void> = {
       'jupyterlab-research-assistant-wwc-copilot:open-wwc',
       {
         label: 'Open WWC Co-Pilot',
-        execute: (args: any) => {
+        execute: (args: ReadonlyPartialJSONObject) => {
           const paperId = args.paperId as number;
           const paperTitle = (args.paperTitle as string) || 'Paper';
           if (!paperId) {
-            showErrorMessage('WWC Co-Pilot', 'Paper ID is required');
+            showError('WWC Co-Pilot', 'Paper ID is required');
             return;
           }
 
@@ -255,32 +260,27 @@ const plugin: JupyterFrontEndPlugin<void> = {
     );
 
     // Listen for custom event from LibraryTab to open synthesis workbench
-    window.addEventListener('open-synthesis-workbench', ((
-      event: CustomEvent
-    ) => {
-      const paperIds = event.detail?.paperIds as number[];
-      if (paperIds && paperIds.length >= 2) {
+    AppEvents.onOpenSynthesisWorkbench(detail => {
+      if (detail.paperIds && detail.paperIds.length >= 2) {
         app.commands.execute(
           'jupyterlab-research-assistant-wwc-copilot:open-synthesis',
-          { paperIds }
+          { paperIds: detail.paperIds }
         );
       }
-    }) as EventListener);
+    });
 
     // Listen for custom event from DetailView to open WWC Co-Pilot
-    window.addEventListener('open-wwc-copilot', ((event: CustomEvent) => {
-      const paperId = event.detail?.paperId as number;
-      const paperTitle = event.detail?.paperTitle as string;
-      if (paperId) {
+    AppEvents.onOpenWWCCopilot(detail => {
+      if (detail.paperId) {
         app.commands.execute(
           'jupyterlab-research-assistant-wwc-copilot:open-wwc',
           {
-            paperId,
-            paperTitle: paperTitle || 'Paper'
+            paperId: detail.paperId,
+            paperTitle: detail.paperTitle || 'Paper'
           }
         );
       }
-    }) as EventListener);
+    });
 
     // Add to command palette
     if (palette) {
@@ -315,8 +315,8 @@ const plugin: JupyterFrontEndPlugin<void> = {
         'jupyterlab-research-assistant-wwc-copilot:import-pdf-from-browser',
         {
           label: 'Import to Research Library',
-          execute: async args => {
-            const path = (args as any).path as string;
+          execute: async (args: ReadonlyPartialJSONObject) => {
+            const path = args.path as string | undefined;
             if (!path || !path.endsWith('.pdf')) {
               return;
             }
@@ -344,7 +344,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
                 type: 'application/pdf'
               });
 
-              await importPDF(pdfFile, aiConfig);
+              await importPDF(pdfFile, aiConfig || undefined);
               showSuccess(
                 'PDF Imported',
                 `Successfully imported: ${fileData.name}`
@@ -356,8 +356,8 @@ const plugin: JupyterFrontEndPlugin<void> = {
               );
             }
           },
-          isEnabled: args => {
-            const path = (args as any).path as string;
+          isEnabled: (args: ReadonlyPartialJSONObject) => {
+            const path = args.path as string | undefined;
             return path ? path.endsWith('.pdf') : false;
           }
         }
@@ -373,7 +373,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
       });
     }
 
-    requestAPI<any>('hello')
+    requestAPI<{ message: string }>('hello')
       .then(data => {
         console.log(data);
       })
