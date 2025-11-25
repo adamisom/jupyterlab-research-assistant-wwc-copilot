@@ -31,6 +31,35 @@ class SemanticScholarAPI:
             time.sleep(self.min_request_interval - time_since_last)
         self.last_request_time = time.time()
 
+    def _transform_paper(self, paper: Dict, include_references: bool = False) -> Dict:
+        """
+        Transform Semantic Scholar paper format to our internal format.
+
+        Args:
+            paper: Paper dictionary from Semantic Scholar API
+            include_references: Whether to include reference_count field
+
+        Returns:
+            Transformed paper dictionary
+        """
+        result = {
+            "paperId": paper.get("paperId"),
+            "title": paper.get("title", ""),
+            "authors": [a.get("name", "") for a in paper.get("authors", [])],
+            "year": paper.get("year"),
+            "abstract": paper.get("abstract", ""),
+            "doi": paper.get("doi"),
+            "citation_count": paper.get("citationCount", 0),
+            "open_access_pdf": (
+                paper.get("openAccessPdf", {}).get("url")
+                if paper.get("openAccessPdf")
+                else None
+            )
+        }
+        if include_references:
+            result["reference_count"] = paper.get("referenceCount", 0)
+        return result
+
     def search_papers(
         self,
         query: str,
@@ -78,22 +107,10 @@ class SemanticScholarAPI:
             data = response.json()
 
             # Transform to our format
-            papers = []
-            for paper in data.get("data", []):
-                papers.append({
-                    "paperId": paper.get("paperId"),
-                    "title": paper.get("title", ""),
-                    "authors": [a.get("name", "") for a in paper.get("authors", [])],
-                    "year": paper.get("year"),
-                    "abstract": paper.get("abstract", ""),
-                    "doi": paper.get("doi"),
-                    "citation_count": paper.get("citationCount", 0),
-                    "open_access_pdf": (
-                        paper.get("openAccessPdf", {}).get("url")
-                        if paper.get("openAccessPdf")
-                        else None
-                    )
-                })
+            papers = [
+                self._transform_paper(paper)
+                for paper in data.get("data", [])
+            ]
 
             return {
                 "data": papers,
@@ -135,21 +152,7 @@ class SemanticScholarAPI:
             response.raise_for_status()
             paper = response.json()
 
-            return {
-                "paperId": paper.get("paperId"),
-                "title": paper.get("title", ""),
-                "authors": [a.get("name", "") for a in paper.get("authors", [])],
-                "year": paper.get("year"),
-                "abstract": paper.get("abstract", ""),
-                "doi": paper.get("doi"),
-                "citation_count": paper.get("citationCount", 0),
-                "reference_count": paper.get("referenceCount", 0),
-                "open_access_pdf": (
-                    paper.get("openAccessPdf", {}).get("url")
-                    if paper.get("openAccessPdf")
-                    else None
-                )
-            }
+            return self._transform_paper(paper, include_references=True)
         except requests.exceptions.RequestException as e:
             raise Exception(f"Semantic Scholar API error: {str(e)}") from e
 

@@ -2,6 +2,7 @@ import { URLExt } from '@jupyterlab/coreutils';
 import { ServerConnection } from '@jupyterlab/services';
 import { requestAPI } from './request';
 import { retryWithBackoff } from './utils/retry';
+import { handleAPIResponse } from './utils/api-response';
 
 // Type definitions matching backend responses
 export interface IPaper {
@@ -45,11 +46,8 @@ export async function getLibrary(): Promise<IPaper[]> {
     method: 'GET'
   });
 
-  if (response.status === 'error') {
-    throw new Error(response.message || 'Failed to fetch library');
-  }
-
-  return response.data || [];
+  const data = handleAPIResponse(response, 'Failed to fetch library');
+  return data || [];
 }
 
 export async function searchLibrary(query: string): Promise<IPaper[]> {
@@ -60,11 +58,8 @@ export async function searchLibrary(query: string): Promise<IPaper[]> {
     }
   );
 
-  if (response.status === 'error') {
-    throw new Error(response.message || 'Search failed');
-  }
-
-  return response.data || [];
+  const data = handleAPIResponse(response, 'Search failed');
+  return data || [];
 }
 
 export async function searchSemanticScholar(
@@ -86,11 +81,12 @@ export async function searchSemanticScholar(
       { method: 'GET' }
     );
 
-    if (response.status === 'error') {
-      throw new Error(response.message || 'Semantic Scholar search failed');
-    }
-
-    return response.data || { data: [], total: 0 };
+    return (
+      handleAPIResponse(response, 'Semantic Scholar search failed') || {
+        data: [],
+        total: 0
+      }
+    );
   });
 }
 
@@ -100,15 +96,7 @@ export async function importPaper(paper: IPaper): Promise<IPaper> {
     body: JSON.stringify(paper)
   });
 
-  if (response.status === 'error') {
-    throw new Error(response.message || 'Import failed');
-  }
-
-  if (!response.data) {
-    throw new Error('No data returned from import');
-  }
-
-  return response.data;
+  return handleAPIResponse(response, 'Import failed');
 }
 
 export async function importPDF(
@@ -136,15 +124,7 @@ export async function importPDF(
     body: formData
   });
 
-  if (response.status === 'error') {
-    throw new Error(response.message || 'PDF import failed');
-  }
-
-  if (!response.data) {
-    throw new Error('No data returned from import');
-  }
-
-  return response.data;
+  return handleAPIResponse(response, 'PDF import failed');
 }
 
 export async function exportLibrary(

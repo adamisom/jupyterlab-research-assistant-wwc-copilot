@@ -1,7 +1,5 @@
 """API route handlers for the research assistant extension."""
 
-import csv
-import io
 import json
 import logging
 from pathlib import Path
@@ -14,204 +12,174 @@ from .services.semantic_scholar import SemanticScholarAPI
 from .services.pdf_parser import PDFParser
 from .services.db_manager import DatabaseManager
 from .services.ai_extractor import AIExtractor
+from .services.export_formatter import ExportFormatter
+from .services.import_service import ImportService
+
+logger = logging.getLogger(__name__)
 
 
-class HelloRouteHandler(APIHandler):
+class BaseAPIHandler(APIHandler):
+    """Base handler with common error handling and response methods."""
+
+    def send_success(self, data, status_code=200):
+        """Send a successful response."""
+        self.set_status(status_code)
+        self.finish(json.dumps({"status": "success", "data": data}))
+
+    def send_error(self, status_code=500, message: str = None, **kwargs):
+        """
+        Send an error response.
+        
+        Compatible with Tornado's send_error signature which may pass exc_info.
+        """
+        if message is None:
+            # Extract message from exception if available
+            if "exc_info" in kwargs:
+                exc_type, exc_value, _ = kwargs["exc_info"]
+                message = str(exc_value)
+            else:
+                message = "An error occurred"
+        
+        self.set_status(status_code)
+        self.finish(json.dumps({"status": "error", "message": message}))
+    
+    def send_error_legacy(self, message: str, status_code=500):
+        """
+        Legacy send_error method for backward compatibility.
+        Use send_error(status_code, message) for Tornado compatibility.
+        """
+        self.send_error(status_code, message)
+
+    def handle_request(self, handler_func):
+        """Execute handler function with error handling."""
+        try:
+            return handler_func()
+        except Exception as e:
+            logger.exception("Request failed")
+            self.send_error(str(e))
+
+
+class HelloRouteHandler(BaseAPIHandler):
     """Test endpoint to verify the extension is loaded."""
 
     @tornado.web.authenticated
     def get(self):
         """Return a hello message."""
-        self.finish(json.dumps({
-            "data": (
-                "Hello, world!"
-                " This is the '/jupyterlab-research-assistant-wwc-copilot/"
-                "hello' endpoint. Try visiting me in your browser!"
-            ),
-        }))
+        self.send_success(
+            "Hello, world! This is the '/jupyterlab-research-assistant-wwc-copilot/hello' endpoint. Try visiting me in your browser!"
+        )
 
 
-class LibraryHandler(APIHandler):
+class LibraryHandler(BaseAPIHandler):
     """Handler for library CRUD operations."""
 
     @tornado.web.authenticated
     def get(self):
         """Get all papers in the library."""
-        try:
-            with DatabaseManager() as db:
-                papers = db.get_all_papers()
-                self.finish(json.dumps({"status": "success", "data": papers}))
-        except Exception as e:
-            self.set_status(500)
-            self.finish(json.dumps({"status": "error", "message": str(e)}))
+        with DatabaseManager() as db:
+            papers = db.get_all_papers()
+            self.send_success(papers)
 
     @tornado.web.authenticated
     def post(self):
         """Add a new paper to the library."""
-        try:
-            data = self.get_json_body()
-            if data is None or (isinstance(data, dict) and not data):
-                self.set_status(400)
-                self.finish(json.dumps({
-                    "status": "error",
-                    "message": "No data provided"
-                }))
-                return
+        data = self.get_json_body()
+        if data is None or (isinstance(data, dict) and not data):
+            self.send_error(400, "No data provided")
+            return
 
-            with DatabaseManager() as db:
-                paper = db.add_paper(data)
-                self.set_status(201)
-                self.finish(json.dumps({"status": "success", "data": paper}))
-        except Exception as e:
-            self.set_status(500)
-            self.finish(json.dumps({"status": "error", "message": str(e)}))
+        with DatabaseManager() as db:
+            paper = db.add_paper(data)
+            self.send_success(paper, 201)
 
 
-class SearchHandler(APIHandler):
+class SearchHandler(BaseAPIHandler):
     """Handler for searching the library."""
 
     @tornado.web.authenticated
     def get(self):
         """Search papers in the library."""
-        try:
-            query = self.get_argument("q", "")
-            if not query:
-                self.set_status(400)
-                self.finish(json.dumps({
-                    "status": "error",
-                    "message": "Query parameter 'q' required"
-                }))
-                return
+        query = self.get_argument("q", "")
+        if not query:
+            self.send_error(400, "Query parameter 'q' required")
+            return
 
-            with DatabaseManager() as db:
-                papers = db.search_papers(query)
-                self.finish(json.dumps({"status": "success", "data": papers}))
-        except Exception as e:
-            self.set_status(500)
-            self.finish(json.dumps({"status": "error", "message": str(e)}))
+        with DatabaseManager() as db:
+            papers = db.search_papers(query)
+            self.send_success(papers)
 
 
-class DiscoveryHandler(APIHandler):
+class DiscoveryHandler(BaseAPIHandler):
     """Handler for Semantic Scholar discovery."""
 
     @tornado.web.authenticated
     def get(self):
         """Search Semantic Scholar for papers."""
-        try:
-            query = self.get_argument("q", "")
-            year = self.get_argument("year", None)
-            limit = int(self.get_argument("limit", "20"))
-            offset = int(self.get_argument("offset", "0"))
+        query = self.get_argument("q", "")
+        year = self.get_argument("year", None)
+        limit = int(self.get_argument("limit", "20"))
+        offset = int(self.get_argument("offset", "0"))
 
-            if not query:
-                self.set_status(400)
-                self.finish(json.dumps({
-                    "status": "error",
-                    "message": "Query parameter 'q' required"
-                }))
-                return
+        if not query:
+            self.send_error(400, "Query parameter 'q' required")
+            return
 
-            api = SemanticScholarAPI()
-            results = api.search_papers(
-                query, year=year, limit=limit, offset=offset
-            )
-            self.finish(json.dumps({"status": "success", "data": results}))
-        except Exception as e:
-            self.set_status(500)
-            self.finish(json.dumps({"status": "error", "message": str(e)}))
+        api = SemanticScholarAPI()
+        results = api.search_papers(
+            query, year=year, limit=limit, offset=offset
+        )
+        self.send_success(results)
 
 
-class ImportHandler(APIHandler):
+class ImportHandler(BaseAPIHandler):
     """Handler for importing PDFs."""
 
     @tornado.web.authenticated
     def post(self):
         """Import a PDF file and extract metadata."""
+        # Get uploaded file
+        if "file" not in self.request.files:
+            self.send_error(400, "No file provided")
+            return
+
+        file_info = self.request.files["file"][0]
+        file_content = file_info["body"]
+        filename = file_info["filename"]
+
+        # Parse AI config from form data
+        ai_config = self._parse_ai_config()
+        if not ai_config:
+            ai_config = self._get_ai_config()
+
+        # Import using service
+        pdf_parser = PDFParser()
+        import_service = ImportService(
+            pdf_parser=pdf_parser,
+            ai_extractor=None  # Will be created by service if needed
+        )
+
+        paper = import_service.import_pdf(
+            file_content=file_content,
+            filename=filename,
+            ai_config=ai_config
+        )
+
+        self.send_success(paper, 201)
+
+    def _parse_ai_config(self) -> Optional[Dict]:
+        """Parse AI config from form data."""
+        if "aiConfig" not in self.request.files:
+            return None
+
         try:
-            # Get uploaded file
-            if "file" not in self.request.files:
-                self.set_status(400)
-                self.finish(json.dumps({
-                    "status": "error",
-                    "message": "No file provided"
-                }))
-                return
-
-            file_info = self.request.files["file"][0]
-            file_content = file_info["body"]
-            filename = file_info["filename"]
-
-            # Save file to temporary location
-            upload_dir = Path.home() / ".jupyter" / "research_assistant" / "uploads"
-            upload_dir.mkdir(parents=True, exist_ok=True)
-
-            file_path = upload_dir / filename
-            with open(file_path, "wb") as f:
-                f.write(file_content)
-
-            # Extract text and metadata
-            parser = PDFParser()
-            extracted = parser.extract_text_and_metadata(str(file_path))
-
-            # Create paper record
-            paper_data = {
-                "title": extracted.get("title") or filename.replace(".pdf", ""),
-                "author": extracted.get("author"),
-                "full_text": extracted.get("full_text"),
-                "pdf_path": str(file_path)
-            }
-
-            # AI extraction (if enabled)
-            # Try to get from form data first (passed from frontend), then fall back to settings
-            ai_config = None
-            if "aiConfig" in self.request.files:
-                try:
-                    ai_config_data = self.request.files["aiConfig"][0]["body"]
-                    if isinstance(ai_config_data, bytes):
-                        ai_config_str = ai_config_data.decode("utf-8")
-                    else:
-                        ai_config_str = str(ai_config_data)
-                    ai_config = json.loads(ai_config_str)
-                except (json.JSONDecodeError, KeyError, IndexError, TypeError):
-                    pass
-            
-            # Fall back to settings if not provided in request
-            if not ai_config:
-                ai_config = self._get_ai_config()
-            
-            if ai_config and ai_config.get("enabled"):
-                try:
-                    extractor = AIExtractor(
-                        provider=ai_config.get("provider", "ollama"),
-                        api_key=ai_config.get("apiKey"),
-                        model=ai_config.get("model", "llama3"),
-                        ollama_url=ai_config.get("ollamaUrl", "http://localhost:11434")
-                    )
-                    ai_metadata = extractor.extract_metadata(
-                        extracted.get("full_text", "")
-                    )
-
-                    # Merge AI-extracted metadata
-                    if "study_metadata" in ai_metadata:
-                        paper_data["study_metadata"] = ai_metadata["study_metadata"]
-                    if "learning_science_metadata" in ai_metadata:
-                        paper_data["learning_science_metadata"] = (
-                            ai_metadata["learning_science_metadata"]
-                        )
-                except Exception as e:
-                    # Log but don't fail the import if AI extraction fails
-                    import logging
-                    logger = logging.getLogger(__name__)
-                    logger.warning(f"AI extraction failed: {str(e)}, continuing without AI metadata")
-
-            with DatabaseManager() as db:
-                paper = db.add_paper(paper_data)
-                self.set_status(201)
-                self.finish(json.dumps({"status": "success", "data": paper}))
-        except Exception as e:
-            self.set_status(500)
-            self.finish(json.dumps({"status": "error", "message": str(e)}))
-
+            ai_config_data = self.request.files["aiConfig"][0]["body"]
+            if isinstance(ai_config_data, bytes):
+                ai_config_str = ai_config_data.decode("utf-8")
+            else:
+                ai_config_str = str(ai_config_data)
+            return json.loads(ai_config_str)
+        except (json.JSONDecodeError, KeyError, IndexError, TypeError):
+            return None
 
     def _get_ai_config(self) -> Optional[Dict]:
         """Get AI extraction configuration from settings."""
@@ -222,117 +190,45 @@ class ImportHandler(APIHandler):
         return None
 
 
-class ExportHandler(APIHandler):
+class ExportHandler(BaseAPIHandler):
     """Handler for exporting library."""
 
     @tornado.web.authenticated
     def get(self):
         """Export library in specified format."""
-        try:
-            format_type = self.get_argument("format", "json")  # json, csv, bibtex
+        format_type = self.get_argument("format", "json")  # json, csv, bibtex
 
-            with DatabaseManager() as db:
-                papers = db.get_all_papers()
+        with DatabaseManager() as db:
+            papers = db.get_all_papers()
 
-            if format_type == "json":
-                self.set_header("Content-Type", "application/json")
-                self.set_header(
-                    "Content-Disposition", "attachment; filename=library.json"
-                )
-                self.finish(json.dumps(papers, indent=2))
+        formatter = ExportFormatter()
 
-            elif format_type == "csv":
-                output = io.StringIO()
-                writer = csv.DictWriter(
-                    output,
-                    fieldnames=[
-                        "id",
-                        "title",
-                        "authors",
-                        "year",
-                        "doi",
-                        "citation_count",
-                        "abstract"
-                    ]
-                )
-                writer.writeheader()
-                for paper in papers:
-                    row = {
-                        "id": paper.get("id", ""),
-                        "title": paper.get("title", ""),
-                        "authors": ", ".join(paper.get("authors", [])),
-                        "year": paper.get("year", ""),
-                        "doi": paper.get("doi", ""),
-                        "citation_count": paper.get("citation_count", ""),
-                        "abstract": (paper.get("abstract", "") or "")[:500]  # Truncate
-                    }
-                    writer.writerow(row)
-
-                self.set_header("Content-Type", "text/csv")
-                self.set_header(
-                    "Content-Disposition", "attachment; filename=library.csv"
-                )
-                self.finish(output.getvalue())
-
-            elif format_type == "bibtex":
-                bibtex = self._generate_bibtex(papers)
-                self.set_header("Content-Type", "text/plain")
-                self.set_header(
-                    "Content-Disposition", "attachment; filename=library.bib"
-                )
-                self.finish(bibtex)
-
-            else:
-                self.set_status(400)
-                self.finish(json.dumps({
-                    "status": "error",
-                    "message": f"Unknown format: {format_type}"
-                }))
-
-        except Exception as e:
-            self.set_status(500)
-            self.finish(json.dumps({"status": "error", "message": str(e)}))
-
-    def _generate_bibtex(self, papers: list) -> str:
-        """Generate BibTeX entries from papers."""
-        entries = []
-        for paper in papers:
-            # Generate citation key from first author and year
-            authors = paper.get("authors", [])
-            year = paper.get("year", "unknown")
-            first_author = (
-                authors[0].split()[-1].lower() if authors else "unknown"
+        if format_type == "json":
+            content = formatter.to_json(papers)
+            self.set_header("Content-Type", "application/json")
+            self.set_header(
+                "Content-Disposition", "attachment; filename=library.json"
             )
-            citation_key = f"{first_author}{year}"
+            self.finish(content)
 
-            # Determine entry type (default to @article)
-            entry_type = "@article"
+        elif format_type == "csv":
+            content = formatter.to_csv(papers)
+            self.set_header("Content-Type", "text/csv")
+            self.set_header(
+                "Content-Disposition", "attachment; filename=library.csv"
+            )
+            self.finish(content)
 
-            entry = f"{entry_type}{{{citation_key},\n"
-            entry += f"  title = {{{paper.get('title', '')}}},\n"
+        elif format_type == "bibtex":
+            content = formatter.to_bibtex(papers)
+            self.set_header("Content-Type", "text/plain")
+            self.set_header(
+                "Content-Disposition", "attachment; filename=library.bib"
+            )
+            self.finish(content)
 
-            if authors:
-                entry += f"  author = {{{' and '.join(authors)}}},\n"
-
-            if year:
-                entry += f"  year = {{{year}}},\n"
-
-            if paper.get("doi"):
-                entry += f"  doi = {{{paper.get('doi')}}},\n"
-
-            if paper.get("abstract"):
-                # Escape special characters for BibTeX
-                abstract = (
-                    paper.get("abstract", "")
-                    .replace("{", "\\{")
-                    .replace("}", "\\}")
-                )
-                entry += f"  abstract = {{{abstract[:200]}...}},\n"
-
-            entry += "}\n"
-            entries.append(entry)
-
-        return "\n".join(entries)
+        else:
+            self.send_error(400, f"Unknown format: {format_type}")
 
 
 def setup_route_handlers(web_app):

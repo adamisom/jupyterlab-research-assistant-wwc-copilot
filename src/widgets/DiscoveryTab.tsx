@@ -2,7 +2,10 @@ import React, { useState } from 'react';
 import { IPaper, searchSemanticScholar, importPaper } from '../api';
 import { PaperCard } from './PaperCard';
 import { showError, showSuccess } from '../utils/notifications';
-import { SkeletonLoader } from './SkeletonLoader';
+import { SearchBar } from './SearchBar';
+import { ErrorDisplay } from './ErrorDisplay';
+import { LoadingState } from './LoadingState';
+import { getPaperKey } from '../utils/paper';
 
 export const DiscoveryTab: React.FC = () => {
   const [query, setQuery] = useState('');
@@ -48,54 +51,32 @@ export const DiscoveryTab: React.FC = () => {
 
   return (
     <div className="jp-jupyterlab-research-assistant-wwc-copilot-discovery">
-      <div className="jp-jupyterlab-research-assistant-wwc-copilot-search-bar">
-        <input
-          type="text"
-          value={query}
-          onChange={e => setQuery(e.target.value)}
-          onKeyPress={e => {
-            if (e.key === 'Enter') {
-              handleSearch();
-            }
-          }}
-          placeholder="Search Semantic Scholar..."
-          className="jp-jupyterlab-research-assistant-wwc-copilot-input"
-        />
-        <input
-          type="text"
-          value={year}
-          onChange={e => setYear(e.target.value)}
-          placeholder="Year (e.g., 2020-2024)"
-          className="jp-jupyterlab-research-assistant-wwc-copilot-input"
-        />
-        <button
-          onClick={handleSearch}
-          disabled={isLoading || !query.trim()}
-          className="jp-jupyterlab-research-assistant-wwc-copilot-button"
-        >
-          {isLoading ? 'Searching...' : 'Search'}
-        </button>
-      </div>
+      <SearchBar
+        query={query}
+        onQueryChange={setQuery}
+        onSearch={handleSearch}
+        isLoading={isLoading}
+        placeholder="Search Semantic Scholar..."
+        additionalInputs={
+          <input
+            type="text"
+            value={year}
+            onChange={e => setYear(e.target.value)}
+            placeholder="Year (e.g., 2020-2024)"
+            className="jp-jupyterlab-research-assistant-wwc-copilot-input"
+          />
+        }
+      />
 
-      {error && (
-        <div className="jp-jupyterlab-research-assistant-wwc-copilot-error">
-          Error: {error}
-        </div>
-      )}
+      <ErrorDisplay error={error} />
 
-      {isLoading && (
-        <div>
-          <SkeletonLoader />
-          <SkeletonLoader />
-          <SkeletonLoader />
-        </div>
-      )}
+      {isLoading && <LoadingState />}
 
       {!isLoading && (
         <div className="jp-jupyterlab-research-assistant-wwc-copilot-results">
           {results.map(paper => (
             <PaperCard
-              key={paper.paperId || paper.id}
+              key={getPaperKey(paper)}
               paper={paper}
               onImport={() => handleImport(paper)}
             />

@@ -145,8 +145,8 @@ async def test_discovery_with_query(jp_fetch):
         payload = json.loads(response.body)
         assert payload["status"] in ["success", "error"]
     except HTTPClientError as e:
-        # If API fails, should be 500, not 400
-        assert e.code == 500
+        # If API fails, should be 500 or 599 (timeout), not 400
+        assert e.code in [500, 599]
         payload = json.loads(e.response.body)
         assert payload["status"] == "error"
 

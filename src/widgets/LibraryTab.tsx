@@ -8,8 +8,11 @@ import {
 } from '../api';
 import { PaperCard } from './PaperCard';
 import { showError, showSuccess } from '../utils/notifications';
-import { SkeletonLoader } from './SkeletonLoader';
+import { SearchBar } from './SearchBar';
+import { ErrorDisplay } from './ErrorDisplay';
+import { LoadingState } from './LoadingState';
 import { DetailView } from './DetailView';
+import { getPaperKey } from '../utils/paper';
 
 export const LibraryTab: React.FC = () => {
   const [papers, setPapers] = useState<IPaper[]>([]);
@@ -117,53 +120,41 @@ export const LibraryTab: React.FC = () => {
 
   return (
     <div className="jp-jupyterlab-research-assistant-wwc-copilot-library">
-      <div className="jp-jupyterlab-research-assistant-wwc-copilot-search-bar">
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={e => setSearchQuery(e.target.value)}
-          onKeyPress={e => {
-            if (e.key === 'Enter') {
-              handleSearch();
-            }
-          }}
-          placeholder="Search your library..."
-          className="jp-jupyterlab-research-assistant-wwc-copilot-input"
-        />
-        <button
-          onClick={handleSearch}
-          disabled={isLoading}
-          className="jp-jupyterlab-research-assistant-wwc-copilot-button"
-        >
-          Search
-        </button>
-        <select
-          onChange={async e => {
-            const format = e.target.value as 'json' | 'csv' | 'bibtex' | '';
-            if (format) {
-              try {
-                await exportLibrary(format);
-                showSuccess(
-                  'Export Complete',
-                  `Library exported as ${format.toUpperCase()}`
-                );
-              } catch (err) {
-                showError(
-                  'Export Failed',
-                  err instanceof Error ? err.message : 'Unknown error'
-                );
+      <SearchBar
+        query={searchQuery}
+        onQueryChange={setSearchQuery}
+        onSearch={handleSearch}
+        isLoading={isLoading}
+        placeholder="Search your library..."
+        additionalInputs={
+          <select
+            onChange={async e => {
+              const format = e.target.value as 'json' | 'csv' | 'bibtex' | '';
+              if (format) {
+                try {
+                  await exportLibrary(format);
+                  showSuccess(
+                    'Export Complete',
+                    `Library exported as ${format.toUpperCase()}`
+                  );
+                } catch (err) {
+                  showError(
+                    'Export Failed',
+                    err instanceof Error ? err.message : 'Unknown error'
+                  );
+                }
+                e.target.value = ''; // Reset
               }
-              e.target.value = ''; // Reset
-            }
-          }}
-          className="jp-jupyterlab-research-assistant-wwc-copilot-select"
-        >
-          <option value="">Export...</option>
-          <option value="json">Export as JSON</option>
-          <option value="csv">Export as CSV</option>
-          <option value="bibtex">Export as BibTeX</option>
-        </select>
-      </div>
+            }}
+            className="jp-jupyterlab-research-assistant-wwc-copilot-select"
+          >
+            <option value="">Export...</option>
+            <option value="json">Export as JSON</option>
+            <option value="csv">Export as CSV</option>
+            <option value="bibtex">Export as BibTeX</option>
+          </select>
+        }
+      />
 
       {/* PDF Upload Section */}
       <div className="jp-jupyterlab-research-assistant-wwc-copilot-upload-section">
@@ -184,19 +175,9 @@ export const LibraryTab: React.FC = () => {
         </label>
       </div>
 
-      {error && (
-        <div className="jp-jupyterlab-research-assistant-wwc-copilot-error">
-          Error: {error}
-        </div>
-      )}
+      <ErrorDisplay error={error} />
 
-      {isLoading && (
-        <div>
-          <SkeletonLoader />
-          <SkeletonLoader />
-          <SkeletonLoader />
-        </div>
-      )}
+      {isLoading && <LoadingState />}
 
       <div className="jp-jupyterlab-research-assistant-wwc-copilot-papers">
         {papers.length === 0 && !isLoading && (
@@ -207,7 +188,7 @@ export const LibraryTab: React.FC = () => {
         )}
         {papers.map(paper => (
           <PaperCard
-            key={paper.id}
+            key={getPaperKey(paper)}
             paper={paper}
             onViewDetails={() => setSelectedPaper(paper)}
           />
