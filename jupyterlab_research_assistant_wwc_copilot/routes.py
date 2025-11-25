@@ -14,6 +14,7 @@ from .services.db_manager import DatabaseManager
 from .services.export_formatter import ExportFormatter
 from .services.import_service import ImportService
 from .services.meta_analyzer import MetaAnalyzer
+from .services.openalex import OpenAlexAPI
 from .services.pdf_parser import PDFParser
 from .services.semantic_scholar import SemanticScholarAPI
 from .services.visualizer import Visualizer
@@ -114,11 +115,11 @@ class SearchHandler(BaseAPIHandler):
 
 
 class DiscoveryHandler(BaseAPIHandler):
-    """Handler for Semantic Scholar discovery."""
+    """Handler for paper discovery (supports Semantic Scholar and OpenAlex)."""
 
     @tornado.web.authenticated
     def get(self):
-        """Search Semantic Scholar for papers."""
+        """Search for papers using Semantic Scholar (with OpenAlex fallback)."""
         query = self.get_argument("q", "")
         year = self.get_argument("year", None)
         limit = int(self.get_argument("limit", "20"))
@@ -128,9 +129,27 @@ class DiscoveryHandler(BaseAPIHandler):
             self.send_error(400, "Query parameter 'q' required")
             return
 
-        api = SemanticScholarAPI()
-        results = api.search_papers(query, year=year, limit=limit, offset=offset)
-        self.send_success(results)
+        # Try Semantic Scholar first
+        try:
+            api = SemanticScholarAPI()
+            results = api.search_papers(query, year=year, limit=limit, offset=offset)
+            self.send_success(results)
+        except Exception as semantic_error:
+            # Fall back to OpenAlex if Semantic Scholar fails
+            # (e.g., rate limit, API key issues, etc.)
+            try:
+                openalex_api = OpenAlexAPI()
+                results = openalex_api.search_papers(
+                    query, year=year, limit=limit, offset=offset
+                )
+                self.send_success(results)
+            except Exception as openalex_error:
+                # If both fail, return the original Semantic Scholar error
+                # (since that's what the user expects)
+                self.send_error(
+                    500,
+                    f"Semantic Scholar error: {semantic_error!s}. OpenAlex fallback also failed: {openalex_error!s}",
+                )
 
 
 class ImportHandler(BaseAPIHandler):
