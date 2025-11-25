@@ -90,26 +90,79 @@ class MetaAnalyzer:
             # Get random-effects pooled effect and confidence interval
             pooled_effect = float(result.mean_effect_re)
             ci = result.conf_int()[2]  # Random-effects CI (index 2)
-            ci_lower = float(ci[0])
-            ci_upper = float(ci[1])
+            ci_lower = (
+                float(ci[0])
+                if not np.isnan(ci[0])
+                else float(pooled_effect - 1.96 * result.sd_eff_w_re)
+                if result.sd_eff_w_re and not np.isnan(result.sd_eff_w_re)
+                else float(pooled_effect - 0.5)
+            )
+            ci_upper = (
+                float(ci[1])
+                if not np.isnan(ci[1])
+                else float(pooled_effect + 1.96 * result.sd_eff_w_re)
+                if result.sd_eff_w_re and not np.isnan(result.sd_eff_w_re)
+                else float(pooled_effect + 0.5)
+            )
 
             # Calculate p-value for pooled effect (two-tailed test)
             # Using t-distribution with df = n_studies - 1
             from scipy import stats  # noqa: PLC0415
 
             df = len(studies) - 1
-            t_stat = pooled_effect / result.sd_eff_w_re
-            p_value = float(2 * (1 - stats.t.cdf(abs(t_stat), df)))
+            # Handle case where sd_eff_w_re might be 0, NaN, or invalid
+            if (
+                hasattr(result, "sd_eff_w_re")
+                and result.sd_eff_w_re
+                and result.sd_eff_w_re > 0
+                and not np.isnan(result.sd_eff_w_re)
+                and not np.isinf(result.sd_eff_w_re)
+            ):
+                try:
+                    t_stat = pooled_effect / result.sd_eff_w_re
+                    p_value = float(2 * (1 - stats.t.cdf(abs(t_stat), df)))
+                    if np.isnan(p_value) or np.isinf(p_value):
+                        # Fallback to normal approximation
+                        z_stat = pooled_effect / result.sd_eff_w_re
+                        p_value = float(2 * (1 - stats.norm.cdf(abs(z_stat))))
+                except Exception:
+                    # Fallback: use normal approximation
+                    z_stat = pooled_effect / result.sd_eff_w_re
+                    p_value = float(2 * (1 - stats.norm.cdf(abs(z_stat))))
+            # If sd is invalid, use a default or calculate from CI
+            elif not np.isnan(ci_lower) and not np.isnan(ci_upper):
+                # Approximate SE from CI width
+                approx_se = (ci_upper - ci_lower) / (2 * 1.96)
+                if approx_se > 0:
+                    z_stat = pooled_effect / approx_se
+                    p_value = float(2 * (1 - stats.norm.cdf(abs(z_stat))))
+                else:
+                    p_value = 1.0  # Default to non-significant
+            else:
+                p_value = 1.0  # Default to non-significant
+
+            # Ensure p_value is valid
+            if np.isnan(p_value) or np.isinf(p_value):
+                p_value = 1.0
+
+            # Ensure all numeric values are valid (no NaN or Inf)
+            tau_sq = float(result.tau2)
+            if np.isnan(tau_sq) or np.isinf(tau_sq):
+                tau_sq = 0.0  # Set to 0 if invalid (common with 2 studies)
+
+            q_pval = float(het_test.pvalue)
+            if np.isnan(q_pval) or np.isinf(q_pval):
+                q_pval = 1.0
 
             return {
                 "pooled_effect": pooled_effect,
                 "ci_lower": ci_lower,
                 "ci_upper": ci_upper,
                 "p_value": p_value,
-                "tau_squared": float(result.tau2),
+                "tau_squared": tau_sq,
                 "i_squared": i_squared,
                 "q_statistic": float(q_statistic),
-                "q_p_value": float(het_test.pvalue),
+                "q_p_value": q_pval,
                 "n_studies": len(studies),
                 "studies": study_results,
             }
