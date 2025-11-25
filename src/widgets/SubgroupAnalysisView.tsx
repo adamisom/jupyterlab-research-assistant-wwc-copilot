@@ -22,19 +22,20 @@ export const SubgroupAnalysisView: React.FC<SubgroupAnalysisViewProps> = ({
       {/* Subgroup Results */}
       <div className="jp-jupyterlab-research-assistant-wwc-copilot-subgroup-results">
         <h4>Results by Subgroup</h4>
-        {Object.entries(result.subgroups).map(([subgroupName, subgroupResult]) => (
-          <div
-            key={subgroupName}
-            className="jp-jupyterlab-research-assistant-wwc-copilot-subgroup-item"
-          >
-            <h5>
-              {subgroupName} (n={subgroupResult.n_studies})
-            </h5>
-            <MetaAnalysisView result={subgroupResult} />
-          </div>
-        ))}
+        {Object.entries(result.subgroups).map(
+          ([subgroupName, subgroupResult]) => (
+            <div
+              key={subgroupName}
+              className="jp-jupyterlab-research-assistant-wwc-copilot-subgroup-item"
+            >
+              <h5>
+                {subgroupName} (n={subgroupResult.n_studies})
+              </h5>
+              <MetaAnalysisView result={subgroupResult} />
+            </div>
+          )
+        )}
       </div>
     </div>
   );
 };
-
