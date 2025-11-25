@@ -60,6 +60,7 @@ class LearningScienceMetadata(Base):
     paper_id = Column(Integer, ForeignKey("papers.id"), primary_key=True)
     learning_domain = Column(String(50))  # e.g., "cognitive", "affective"
     intervention_type = Column(String(100))
+    age_group = Column(String(50))  # e.g., "young", "old", "mixed"
 
     paper = relationship("Paper", back_populates="learning_science_metadata")
 

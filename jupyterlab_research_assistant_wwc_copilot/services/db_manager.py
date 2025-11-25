@@ -70,7 +70,8 @@ class DatabaseManager:
             ls_meta = LearningScienceMetadata(
                 paper_id=paper.id,
                 learning_domain=data["learning_science_metadata"].get("learning_domain"),
-                intervention_type=data["learning_science_metadata"].get("intervention_type")
+                intervention_type=data["learning_science_metadata"].get("intervention_type"),
+                age_group=data["learning_science_metadata"].get("age_group")
             )
             self.session.add(ls_meta)
 
@@ -110,7 +111,8 @@ class DatabaseManager:
         if paper.learning_science_metadata:
             result["learning_science_metadata"] = {
                 "learning_domain": paper.learning_science_metadata.learning_domain,
-                "intervention_type": paper.learning_science_metadata.intervention_type
+                "intervention_type": paper.learning_science_metadata.intervention_type,
+                "age_group": paper.learning_science_metadata.age_group
             }
 
         return result
