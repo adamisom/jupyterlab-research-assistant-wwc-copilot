@@ -21,6 +21,7 @@ export const LibraryTab: React.FC = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedPaper, setSelectedPaper] = useState<IPaper | null>(null);
+  const [selectedPapers, setSelectedPapers] = useState<Set<number>>(new Set());
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -109,6 +110,29 @@ export const LibraryTab: React.FC = () => {
     }
   };
 
+  const handleToggleSelection = (paperId: number) => {
+    const newSelection = new Set(selectedPapers);
+    if (newSelection.has(paperId)) {
+      newSelection.delete(paperId);
+    } else {
+      newSelection.add(paperId);
+    }
+    setSelectedPapers(newSelection);
+  };
+
+  const handleOpenSynthesis = () => {
+    // This will be wired up to the command in Phase 2.12
+    const paperIds = Array.from(selectedPapers);
+    if (paperIds.length >= 2) {
+      // Dispatch custom event that will be handled by the plugin
+      window.dispatchEvent(
+        new CustomEvent('open-synthesis-workbench', {
+          detail: { paperIds }
+        })
+      );
+    }
+  };
+
   if (selectedPaper) {
     return (
       <DetailView
@@ -177,6 +201,18 @@ export const LibraryTab: React.FC = () => {
 
       <ErrorDisplay error={error} />
 
+      {/* Synthesis button - show when 2+ papers selected */}
+      {selectedPapers.size >= 2 && (
+        <div className="jp-jupyterlab-research-assistant-wwc-copilot-synthesis-button-container">
+          <button
+            onClick={handleOpenSynthesis}
+            className="jp-jupyterlab-research-assistant-wwc-copilot-button jp-jupyterlab-research-assistant-wwc-copilot-synthesis-button"
+          >
+            Synthesize {selectedPapers.size} Studies
+          </button>
+        </div>
+      )}
+
       {isLoading && <LoadingState />}
 
       <div className="jp-jupyterlab-research-assistant-wwc-copilot-papers">
@@ -191,6 +227,12 @@ export const LibraryTab: React.FC = () => {
             key={getPaperKey(paper)}
             paper={paper}
             onViewDetails={() => setSelectedPaper(paper)}
+            selected={paper.id !== undefined && selectedPapers.has(paper.id)}
+            onToggleSelection={
+              paper.id !== undefined
+                ? () => handleToggleSelection(paper.id!)
+                : undefined
+            }
           />
         ))}
       </div>

@@ -5,15 +5,36 @@ interface IPaperCardProps {
   paper: IPaper;
   onImport?: () => void;
   onViewDetails?: () => void;
+  selected?: boolean;
+  onToggleSelection?: () => void;
 }
 
 export const PaperCard: React.FC<IPaperCardProps> = ({
   paper,
   onImport,
-  onViewDetails
+  onViewDetails,
+  selected = false,
+  onToggleSelection
 }) => {
   return (
-    <div className="jp-jupyterlab-research-assistant-wwc-copilot-paper-card">
+    <div
+      className={`jp-jupyterlab-research-assistant-wwc-copilot-paper-card ${
+        selected
+          ? 'jp-jupyterlab-research-assistant-wwc-copilot-paper-card-selected'
+          : ''
+      }`}
+    >
+      {onToggleSelection && (
+        <div className="jp-jupyterlab-research-assistant-wwc-copilot-paper-card-checkbox">
+          <input
+            type="checkbox"
+            checked={selected}
+            onChange={onToggleSelection}
+            className="jp-jupyterlab-research-assistant-wwc-copilot-checkbox"
+            onClick={e => e.stopPropagation()}
+          />
+        </div>
+      )}
       <h3
         className="jp-jupyterlab-research-assistant-wwc-copilot-paper-title"
         onClick={onViewDetails}
