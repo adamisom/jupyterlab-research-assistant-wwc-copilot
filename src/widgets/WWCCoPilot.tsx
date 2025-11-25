@@ -323,14 +323,17 @@ const AttritionStep: React.FC<{
     {assessment && (
       <div className="jp-jupyterlab-research-assistant-wwc-copilot-wwc-section">
         <h4>Attrition Results</h4>
-        {assessment.overall_attrition !== undefined && (
-          <p>Overall: {formatPercent(assessment.overall_attrition, 1)}</p>
-        )}
-        {assessment.differential_attrition !== undefined && (
-          <p>
-            Differential: {formatPercent(assessment.differential_attrition, 1)}
-          </p>
-        )}
+        {assessment.overall_attrition !== null &&
+          assessment.overall_attrition !== undefined && (
+            <p>Overall: {formatPercent(assessment.overall_attrition, 1)}</p>
+          )}
+        {assessment.differential_attrition !== null &&
+          assessment.differential_attrition !== undefined && (
+            <p>
+              Differential:{' '}
+              {formatPercent(assessment.differential_attrition, 1)}
+            </p>
+          )}
         {assessment.is_high_attrition !== undefined && (
           <p>
             Status:{' '}
@@ -351,7 +354,8 @@ const BaselineStep: React.FC<{ assessment: IWWCAssessment | null }> = ({
 }) => (
   <div className="jp-jupyterlab-research-assistant-wwc-copilot-wwc-step-content">
     <h3>Step 3: Baseline Equivalence</h3>
-    {assessment?.baseline_effect_size !== undefined ? (
+    {assessment?.baseline_effect_size !== null &&
+    assessment?.baseline_effect_size !== undefined ? (
       <div className="jp-jupyterlab-research-assistant-wwc-copilot-wwc-section">
         <p>
           Effect Size (Cohen's d):{' '}
