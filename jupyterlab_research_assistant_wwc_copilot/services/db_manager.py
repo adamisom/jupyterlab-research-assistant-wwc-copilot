@@ -51,7 +51,7 @@ class DatabaseManager:
             citation_count=data.get("citation_count", 0),
             pdf_path=data.get("pdf_path"),
             abstract=data.get("abstract"),
-            full_text=data.get("full_text")
+            full_text=data.get("full_text"),
         )
         self.session.add(paper)
         self.session.flush()  # Get the ID
@@ -63,7 +63,7 @@ class DatabaseManager:
                 methodology=data["study_metadata"].get("methodology"),
                 sample_size_baseline=data["study_metadata"].get("sample_size_baseline"),
                 sample_size_endline=data["study_metadata"].get("sample_size_endline"),
-                effect_sizes=data["study_metadata"].get("effect_sizes")
+                effect_sizes=data["study_metadata"].get("effect_sizes"),
             )
             self.session.add(study_meta)
 
@@ -71,9 +71,13 @@ class DatabaseManager:
         if data.get("learning_science_metadata"):
             ls_meta = LearningScienceMetadata(
                 paper_id=paper.id,
-                learning_domain=data["learning_science_metadata"].get("learning_domain"),
-                intervention_type=data["learning_science_metadata"].get("intervention_type"),
-                age_group=data["learning_science_metadata"].get("age_group")
+                learning_domain=data["learning_science_metadata"].get(
+                    "learning_domain"
+                ),
+                intervention_type=data["learning_science_metadata"].get(
+                    "intervention_type"
+                ),
+                age_group=data["learning_science_metadata"].get("age_group"),
             )
             self.session.add(ls_meta)
 
@@ -82,11 +86,15 @@ class DatabaseManager:
 
     def search_papers(self, query: str) -> list[dict]:
         """Search papers by title, abstract, or authors."""
-        papers = self.session.query(Paper).filter(
-            (Paper.title.contains(query)) |
-            (Paper.abstract.contains(query)) |
-            (Paper.authors.contains(query))
-        ).all()
+        papers = (
+            self.session.query(Paper)
+            .filter(
+                (Paper.title.contains(query))
+                | (Paper.abstract.contains(query))
+                | (Paper.authors.contains(query))
+            )
+            .all()
+        )
         return [self._paper_to_dict(p) for p in papers]
 
     def _paper_to_dict(self, paper: Paper) -> dict:
@@ -99,7 +107,7 @@ class DatabaseManager:
             "doi": paper.doi,
             "s2_id": paper.s2_id,
             "citation_count": paper.citation_count,
-            "abstract": paper.abstract
+            "abstract": paper.abstract,
         }
 
         if paper.study_metadata:
@@ -107,15 +115,14 @@ class DatabaseManager:
                 "methodology": paper.study_metadata.methodology,
                 "sample_size_baseline": paper.study_metadata.sample_size_baseline,
                 "sample_size_endline": paper.study_metadata.sample_size_endline,
-                "effect_sizes": paper.study_metadata.effect_sizes
+                "effect_sizes": paper.study_metadata.effect_sizes,
             }
 
         if paper.learning_science_metadata:
             result["learning_science_metadata"] = {
                 "learning_domain": paper.learning_science_metadata.learning_domain,
                 "intervention_type": paper.learning_science_metadata.intervention_type,
-                "age_group": paper.learning_science_metadata.age_group
+                "age_group": paper.learning_science_metadata.age_group,
             }
 
         return result
-

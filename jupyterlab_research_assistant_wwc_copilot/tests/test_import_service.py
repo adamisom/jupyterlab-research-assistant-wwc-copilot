@@ -19,7 +19,7 @@ def mock_pdf_parser():
         "title": "Test PDF Title",
         "author": "Test Author",
         "full_text": "Full text content",
-        "page_count": 10
+        "page_count": 10,
     }
     return parser
 
@@ -41,7 +41,7 @@ def temp_db(tmp_path, monkeypatch):
 
     monkeypatch.setattr(
         "jupyterlab_research_assistant_wwc_copilot.database.models.get_db_path",
-        mock_get_db_path
+        mock_get_db_path,
     )
 
     engine = create_db_engine()
@@ -71,9 +71,7 @@ def test_import_pdf_basic(mock_path_class, mock_pdf_parser, temp_db):
     filename = "test.pdf"
 
     result = service.import_pdf(
-        file_content=file_content,
-        filename=filename,
-        ai_config=None
+        file_content=file_content, filename=filename, ai_config=None
     )
 
     assert result is not None
@@ -94,28 +92,18 @@ def test_import_pdf_with_ai_extraction(mock_path_class, mock_pdf_parser, temp_db
 
     mock_ai_extractor = Mock(spec=AIExtractor)
     mock_ai_extractor.extract_metadata.return_value = {
-        "study_metadata": {
-            "methodology": "RCT",
-            "sample_size_baseline": 100
-        },
-        "learning_science_metadata": {
-            "learning_domain": "cognitive"
-        }
+        "study_metadata": {"methodology": "RCT", "sample_size_baseline": 100},
+        "learning_science_metadata": {"learning_domain": "cognitive"},
     }
 
-    service = ImportService(
-        pdf_parser=mock_pdf_parser,
-        ai_extractor=mock_ai_extractor
-    )
+    service = ImportService(pdf_parser=mock_pdf_parser, ai_extractor=mock_ai_extractor)
 
     file_content = b"fake pdf content"
     filename = "test.pdf"
     ai_config = {"enabled": True, "provider": "ollama"}
 
     result = service.import_pdf(
-        file_content=file_content,
-        filename=filename,
-        ai_config=ai_config
+        file_content=file_content, filename=filename, ai_config=ai_config
     )
 
     assert result is not None
@@ -124,7 +112,9 @@ def test_import_pdf_with_ai_extraction(mock_path_class, mock_pdf_parser, temp_db
 
 
 @patch("jupyterlab_research_assistant_wwc_copilot.services.import_service.Path")
-def test_import_pdf_ai_extraction_failure_continues(mock_path_class, mock_pdf_parser, temp_db):
+def test_import_pdf_ai_extraction_failure_continues(
+    mock_path_class, mock_pdf_parser, temp_db
+):
     """Test that AI extraction failure doesn't fail the import."""
 
     mock_upload_dir = MagicMock()
@@ -137,10 +127,7 @@ def test_import_pdf_ai_extraction_failure_continues(mock_path_class, mock_pdf_pa
     mock_ai_extractor = Mock(spec=AIExtractor)
     mock_ai_extractor.extract_metadata.side_effect = Exception("AI extraction failed")
 
-    service = ImportService(
-        pdf_parser=mock_pdf_parser,
-        ai_extractor=mock_ai_extractor
-    )
+    service = ImportService(pdf_parser=mock_pdf_parser, ai_extractor=mock_ai_extractor)
 
     file_content = b"fake pdf content"
     filename = "test.pdf"
@@ -148,11 +135,8 @@ def test_import_pdf_ai_extraction_failure_continues(mock_path_class, mock_pdf_pa
 
     # Should not raise exception
     result = service.import_pdf(
-        file_content=file_content,
-        filename=filename,
-        ai_config=ai_config
+        file_content=file_content, filename=filename, ai_config=ai_config
     )
 
     assert result is not None
     # Import should succeed even if AI extraction fails
-

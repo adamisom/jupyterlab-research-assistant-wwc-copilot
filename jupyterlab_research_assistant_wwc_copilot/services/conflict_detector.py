@@ -7,10 +7,13 @@ logger = logging.getLogger(__name__)
 # Optional: Only import if transformers is available
 try:
     from transformers import pipeline
+
     TRANSFORMERS_AVAILABLE = True
 except ImportError:
     TRANSFORMERS_AVAILABLE = False
-    logger.warning("transformers library not available. Conflict detection will be disabled.")
+    logger.warning(
+        "transformers library not available. Conflict detection will be disabled."
+    )
 
 
 class ConflictDetector:
@@ -22,9 +25,7 @@ class ConflictDetector:
     """
 
     def __init__(
-        self,
-        model_name: str = "cross-encoder/nli-deberta-v3-base",
-        ai_extractor=None
+        self, model_name: str = "cross-encoder/nli-deberta-v3-base", ai_extractor=None
     ):
         """
         Initialize NLI pipeline.
@@ -108,10 +109,7 @@ class ConflictDetector:
         return contradictions
 
     def extract_key_findings(
-        self,
-        paper_text: str,
-        max_findings: int = 5,
-        use_ai: bool = True
+        self, paper_text: str, max_findings: int = 5, use_ai: bool = True
     ) -> list[str]:
         """
         Extract key findings from paper text using AI extraction.
@@ -135,10 +133,10 @@ class ConflictDetector:
                     "key_findings": {
                         "type": "array",
                         "items": {"type": "string"},
-                        "description": "List of key findings or conclusions from the study"
+                        "description": "List of key findings or conclusions from the study",
                     }
                 },
-                "required": ["key_findings"]
+                "required": ["key_findings"],
             }
 
             try:
@@ -152,14 +150,22 @@ class ConflictDetector:
 
         # Fallback to keyword-based extraction
         findings = []
-        keywords = ["significant", "found that", "results show", "conclusion", "demonstrated"]
+        keywords = [
+            "significant",
+            "found that",
+            "results show",
+            "conclusion",
+            "demonstrated",
+        ]
         sentences = paper_text.split(".")
 
         for sentence in sentences:
-            if any(kw in sentence.lower() for kw in keywords) and len(sentence.strip()) > 20:
+            if (
+                any(kw in sentence.lower() for kw in keywords)
+                and len(sentence.strip()) > 20
+            ):
                 findings.append(sentence.strip())
                 if len(findings) >= max_findings:
                     break
 
         return findings
-

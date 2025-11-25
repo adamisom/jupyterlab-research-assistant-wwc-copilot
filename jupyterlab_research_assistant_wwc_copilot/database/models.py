@@ -29,13 +29,13 @@ class Paper(Base):
         "StudyMetadata",
         back_populates="paper",
         uselist=False,
-        cascade="all, delete-orphan"
+        cascade="all, delete-orphan",
     )
     learning_science_metadata = relationship(
         "LearningScienceMetadata",
         back_populates="paper",
         uselist=False,
-        cascade="all, delete-orphan"
+        cascade="all, delete-orphan",
     )
 
 
@@ -87,4 +87,3 @@ def get_db_session():
     engine = create_db_engine()
     session_factory = sessionmaker(bind=engine)
     return session_factory()
-

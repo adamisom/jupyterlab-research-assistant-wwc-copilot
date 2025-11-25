@@ -55,18 +55,14 @@ class SemanticScholarAPI:
                 paper.get("openAccessPdf", {}).get("url")
                 if paper.get("openAccessPdf")
                 else None
-            )
+            ),
         }
         if include_references:
             result["reference_count"] = paper.get("referenceCount", 0)
         return result
 
     def search_papers(
-        self,
-        query: str,
-        year: Optional[str] = None,
-        limit: int = 20,
-        offset: int = 0
+        self, query: str, year: Optional[str] = None, limit: int = 20, offset: int = 0
     ) -> dict:
         """
         Search for papers using Semantic Scholar API.
@@ -90,9 +86,8 @@ class SemanticScholarAPI:
             "limit": min(limit, 100),  # API max is 100
             "offset": offset,
             "fields": (
-                "title,authors,year,abstract,doi,openAccessPdf,"
-                "paperId,citationCount"
-            )
+                "title,authors,year,abstract,doi,openAccessPdf,paperId,citationCount"
+            ),
         }
 
         if year:
@@ -100,23 +95,15 @@ class SemanticScholarAPI:
 
         try:
             response = self.session.get(
-                f"{self.BASE_URL}/paper/search",
-                params=params,
-                timeout=10
+                f"{self.BASE_URL}/paper/search", params=params, timeout=10
             )
             response.raise_for_status()
             data = response.json()
 
             # Transform to our format
-            papers = [
-                self._transform_paper(paper)
-                for paper in data.get("data", [])
-            ]
+            papers = [self._transform_paper(paper) for paper in data.get("data", [])]
 
-            return {
-                "data": papers,
-                "total": data.get("total", len(papers))
-            }
+            return {"data": papers, "total": data.get("total", len(papers))}
         except requests.exceptions.RequestException as e:
             raise RuntimeError(f"Semantic Scholar API error: {e!s}") from e
 
@@ -144,9 +131,7 @@ class SemanticScholarAPI:
 
         try:
             response = self.session.get(
-                f"{self.BASE_URL}/paper/{paper_id}",
-                params=params,
-                timeout=10
+                f"{self.BASE_URL}/paper/{paper_id}", params=params, timeout=10
             )
             if response.status_code == 404:
                 return None
@@ -156,4 +141,3 @@ class SemanticScholarAPI:
             return self._transform_paper(paper, include_references=True)
         except requests.exceptions.RequestException as e:
             raise RuntimeError(f"Semantic Scholar API error: {e!s}") from e
-

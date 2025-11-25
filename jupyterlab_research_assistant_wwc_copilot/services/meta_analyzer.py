@@ -53,7 +53,10 @@ class MetaAnalyzer:
         # Perform random-effects meta-analysis using DerSimonian-Laird estimator
         try:
             result = meta.combine_effects(
-                effect_sizes, std_errors, method_re="DL", use_t=True  # DerSimonian-Laird
+                effect_sizes,
+                std_errors,
+                method_re="DL",
+                use_t=True,  # DerSimonian-Laird
             )
 
             # Calculate heterogeneity statistics
@@ -75,7 +78,7 @@ class MetaAnalyzer:
                 study_results.append(
                     {
                         "paper_id": study.get("paper_id"),
-                        "study_label": study.get("study_label", f"Study {i+1}"),
+                        "study_label": study.get("study_label", f"Study {i + 1}"),
                         "effect_size": float(effect_sizes[i]),
                         "std_error": float(std_errors[i]),
                         "weight": float(weights[i]),
@@ -134,9 +137,7 @@ class MetaAnalyzer:
             return "Considerable heterogeneity"
 
     def perform_subgroup_meta_analysis(
-        self,
-        studies: list[dict],
-        subgroup_variable: str
+        self, studies: list[dict], subgroup_variable: str
     ) -> dict:
         """
         Perform meta-analysis for each subgroup.
@@ -159,7 +160,7 @@ class MetaAnalyzer:
         # Group studies by subgroup
         subgroups = {}
         for study in studies:
-            subgroup_value = study.get(subgroup_variable, 'unknown')
+            subgroup_value = study.get(subgroup_variable, "unknown")
             if subgroup_value not in subgroups:
                 subgroups[subgroup_value] = []
             subgroups[subgroup_value].append(study)
@@ -190,13 +191,11 @@ class MetaAnalyzer:
             "overall": overall_result,
             "subgroup_variable": subgroup_variable,
             "n_subgroups": len(subgroup_results),
-            "subgroup_comparison": subgroup_comparison
+            "subgroup_comparison": subgroup_comparison,
         }
 
     def _calculate_subgroup_comparison(
-        self,
-        subgroup_results: dict[str, dict],
-        overall_result: dict
+        self, subgroup_results: dict[str, dict], overall_result: dict
     ) -> dict:
         """
         Calculate Q-between statistic to test for differences between subgroups.
@@ -222,7 +221,7 @@ class MetaAnalyzer:
                 "q_between": None,
                 "df": None,
                 "p_value": None,
-                "interpretation": "At least 2 subgroups required for comparison"
+                "interpretation": "At least 2 subgroups required for comparison",
             }
 
         overall_effect = overall_result["pooled_effect"]
@@ -234,9 +233,11 @@ class MetaAnalyzer:
             subgroup_effect = subgroup_result["pooled_effect"]
             # Use the standard error of the pooled effect to calculate weight
             # Weight = 1 / SE^2 (formula comment)
-            subgroup_se = (subgroup_result["ci_upper"] - subgroup_result["ci_lower"]) / (2 * 1.96)
+            subgroup_se = (
+                subgroup_result["ci_upper"] - subgroup_result["ci_lower"]
+            ) / (2 * 1.96)
             if subgroup_se > 0:
-                weight = 1.0 / (subgroup_se ** 2)
+                weight = 1.0 / (subgroup_se**2)
                 q_between += weight * (subgroup_effect - overall_effect) ** 2
 
         # Degrees of freedom = number of subgroups - 1
@@ -264,13 +265,11 @@ class MetaAnalyzer:
             "q_between": float(q_between) if q_between > 0 else None,
             "df": df,
             "p_value": p_value,
-            "interpretation": interpretation
+            "interpretation": interpretation,
         }
 
     def perform_eggers_test(
-        self,
-        effect_sizes: np.ndarray,
-        std_errors: np.ndarray
+        self, effect_sizes: np.ndarray, std_errors: np.ndarray
     ) -> dict:
         """
         Perform Egger's test for publication bias.
@@ -293,14 +292,14 @@ class MetaAnalyzer:
                 "intercept": None,
                 "intercept_se": None,
                 "intercept_pvalue": None,
-                "interpretation": "Egger's test requires at least 3 studies"
+                "interpretation": "Egger's test requires at least 3 studies",
             }
 
         # Egger's test: regress effect size on precision (1/SE)
         precision = 1.0 / std_errors
 
         # Weighted least squares
-        weights = 1.0 / (std_errors ** 2)
+        weights = 1.0 / (std_errors**2)
 
         # Design matrix: [1, precision]
         X = np.column_stack([np.ones(len(effect_sizes)), precision])  # noqa: N806
@@ -314,14 +313,16 @@ class MetaAnalyzer:
             # Check matrix condition number to avoid ill-conditioned matrices
             cond_num = np.linalg.cond(XWX)
             if cond_num > 1e12:
-                raise ValueError(f"Matrix is ill-conditioned (condition number: {cond_num:.2e})")  # noqa: TRY301
+                raise ValueError(  # noqa: TRY301
+                    f"Matrix is ill-conditioned (condition number: {cond_num:.2e})"
+                )
 
             # Solve for beta
             beta = linalg.solve(XWX, XWy)
 
             # Calculate residuals and MSE
             residuals = effect_sizes - X @ beta
-            mse = np.sum(weights * residuals ** 2) / (len(effect_sizes) - 2)
+            mse = np.sum(weights * residuals**2) / (len(effect_sizes) - 2)
 
             # Variance-covariance matrix of beta
             var_beta = mse * linalg.inv(XWX)
@@ -343,13 +344,15 @@ class MetaAnalyzer:
             if intercept_pvalue < 0.05:
                 interpretation = "Evidence of publication bias (p < 0.05)"
             else:
-                interpretation = "No significant evidence of publication bias (p >= 0.05)"
+                interpretation = (
+                    "No significant evidence of publication bias (p >= 0.05)"
+                )
 
             return {
                 "intercept": float(intercept),
                 "intercept_se": float(intercept_se),
                 "intercept_pvalue": float(intercept_pvalue),
-                "interpretation": interpretation
+                "interpretation": interpretation,
             }
         except Exception as e:
             logger.exception("Egger's test failed")
@@ -357,13 +360,10 @@ class MetaAnalyzer:
                 "intercept": None,
                 "intercept_se": None,
                 "intercept_pvalue": None,
-                "interpretation": f"Egger's test failed: {e!s}"
+                "interpretation": f"Egger's test failed: {e!s}",
             }
 
-    def perform_sensitivity_analysis(
-        self,
-        studies: list[dict]
-    ) -> dict:
+    def perform_sensitivity_analysis(self, studies: list[dict]) -> dict:
         """
         Perform sensitivity analysis (leave-one-out and influence diagnostics).
 
@@ -391,18 +391,25 @@ class MetaAnalyzer:
             studies_without_i = [s for j, s in enumerate(studies) if j != i]
             if len(studies_without_i) >= 2:
                 try:
-                    result = self.perform_random_effects_meta_analysis(studies_without_i)
-                    leave_one_out_results.append({
-                        "removed_study": studies[i].get("study_label", f"Study {i+1}"),
-                        "removed_paper_id": studies[i].get("paper_id"),
-                        "pooled_effect": result["pooled_effect"],
-                        "ci_lower": result["ci_lower"],
-                        "ci_upper": result["ci_upper"],
-                        "difference_from_overall": result["pooled_effect"] - overall_effect
-                    })
+                    result = self.perform_random_effects_meta_analysis(
+                        studies_without_i
+                    )
+                    leave_one_out_results.append(
+                        {
+                            "removed_study": studies[i].get(
+                                "study_label", f"Study {i + 1}"
+                            ),
+                            "removed_paper_id": studies[i].get("paper_id"),
+                            "pooled_effect": result["pooled_effect"],
+                            "ci_lower": result["ci_lower"],
+                            "ci_upper": result["ci_upper"],
+                            "difference_from_overall": result["pooled_effect"]
+                            - overall_effect,
+                        }
+                    )
                 except Exception as e:
                     logger.warning(
-                        f"Leave-one-out analysis failed for study {i+1}: {e!s}"
+                        f"Leave-one-out analysis failed for study {i + 1}: {e!s}"
                     )
                     continue
 
@@ -411,7 +418,7 @@ class MetaAnalyzer:
         std_errors = np.array([s["std_error"] for s in studies])
 
         # Calculate weights using overall tau-squared
-        weights = 1.0 / (std_errors ** 2 + overall_tau_squared)
+        weights = 1.0 / (std_errors**2 + overall_tau_squared)
         weights = weights / weights.sum()  # Normalize
 
         # Calculate influence (how much each study affects overall result)
@@ -421,13 +428,15 @@ class MetaAnalyzer:
         for i, study in enumerate(studies):
             # Simplified influence: weight * absolute deviation from mean
             influence = weights[i] * abs(effect_sizes[i] - mean_effect)
-            influence_scores.append({
-                "study_label": study.get("study_label", f"Study {i+1}"),
-                "paper_id": study.get("paper_id"),
-                "influence_score": float(influence),
-                "weight": float(weights[i]),
-                "effect_size": float(effect_sizes[i])
-            })
+            influence_scores.append(
+                {
+                    "study_label": study.get("study_label", f"Study {i + 1}"),
+                    "paper_id": study.get("paper_id"),
+                    "influence_score": float(influence),
+                    "weight": float(weights[i]),
+                    "effect_size": float(effect_sizes[i]),
+                }
+            )
 
         # Sort by influence (highest first)
         influence_scores.sort(key=lambda x: x["influence_score"], reverse=True)
@@ -436,6 +445,5 @@ class MetaAnalyzer:
             "overall_effect": overall_effect,
             "leave_one_out": leave_one_out_results,
             "influence_diagnostics": influence_scores,
-            "n_studies": len(studies)
+            "n_studies": len(studies),
         }
-

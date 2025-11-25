@@ -17,8 +17,5 @@ __all__ = [
     "StudyMetadata",
     "create_db_engine",
     "get_db_path",
-    "get_db_session"
+    "get_db_session",
 ]
-
-
-

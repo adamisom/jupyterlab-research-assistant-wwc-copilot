@@ -189,7 +189,7 @@ dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]  # Allow unused imports in __init__.py
-"tests/**/*.py" = [
+"**/tests/**/*.py" = [
     "ARG",  # Allow unused arguments in tests
     "PLR2004",  # Allow magic values in tests
     "PLC0415",  # Allow imports inside functions in tests
@@ -197,6 +197,8 @@ dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
     "TRY003",  # Allow long exception messages in tests
     "PTH107",  # Allow os.remove in tests
 ]  # Test files have different patterns
+"conftest.py" = ["ARG001"]  # Allow unused fixture arguments
+"**/jupyter_server_test_config.py" = ["F821", "ERA001"]  # c is provided by Jupyter config system
 
 [tool.ruff.format]
 # Like Black, use double quotes for strings.

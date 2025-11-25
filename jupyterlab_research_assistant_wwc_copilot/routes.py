@@ -129,9 +129,7 @@ class DiscoveryHandler(BaseAPIHandler):
             return
 
         api = SemanticScholarAPI()
-        results = api.search_papers(
-            query, year=year, limit=limit, offset=offset
-        )
+        results = api.search_papers(query, year=year, limit=limit, offset=offset)
         self.send_success(results)
 
 
@@ -159,13 +157,11 @@ class ImportHandler(BaseAPIHandler):
         pdf_parser = PDFParser()
         import_service = ImportService(
             pdf_parser=pdf_parser,
-            ai_extractor=None  # Will be created by service if needed
+            ai_extractor=None,  # Will be created by service if needed
         )
 
         paper = import_service.import_pdf(
-            file_content=file_content,
-            filename=filename,
-            ai_config=ai_config
+            file_content=file_content, filename=filename, ai_config=ai_config
         )
 
         self.send_success(paper, 201)
@@ -210,25 +206,19 @@ class ExportHandler(BaseAPIHandler):
         if format_type == "json":
             content = formatter.to_json(papers)
             self.set_header("Content-Type", "application/json")
-            self.set_header(
-                "Content-Disposition", "attachment; filename=library.json"
-            )
+            self.set_header("Content-Disposition", "attachment; filename=library.json")
             self.finish(content)
 
         elif format_type == "csv":
             content = formatter.to_csv(papers)
             self.set_header("Content-Type", "text/csv")
-            self.set_header(
-                "Content-Disposition", "attachment; filename=library.csv"
-            )
+            self.set_header("Content-Disposition", "attachment; filename=library.csv")
             self.finish(content)
 
         elif format_type == "bibtex":
             content = formatter.to_bibtex(papers)
             self.set_header("Content-Type", "text/plain")
-            self.set_header(
-                "Content-Disposition", "attachment; filename=library.bib"
-            )
+            self.set_header("Content-Disposition", "attachment; filename=library.bib")
             self.finish(content)
 
         else:
@@ -317,7 +307,9 @@ class MetaAnalysisHandler(BaseAPIHandler):
                 return
 
             paper_ids = data.get("paper_ids", [])
-            outcome_name = data.get("outcome_name")  # Optional: specific outcome to analyze
+            outcome_name = data.get(
+                "outcome_name"
+            )  # Optional: specific outcome to analyze
 
             if len(paper_ids) < 2:
                 self.send_error(400, "At least 2 papers required for meta-analysis")
@@ -378,8 +370,8 @@ class MetaAnalysisHandler(BaseAPIHandler):
                 )
 
                 result["forest_plot"] = forest_plot_base64
-                result["heterogeneity_interpretation"] = analyzer.interpret_heterogeneity(
-                    result["i_squared"]
+                result["heterogeneity_interpretation"] = (
+                    analyzer.interpret_heterogeneity(result["i_squared"])
                 )
 
                 self.send_success(result)
@@ -404,7 +396,9 @@ class ConflictDetectionHandler(BaseAPIHandler):
             confidence_threshold = data.get("confidence_threshold", 0.8)
 
             if len(paper_ids) < 2:
-                self.send_error(400, "At least 2 papers required for conflict detection")
+                self.send_error(
+                    400, "At least 2 papers required for conflict detection"
+                )
                 return
 
             # Fetch papers from database
@@ -439,7 +433,9 @@ class ConflictDetectionHandler(BaseAPIHandler):
 
                         if findings1 and findings2:
                             contradictions = detector.find_contradictions(
-                                findings1, findings2, confidence_threshold=confidence_threshold
+                                findings1,
+                                findings2,
+                                confidence_threshold=confidence_threshold,
                             )
 
                             for contradiction in contradictions:
@@ -523,7 +519,9 @@ class MetaAnalysisExportHandler(BaseAPIHandler):
 
                 # Generate CSV
                 formatter = ExportFormatter()
-                csv_content = formatter.export_meta_analysis_csv(result, result["studies"])
+                csv_content = formatter.export_meta_analysis_csv(
+                    result, result["studies"]
+                )
 
                 # Set headers for file download (clear default JSON content type)
                 self.clear_header("Content-Type")
@@ -595,7 +593,9 @@ class SynthesisExportHandler(BaseAPIHandler):
 
                         if len(studies) >= 2:
                             analyzer = MetaAnalyzer()
-                            meta_analysis_result = analyzer.perform_random_effects_meta_analysis(studies)
+                            meta_analysis_result = (
+                                analyzer.perform_random_effects_meta_analysis(studies)
+                            )
 
                             # Generate forest plot
                             visualizer = Visualizer()
@@ -608,7 +608,9 @@ class SynthesisExportHandler(BaseAPIHandler):
                             )
                             meta_analysis_result["forest_plot"] = forest_plot_base64
                             meta_analysis_result["heterogeneity_interpretation"] = (
-                                analyzer.interpret_heterogeneity(meta_analysis_result["i_squared"])
+                                analyzer.interpret_heterogeneity(
+                                    meta_analysis_result["i_squared"]
+                                )
                             )
                     except Exception as e:
                         logger.warning(f"Meta-analysis failed during export: {e!s}")
@@ -625,10 +627,12 @@ class SynthesisExportHandler(BaseAPIHandler):
                                 paper2 = papers[j]
 
                                 findings1 = detector.extract_key_findings(
-                                    paper1.get("full_text", "") or paper1.get("abstract", "")
+                                    paper1.get("full_text", "")
+                                    or paper1.get("abstract", "")
                                 )
                                 findings2 = detector.extract_key_findings(
-                                    paper2.get("full_text", "") or paper2.get("abstract", "")
+                                    paper2.get("full_text", "")
+                                    or paper2.get("abstract", "")
                                 )
 
                                 if findings1 and findings2:
@@ -649,7 +653,9 @@ class SynthesisExportHandler(BaseAPIHandler):
                             "n_contradictions": len(all_contradictions),
                         }
                     except Exception as e:
-                        logger.warning(f"Conflict detection failed during export: {e!s}")
+                        logger.warning(
+                            f"Conflict detection failed during export: {e!s}"
+                        )
 
                 # Generate Markdown
                 formatter = ExportFormatter()
@@ -659,7 +665,7 @@ class SynthesisExportHandler(BaseAPIHandler):
                     papers,
                     include_meta_analysis=include_meta_analysis,
                     include_conflicts=include_conflicts,
-                    include_wwc_assessments=include_wwc_assessments,
+                    _include_wwc_assessments=include_wwc_assessments,
                 )
 
                 # Set headers for file download (clear default JSON content type)
@@ -723,29 +729,35 @@ class SubgroupAnalysisHandler(BaseAPIHandler):
                         subgroup_value = learning_metadata.get("learning_domain")
                     else:
                         # Try to get from study_metadata or top-level
-                        subgroup_value = study_metadata.get(subgroup_variable) or paper.get(subgroup_variable)
+                        subgroup_value = study_metadata.get(
+                            subgroup_variable
+                        ) or paper.get(subgroup_variable)
 
                     if outcome_name and effect_sizes:
                         outcome_data = effect_sizes.get(outcome_name)
                         if outcome_data and subgroup_value:
-                            studies.append({
-                                "paper_id": paper["id"],
-                                "study_label": paper["title"],
-                                "effect_size": outcome_data.get("d", 0.0),
-                                "std_error": outcome_data.get("se", 0.1),
-                                subgroup_variable: subgroup_value
-                            })
+                            studies.append(
+                                {
+                                    "paper_id": paper["id"],
+                                    "study_label": paper["title"],
+                                    "effect_size": outcome_data.get("d", 0.0),
+                                    "std_error": outcome_data.get("se", 0.1),
+                                    subgroup_variable: subgroup_value,
+                                }
+                            )
                     elif effect_sizes:
                         # Use first available outcome if no outcome_name specified
                         first_outcome = next(iter(effect_sizes.values()))
                         if first_outcome and subgroup_value:
-                            studies.append({
-                                "paper_id": paper["id"],
-                                "study_label": paper["title"],
-                                "effect_size": first_outcome.get("d", 0.0),
-                                "std_error": first_outcome.get("se", 0.1),
-                                subgroup_variable: subgroup_value
-                            })
+                            studies.append(
+                                {
+                                    "paper_id": paper["id"],
+                                    "study_label": paper["title"],
+                                    "effect_size": first_outcome.get("d", 0.0),
+                                    "std_error": first_outcome.get("se", 0.1),
+                                    subgroup_variable: subgroup_value,
+                                }
+                            )
 
                 if len(studies) < 2:
                     self.send_error(400, "Insufficient studies with subgroup data")
@@ -753,7 +765,9 @@ class SubgroupAnalysisHandler(BaseAPIHandler):
 
                 # Perform subgroup analysis
                 analyzer = MetaAnalyzer()
-                result = analyzer.perform_subgroup_meta_analysis(studies, subgroup_variable)
+                result = analyzer.perform_subgroup_meta_analysis(
+                    studies, subgroup_variable
+                )
 
                 self.send_success(result)
         except Exception as e:
@@ -794,22 +808,26 @@ class BiasAssessmentHandler(BaseAPIHandler):
                     if outcome_name:
                         outcome_data = effect_sizes.get(outcome_name)
                         if outcome_data:
-                            studies.append({
-                                "paper_id": paper["id"],
-                                "study_label": paper["title"],
-                                "effect_size": outcome_data.get("d", 0.0),
-                                "std_error": outcome_data.get("se", 0.1)
-                            })
+                            studies.append(
+                                {
+                                    "paper_id": paper["id"],
+                                    "study_label": paper["title"],
+                                    "effect_size": outcome_data.get("d", 0.0),
+                                    "std_error": outcome_data.get("se", 0.1),
+                                }
+                            )
                     elif effect_sizes:
                         # Use first available outcome
                         first_outcome = next(iter(effect_sizes.values()))
                         if first_outcome:
-                            studies.append({
-                                "paper_id": paper["id"],
-                                "study_label": paper["title"],
-                                "effect_size": first_outcome.get("d", 0.0),
-                                "std_error": first_outcome.get("se", 0.1)
-                            })
+                            studies.append(
+                                {
+                                    "paper_id": paper["id"],
+                                    "study_label": paper["title"],
+                                    "effect_size": first_outcome.get("d", 0.0),
+                                    "std_error": first_outcome.get("se", 0.1),
+                                }
+                            )
 
                 if len(studies) < 3:
                     self.send_error(400, "Insufficient studies with effect size data")
@@ -827,15 +845,13 @@ class BiasAssessmentHandler(BaseAPIHandler):
                 # Generate funnel plot
                 visualizer = Visualizer()
                 funnel_plot = visualizer.create_funnel_plot(
-                    effect_sizes.tolist(),
-                    std_errors.tolist(),
-                    labels
+                    effect_sizes.tolist(), std_errors.tolist(), labels
                 )
 
                 result = {
                     "eggers_test": eggers_result,
                     "funnel_plot": funnel_plot,
-                    "n_studies": len(studies)
+                    "n_studies": len(studies),
                 }
 
                 self.send_success(result)
@@ -860,7 +876,9 @@ class SensitivityAnalysisHandler(BaseAPIHandler):
             outcome_name = data.get("outcome_name")
 
             if len(paper_ids) < 3:
-                self.send_error(400, "At least 3 studies required for sensitivity analysis")
+                self.send_error(
+                    400, "At least 3 studies required for sensitivity analysis"
+                )
                 return
 
             # Fetch papers
@@ -877,21 +895,25 @@ class SensitivityAnalysisHandler(BaseAPIHandler):
                     if outcome_name:
                         outcome_data = effect_sizes.get(outcome_name)
                         if outcome_data:
-                            studies.append({
-                                "paper_id": paper["id"],
-                                "study_label": paper["title"],
-                                "effect_size": outcome_data.get("d", 0.0),
-                                "std_error": outcome_data.get("se", 0.1)
-                            })
+                            studies.append(
+                                {
+                                    "paper_id": paper["id"],
+                                    "study_label": paper["title"],
+                                    "effect_size": outcome_data.get("d", 0.0),
+                                    "std_error": outcome_data.get("se", 0.1),
+                                }
+                            )
                     elif effect_sizes:
                         first_outcome = next(iter(effect_sizes.values()))
                         if first_outcome:
-                            studies.append({
-                                "paper_id": paper["id"],
-                                "study_label": paper["title"],
-                                "effect_size": first_outcome.get("d", 0.0),
-                                "std_error": first_outcome.get("se", 0.1)
-                            })
+                            studies.append(
+                                {
+                                    "paper_id": paper["id"],
+                                    "study_label": paper["title"],
+                                    "effect_size": first_outcome.get("d", 0.0),
+                                    "std_error": first_outcome.get("se", 0.1),
+                                }
+                            )
 
                 if len(studies) < 3:
                     self.send_error(400, "Insufficient studies with effect size data")
@@ -921,12 +943,30 @@ def setup_route_handlers(web_app):
         (url_path_join(base_url, route_prefix, "export"), ExportHandler),
         (url_path_join(base_url, route_prefix, "wwc-assessment"), WWCAssessmentHandler),
         (url_path_join(base_url, route_prefix, "meta-analysis"), MetaAnalysisHandler),
-        (url_path_join(base_url, route_prefix, "conflict-detection"), ConflictDetectionHandler),
-        (url_path_join(base_url, route_prefix, "meta-analysis", "export"), MetaAnalysisExportHandler),
-        (url_path_join(base_url, route_prefix, "synthesis", "export"), SynthesisExportHandler),
-        (url_path_join(base_url, route_prefix, "subgroup-analysis"), SubgroupAnalysisHandler),
-        (url_path_join(base_url, route_prefix, "bias-assessment"), BiasAssessmentHandler),
-        (url_path_join(base_url, route_prefix, "sensitivity-analysis"), SensitivityAnalysisHandler),
+        (
+            url_path_join(base_url, route_prefix, "conflict-detection"),
+            ConflictDetectionHandler,
+        ),
+        (
+            url_path_join(base_url, route_prefix, "meta-analysis", "export"),
+            MetaAnalysisExportHandler,
+        ),
+        (
+            url_path_join(base_url, route_prefix, "synthesis", "export"),
+            SynthesisExportHandler,
+        ),
+        (
+            url_path_join(base_url, route_prefix, "subgroup-analysis"),
+            SubgroupAnalysisHandler,
+        ),
+        (
+            url_path_join(base_url, route_prefix, "bias-assessment"),
+            BiasAssessmentHandler,
+        ),
+        (
+            url_path_join(base_url, route_prefix, "sensitivity-analysis"),
+            SensitivityAnalysisHandler,
+        ),
     ]
 
     web_app.add_handlers(host_pattern, handlers)

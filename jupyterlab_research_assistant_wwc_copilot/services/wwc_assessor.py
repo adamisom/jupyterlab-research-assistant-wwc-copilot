@@ -30,12 +30,18 @@ class WWCAssessment:
     # --- Fields requiring human judgment ---
     chosen_attrition_boundary: AttritionBoundary = AttritionBoundary.CAUTIOUS
     adjustment_strategy_is_valid: Optional[bool] = None
-    randomization_documented: Optional[bool] = None  # Human judgment if not clear from text
+    randomization_documented: Optional[bool] = (
+        None  # Human judgment if not clear from text
+    )
 
     # --- Fields for automated extraction & calculation ---
     is_rct: bool = True
-    overall_attrition: Optional[float] = None  # Calculated: (baseline_n - endline_n) / baseline_n
-    differential_attrition: Optional[float] = None  # Calculated: |treatment_attrition - control_attrition|
+    overall_attrition: Optional[float] = (
+        None  # Calculated: (baseline_n - endline_n) / baseline_n
+    )
+    differential_attrition: Optional[float] = (
+        None  # Calculated: |treatment_attrition - control_attrition|
+    )
     is_high_attrition: Optional[bool] = None
     baseline_effect_size: Optional[float] = None  # Cohen's d for baseline equivalence
     baseline_equivalence_satisfied: Optional[bool] = None
@@ -152,9 +158,7 @@ class WWCQualityAssessor:
             message = "Baseline groups are equivalent (≤0.05 SD difference)"
         elif abs_d <= self.BASELINE_EQUIVALENCE_THRESHOLDS["adjustable"]:
             status = "adjustable"
-            message = (
-                "Baseline groups require statistical adjustment (>0.05 and ≤0.25 SD difference)"
-            )
+            message = "Baseline groups require statistical adjustment (>0.05 and ≤0.25 SD difference)"
         else:
             status = "not_equivalent"
             message = "Baseline groups are not equivalent (>0.25 SD difference)"
@@ -188,12 +192,16 @@ class WWCQualityAssessor:
         try:
             boundary = AttritionBoundary(boundary_str)
         except ValueError:
-            logger.warning(f"Invalid attrition boundary: {boundary_str}, using cautious")
+            logger.warning(
+                f"Invalid attrition boundary: {boundary_str}, using cautious"
+            )
             boundary = AttritionBoundary.CAUTIOUS
 
         assessment = WWCAssessment(
             chosen_attrition_boundary=boundary,
-            adjustment_strategy_is_valid=user_judgments.get("adjustment_strategy_is_valid"),
+            adjustment_strategy_is_valid=user_judgments.get(
+                "adjustment_strategy_is_valid"
+            ),
             randomization_documented=user_judgments.get(
                 "randomization_documented",
                 extracted_data.get("randomization_documented"),
@@ -221,12 +229,18 @@ class WWCQualityAssessor:
 
         if baseline_n and endline_n and baseline_n > 0:
             assessment.overall_attrition = (baseline_n - endline_n) / baseline_n
-        elif treatment_attrition_rate is not None and control_attrition_rate is not None:
+        elif (
+            treatment_attrition_rate is not None and control_attrition_rate is not None
+        ):
             # Approximate overall attrition as average if not directly available
-            assessment.overall_attrition = (treatment_attrition_rate + control_attrition_rate) / 2
+            assessment.overall_attrition = (
+                treatment_attrition_rate + control_attrition_rate
+            ) / 2
 
         if treatment_attrition_rate is not None and control_attrition_rate is not None:
-            assessment.differential_attrition = abs(treatment_attrition_rate - control_attrition_rate)
+            assessment.differential_attrition = abs(
+                treatment_attrition_rate - control_attrition_rate
+            )
 
         # Step 3: Determine if attrition is high
         if (
@@ -245,8 +259,8 @@ class WWCQualityAssessor:
             )
 
         # Step 4: Check baseline equivalence (required for QEDs or high-attrition RCTs)
-        requires_baseline_check = (
-            not assessment.is_rct or (assessment.is_high_attrition is True)
+        requires_baseline_check = not assessment.is_rct or (
+            assessment.is_high_attrition is True
         )
 
         if requires_baseline_check:
@@ -258,7 +272,10 @@ class WWCQualityAssessor:
             treatment_sd = baseline_sds.get("treatment")
             control_sd = baseline_sds.get("control")
 
-            if all(v is not None for v in [treatment_mean, control_mean, treatment_sd, control_sd]):
+            if all(
+                v is not None
+                for v in [treatment_mean, control_mean, treatment_sd, control_sd]
+            ):
                 baseline_result = self.calculate_baseline_equivalence(
                     treatment_mean, control_mean, treatment_sd, control_sd
                 )
@@ -315,7 +332,9 @@ class WWCQualityAssessor:
         else:
             # Attrition data incomplete
             assessment.final_rating = WWCRating.DOES_NOT_MEET
-            assessment.rating_justification.append("Insufficient data to complete WWC assessment.")
+            assessment.rating_justification.append(
+                "Insufficient data to complete WWC assessment."
+            )
 
         return assessment
 
@@ -336,6 +355,3 @@ class WWCQualityAssessor:
             "final_rating": assessment.final_rating.value,
             "rating_justification": assessment.rating_justification,
         }
-
-
-

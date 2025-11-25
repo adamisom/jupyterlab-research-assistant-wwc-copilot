@@ -15,9 +15,7 @@ class ImportService:
     """Service for orchestrating PDF import workflow."""
 
     def __init__(
-        self,
-        pdf_parser: PDFParser,
-        ai_extractor: Optional[AIExtractor] = None
+        self, pdf_parser: PDFParser, ai_extractor: Optional[AIExtractor] = None
     ):
         """
         Initialize the import service.
@@ -30,10 +28,7 @@ class ImportService:
         self.ai_extractor = ai_extractor
 
     def import_pdf(
-        self,
-        file_content: bytes,
-        filename: str,
-        ai_config: Optional[dict] = None
+        self, file_content: bytes, filename: str, ai_config: Optional[dict] = None
     ) -> dict:
         """
         Import a PDF file and extract metadata.
@@ -65,7 +60,7 @@ class ImportService:
             "title": extracted.get("title") or filename.replace(".pdf", ""),
             "author": extracted.get("author"),
             "full_text": extracted.get("full_text"),
-            "pdf_path": str(file_path)
+            "pdf_path": str(file_path),
         }
 
         # AI extraction (if enabled)
@@ -77,22 +72,20 @@ class ImportService:
                         provider=ai_config.get("provider", "ollama"),
                         api_key=ai_config.get("apiKey"),
                         model=ai_config.get("model", "llama3"),
-                        ollama_url=ai_config.get("ollamaUrl", "http://localhost:11434")
+                        ollama_url=ai_config.get("ollamaUrl", "http://localhost:11434"),
                     )
                 else:
                     extractor = self.ai_extractor
 
-                ai_metadata = extractor.extract_metadata(
-                    extracted.get("full_text", "")
-                )
+                ai_metadata = extractor.extract_metadata(extracted.get("full_text", ""))
 
                 # Merge AI-extracted metadata
                 if "study_metadata" in ai_metadata:
                     paper_data["study_metadata"] = ai_metadata["study_metadata"]
                 if "learning_science_metadata" in ai_metadata:
-                    paper_data["learning_science_metadata"] = (
-                        ai_metadata["learning_science_metadata"]
-                    )
+                    paper_data["learning_science_metadata"] = ai_metadata[
+                        "learning_science_metadata"
+                    ]
             except Exception as e:
                 # Log but don't fail the import if AI extraction fails
                 logger.warning(
@@ -104,6 +97,3 @@ class ImportService:
             paper = db.add_paper(paper_data)
 
         return paper
-
-
-

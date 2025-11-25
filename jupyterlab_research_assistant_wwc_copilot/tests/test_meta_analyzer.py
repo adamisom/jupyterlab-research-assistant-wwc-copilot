@@ -34,8 +34,18 @@ class TestMetaAnalyzer:
         """Test basic meta-analysis with two studies."""
         analyzer = MetaAnalyzer()
         studies = [
-            {"effect_size": 0.5, "std_error": 0.15, "study_label": "Study A", "paper_id": 1},
-            {"effect_size": 0.3, "std_error": 0.12, "study_label": "Study B", "paper_id": 2},
+            {
+                "effect_size": 0.5,
+                "std_error": 0.15,
+                "study_label": "Study A",
+                "paper_id": 1,
+            },
+            {
+                "effect_size": 0.3,
+                "std_error": 0.12,
+                "study_label": "Study B",
+                "paper_id": 2,
+            },
         ]
 
         result = analyzer.perform_random_effects_meta_analysis(studies)
@@ -59,10 +69,30 @@ class TestMetaAnalyzer:
         """Test meta-analysis with multiple studies."""
         analyzer = MetaAnalyzer()
         studies = [
-            {"effect_size": 0.5, "std_error": 0.15, "study_label": "Study A", "paper_id": 1},
-            {"effect_size": 0.3, "std_error": 0.12, "study_label": "Study B", "paper_id": 2},
-            {"effect_size": 0.7, "std_error": 0.18, "study_label": "Study C", "paper_id": 3},
-            {"effect_size": 0.4, "std_error": 0.14, "study_label": "Study D", "paper_id": 4},
+            {
+                "effect_size": 0.5,
+                "std_error": 0.15,
+                "study_label": "Study A",
+                "paper_id": 1,
+            },
+            {
+                "effect_size": 0.3,
+                "std_error": 0.12,
+                "study_label": "Study B",
+                "paper_id": 2,
+            },
+            {
+                "effect_size": 0.7,
+                "std_error": 0.18,
+                "study_label": "Study C",
+                "paper_id": 3,
+            },
+            {
+                "effect_size": 0.4,
+                "std_error": 0.14,
+                "study_label": "Study D",
+                "paper_id": 4,
+            },
         ]
 
         result = analyzer.perform_random_effects_meta_analysis(studies)
@@ -157,10 +187,30 @@ class TestMetaAnalyzer:
         """Test basic subgroup analysis."""
         analyzer = MetaAnalyzer()
         studies = [
-            {"effect_size": 0.5, "std_error": 0.15, "study_label": "Study A", "age_group": "young"},
-            {"effect_size": 0.3, "std_error": 0.12, "study_label": "Study B", "age_group": "young"},
-            {"effect_size": 0.7, "std_error": 0.18, "study_label": "Study C", "age_group": "old"},
-            {"effect_size": 0.4, "std_error": 0.14, "study_label": "Study D", "age_group": "old"},
+            {
+                "effect_size": 0.5,
+                "std_error": 0.15,
+                "study_label": "Study A",
+                "age_group": "young",
+            },
+            {
+                "effect_size": 0.3,
+                "std_error": 0.12,
+                "study_label": "Study B",
+                "age_group": "young",
+            },
+            {
+                "effect_size": 0.7,
+                "std_error": 0.18,
+                "study_label": "Study C",
+                "age_group": "old",
+            },
+            {
+                "effect_size": 0.4,
+                "std_error": 0.14,
+                "study_label": "Study D",
+                "age_group": "old",
+            },
         ]
 
         result = analyzer.perform_subgroup_meta_analysis(studies, "age_group")
@@ -205,9 +255,19 @@ class TestMetaAnalyzer:
         analyzer = MetaAnalyzer()
         studies = [
             {"effect_size": 0.5, "std_error": 0.15, "age_group": "young"},
-            {"effect_size": 0.3, "std_error": 0.12, "age_group": "young"},  # Same subgroup
-            {"effect_size": 0.7, "std_error": 0.18},  # Missing subgroup (will be "unknown")
-            {"effect_size": 0.4, "std_error": 0.14},  # Missing subgroup (will be "unknown")
+            {
+                "effect_size": 0.3,
+                "std_error": 0.12,
+                "age_group": "young",
+            },  # Same subgroup
+            {
+                "effect_size": 0.7,
+                "std_error": 0.18,
+            },  # Missing subgroup (will be "unknown")
+            {
+                "effect_size": 0.4,
+                "std_error": 0.14,
+            },  # Missing subgroup (will be "unknown")
         ]
 
         result = analyzer.perform_subgroup_meta_analysis(studies, "age_group")
@@ -262,15 +322,37 @@ class TestMetaAnalyzer:
 
         analyzer = MetaAnalyzer()
         studies = [
-            {"effect_size": 0.5, "std_error": 0.15, "study_label": "Study A", "paper_id": 1},
-            {"effect_size": 0.3, "std_error": 0.12, "study_label": "Study B", "paper_id": 2},
-            {"effect_size": 0.7, "std_error": 0.18, "study_label": "Study C", "paper_id": 3},
-            {"effect_size": 0.4, "std_error": 0.14, "study_label": "Study D", "paper_id": 4},
+            {
+                "effect_size": 0.5,
+                "std_error": 0.15,
+                "study_label": "Study A",
+                "paper_id": 1,
+            },
+            {
+                "effect_size": 0.3,
+                "std_error": 0.12,
+                "study_label": "Study B",
+                "paper_id": 2,
+            },
+            {
+                "effect_size": 0.7,
+                "std_error": 0.18,
+                "study_label": "Study C",
+                "paper_id": 3,
+            },
+            {
+                "effect_size": 0.4,
+                "std_error": 0.14,
+                "study_label": "Study D",
+                "paper_id": 4,
+            },
         ]
 
         # Suppress expected warnings from statsmodels for edge cases
         with warnings.catch_warnings():
-            warnings.filterwarnings("ignore", category=RuntimeWarning, module="statsmodels")
+            warnings.filterwarnings(
+                "ignore", category=RuntimeWarning, module="statsmodels"
+            )
             result = analyzer.perform_sensitivity_analysis(studies)
 
         assert "overall_effect" in result
@@ -309,6 +391,7 @@ class TestMetaAnalyzer:
 
         result = analyzer.perform_sensitivity_analysis(studies)
 
-        influence_scores = [d["influence_score"] for d in result["influence_diagnostics"]]
+        influence_scores = [
+            d["influence_score"] for d in result["influence_diagnostics"]
+        ]
         assert influence_scores == sorted(influence_scores, reverse=True)
-

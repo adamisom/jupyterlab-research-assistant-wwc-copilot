@@ -20,6 +20,7 @@ class ExportFormatter:
             JSON string
         """
         import json  # noqa: PLC0415
+
         return json.dumps(papers, indent=2)
 
     @staticmethod
@@ -43,8 +44,8 @@ class ExportFormatter:
                 "year",
                 "doi",
                 "citation_count",
-                "abstract"
-            ]
+                "abstract",
+            ],
         )
         writer.writeheader()
         for paper in papers:
@@ -55,7 +56,7 @@ class ExportFormatter:
                 "year": paper.get("year", ""),
                 "doi": paper.get("doi", ""),
                 "citation_count": paper.get("citation_count", ""),
-                "abstract": (paper.get("abstract", "") or "")[:500]  # Truncate
+                "abstract": (paper.get("abstract", "") or "")[:500],  # Truncate
             }
             writer.writerow(row)
 
@@ -77,9 +78,7 @@ class ExportFormatter:
             # Generate citation key from first author and year
             authors = paper.get("authors", [])
             year = paper.get("year", "unknown")
-            first_author = (
-                authors[0].split()[-1].lower() if authors else "unknown"
-            )
+            first_author = authors[0].split()[-1].lower() if authors else "unknown"
             citation_key = f"{first_author}{year}"
 
             # Determine entry type (default to @article)
@@ -100,9 +99,7 @@ class ExportFormatter:
             if paper.get("abstract"):
                 # Escape special characters for BibTeX
                 abstract = (
-                    paper.get("abstract", "")
-                    .replace("{", "\\{")
-                    .replace("}", "\\}")
+                    paper.get("abstract", "").replace("{", "\\{").replace("}", "\\}")
                 )
                 entry += f"  abstract = {{{abstract[:200]}...}},\n"
 
@@ -112,7 +109,9 @@ class ExportFormatter:
         return "\n".join(entries)
 
     @staticmethod
-    def export_meta_analysis_csv(meta_analysis_result: dict, studies: list[dict]) -> str:
+    def export_meta_analysis_csv(
+        meta_analysis_result: dict, studies: list[dict]
+    ) -> str:
         """
         Export meta-analysis results as CSV.
 
@@ -167,11 +166,49 @@ class ExportFormatter:
         # Write summary statistics
         writer.writerow([])  # Empty row
         writer.writerow(["Summary Statistics", "", "", "", "", ""])
-        writer.writerow(["I² (Heterogeneity)", f"{meta_analysis_result.get('i_squared', 0):.1f}%", "", "", "", ""])
-        writer.writerow(["Tau²", f"{meta_analysis_result.get('tau_squared', 0):.3f}", "", "", "", ""])
-        writer.writerow(["Q Statistic", f"{meta_analysis_result.get('q_statistic', 0):.3f}", "", "", "", ""])
-        writer.writerow(["Q p-value", f"{meta_analysis_result.get('q_p_value', 0):.4f}", "", "", "", ""])
-        writer.writerow(["P-value", f"{meta_analysis_result.get('p_value', 0):.4f}", "", "", "", ""])
+        writer.writerow(
+            [
+                "I² (Heterogeneity)",
+                f"{meta_analysis_result.get('i_squared', 0):.1f}%",
+                "",
+                "",
+                "",
+                "",
+            ]
+        )
+        writer.writerow(
+            [
+                "Tau²",
+                f"{meta_analysis_result.get('tau_squared', 0):.3f}",
+                "",
+                "",
+                "",
+                "",
+            ]
+        )
+        writer.writerow(
+            [
+                "Q Statistic",
+                f"{meta_analysis_result.get('q_statistic', 0):.3f}",
+                "",
+                "",
+                "",
+                "",
+            ]
+        )
+        writer.writerow(
+            [
+                "Q p-value",
+                f"{meta_analysis_result.get('q_p_value', 0):.4f}",
+                "",
+                "",
+                "",
+                "",
+            ]
+        )
+        writer.writerow(
+            ["P-value", f"{meta_analysis_result.get('p_value', 0):.4f}", "", "", "", ""]
+        )
 
         return output.getvalue()
 
@@ -202,7 +239,9 @@ class ExportFormatter:
 
         lines = []
         lines.append("# Synthesis Report")
-        lines.append(f"**Generated:** {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')}")
+        lines.append(
+            f"**Generated:** {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')}"
+        )
         lines.append(f"**Number of Studies:** {len(papers)}")
         lines.append("")
 
@@ -214,9 +253,13 @@ class ExportFormatter:
         # Methods
         lines.append("## Methods")
         if include_meta_analysis:
-            lines.append("- **Meta-Analysis**: Random-effects model using DerSimonian-Laird estimator")
+            lines.append(
+                "- **Meta-Analysis**: Random-effects model using DerSimonian-Laird estimator"
+            )
         if include_conflicts:
-            lines.append("- **Conflict Detection**: Natural Language Inference (NLI) model")
+            lines.append(
+                "- **Conflict Detection**: Natural Language Inference (NLI) model"
+            )
         lines.append("")
 
         # Results
@@ -232,10 +275,14 @@ class ExportFormatter:
             ci_upper = meta_analysis_result.get("ci_upper", 0)
             i_squared = meta_analysis_result.get("i_squared", 0)
 
-            lines.append(f"**Pooled Effect Size:** d = {pooled_effect:.3f} (95% CI: [{ci_lower:.3f}, {ci_upper:.3f}])")
+            lines.append(
+                f"**Pooled Effect Size:** d = {pooled_effect:.3f} (95% CI: [{ci_lower:.3f}, {ci_upper:.3f}])"
+            )
             lines.append(f"**Heterogeneity (I²):** {i_squared:.1f}%")
             if meta_analysis_result.get("heterogeneity_interpretation"):
-                lines.append(f"  - {meta_analysis_result['heterogeneity_interpretation']}")
+                lines.append(
+                    f"  - {meta_analysis_result['heterogeneity_interpretation']}"
+                )
             lines.append(f"**P-value:** {meta_analysis_result.get('p_value', 0):.4f}")
             lines.append("")
 
@@ -243,7 +290,9 @@ class ExportFormatter:
             if meta_analysis_result.get("forest_plot"):
                 lines.append("**Forest Plot:** [See embedded image below]")
                 lines.append("")
-                lines.append(f"![Forest Plot](data:image/png;base64,{meta_analysis_result['forest_plot']})")
+                lines.append(
+                    f"![Forest Plot](data:image/png;base64,{meta_analysis_result['forest_plot']})"
+                )
                 lines.append("")
 
             # Individual studies table
@@ -264,19 +313,29 @@ class ExportFormatter:
         if include_conflicts and conflict_result:
             lines.append("### Conflict Detection")
             lines.append("")
-            lines.append(f"**Number of Contradictions Found:** {conflict_result.get('n_contradictions', 0)}")
+            lines.append(
+                f"**Number of Contradictions Found:** {conflict_result.get('n_contradictions', 0)}"
+            )
             lines.append("")
 
             if conflict_result.get("contradictions"):
                 lines.append("#### Contradictions")
                 lines.append("")
                 for i, contradiction in enumerate(conflict_result["contradictions"], 1):
-                    lines.append(f"**Contradiction #{i}** (Confidence: {contradiction.get('confidence', 0) * 100:.1f}%)")
-                    if contradiction.get("paper1_title") and contradiction.get("paper2_title"):
+                    lines.append(
+                        f"**Contradiction #{i}** (Confidence: {contradiction.get('confidence', 0) * 100:.1f}%)"
+                    )
+                    if contradiction.get("paper1_title") and contradiction.get(
+                        "paper2_title"
+                    ):
                         lines.append(f"- **Paper 1:** {contradiction['paper1_title']}")
                         lines.append(f"- **Paper 2:** {contradiction['paper2_title']}")
-                    lines.append(f"- **Finding 1:** {contradiction.get('finding1', '')}")
-                    lines.append(f"- **Finding 2:** {contradiction.get('finding2', '')}")
+                    lines.append(
+                        f"- **Finding 1:** {contradiction.get('finding1', '')}"
+                    )
+                    lines.append(
+                        f"- **Finding 2:** {contradiction.get('finding2', '')}"
+                    )
                     lines.append("")
             else:
                 lines.append("No contradictions detected.")
@@ -296,4 +355,3 @@ class ExportFormatter:
             lines.append("")
 
         return "\n".join(lines)
-

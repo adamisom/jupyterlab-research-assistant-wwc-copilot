@@ -29,14 +29,14 @@ async def test_library_post(jp_fetch):
         "title": "Test Paper",
         "authors": ["Author 1", "Author 2"],
         "year": 2023,
-        "abstract": "Test abstract"
+        "abstract": "Test abstract",
     }
 
     response = await jp_fetch(
         "jupyterlab-research-assistant-wwc-copilot",
         "library",
         method="POST",
-        body=json.dumps(paper_data)
+        body=json.dumps(paper_data),
     )
 
     assert response.code == 201
@@ -49,12 +49,13 @@ async def test_library_post(jp_fetch):
 async def test_library_post_no_data(jp_fetch):
     """Test POST library with no data."""
     from tornado.httpclient import HTTPClientError
+
     try:
         response = await jp_fetch(
             "jupyterlab-research-assistant-wwc-copilot",
             "library",
             method="POST",
-            body=json.dumps({})
+            body=json.dumps({}),
         )
         assert response.code == 400
         payload = json.loads(response.body)
@@ -68,6 +69,7 @@ async def test_library_post_no_data(jp_fetch):
 async def test_search_no_query(jp_fetch):
     """Test search endpoint without query parameter."""
     from tornado.httpclient import HTTPClientError
+
     try:
         response = await jp_fetch("jupyterlab-research-assistant-wwc-copilot", "search")
         # If no exception, check response
@@ -90,20 +92,18 @@ async def test_search_with_query(jp_fetch):
         "title": "Spaced Repetition Study",
         "authors": ["Researcher"],
         "abstract": "This paper studies spaced repetition",
-        "year": 2023
+        "year": 2023,
     }
     await jp_fetch(
         "jupyterlab-research-assistant-wwc-copilot",
         "library",
         method="POST",
-        body=json.dumps(paper_data)
+        body=json.dumps(paper_data),
     )
 
     # Then search
     response = await jp_fetch(
-        "jupyterlab-research-assistant-wwc-copilot",
-        "search",
-        params={"q": "spaced"}
+        "jupyterlab-research-assistant-wwc-copilot", "search", params={"q": "spaced"}
     )
 
     assert response.code == 200
@@ -115,6 +115,7 @@ async def test_search_with_query(jp_fetch):
 async def test_discovery_no_query(jp_fetch):
     """Test discovery endpoint without query parameter."""
     from tornado.httpclient import HTTPClientError
+
     try:
         response = await jp_fetch(
             "jupyterlab-research-assistant-wwc-copilot", "discovery"
@@ -134,11 +135,12 @@ async def test_discovery_with_query(jp_fetch):
     May fail if API is down, but structure should work.
     """
     from tornado.httpclient import HTTPClientError
+
     try:
         response = await jp_fetch(
             "jupyterlab-research-assistant-wwc-copilot",
             "discovery",
-            params={"q": "machine learning", "limit": "5"}
+            params={"q": "machine learning", "limit": "5"},
         )
         # Should either succeed (200) or fail with API error (500), but not 400
         assert response.code in [200, 500]
@@ -156,6 +158,7 @@ async def test_import_no_file(jp_fetch):
     from urllib.parse import urlencode
 
     from tornado.httpclient import HTTPClientError
+
     try:
         body = urlencode({})
         response = await jp_fetch(
@@ -163,7 +166,7 @@ async def test_import_no_file(jp_fetch):
             "import",
             method="POST",
             body=body,
-            headers={"Content-Type": "application/x-www-form-urlencoded"}
+            headers={"Content-Type": "application/x-www-form-urlencoded"},
         )
         assert response.code == 400
         payload = json.loads(response.body)

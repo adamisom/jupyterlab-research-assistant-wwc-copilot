@@ -16,7 +16,7 @@ def test_transform_paper_basic():
         "abstract": "Test abstract",
         "doi": "10.1234/test",
         "citationCount": 10,
-        "openAccessPdf": None
+        "openAccessPdf": None,
     }
 
     result = api._transform_paper(paper)
@@ -37,7 +37,7 @@ def test_transform_paper_with_open_access_pdf():
         "title": "Test Paper",
         "authors": [],
         "year": 2023,
-        "openAccessPdf": {"url": "https://example.com/paper.pdf"}
+        "openAccessPdf": {"url": "https://example.com/paper.pdf"},
     }
 
     result = api._transform_paper(paper)
@@ -54,7 +54,7 @@ def test_transform_paper_with_references():
         "authors": [],
         "year": 2023,
         "citationCount": 10,
-        "referenceCount": 5
+        "referenceCount": 5,
     }
 
     result = api._transform_paper(paper, include_references=True)
@@ -72,10 +72,9 @@ def test_transform_paper_without_references():
         "authors": [],
         "year": 2023,
         "citationCount": 10,
-        "referenceCount": 5
+        "referenceCount": 5,
     }
 
     result = api._transform_paper(paper, include_references=False)
 
     assert "reference_count" not in result
-

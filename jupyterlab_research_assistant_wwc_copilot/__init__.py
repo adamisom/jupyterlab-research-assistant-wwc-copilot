@@ -5,25 +5,24 @@ except ImportError:
     # in editable mode with pip. It is highly recommended to install
     # the package from a stable release or in editable mode: https://pip.pypa.io/en/stable/topics/local-project-installs/#editable-installs
     import warnings
+
     warnings.warn(
         "Importing 'jupyterlab_research_assistant_wwc_copilot' "
-        "outside a proper installation.", stacklevel=2
+        "outside a proper installation.",
+        stacklevel=2,
     )
     __version__ = "dev"
 from .routes import setup_route_handlers
 
 
 def _jupyter_labextension_paths():
-    return [{
-        "src": "labextension",
-        "dest": "jupyterlab-research-assistant-wwc-copilot"
-    }]
+    return [
+        {"src": "labextension", "dest": "jupyterlab-research-assistant-wwc-copilot"}
+    ]
 
 
 def _jupyter_server_extension_points():
-    return [{
-        "module": "jupyterlab_research_assistant_wwc_copilot"
-    }]
+    return [{"module": "jupyterlab_research_assistant_wwc_copilot"}]
 
 
 def _load_jupyter_server_extension(server_app):

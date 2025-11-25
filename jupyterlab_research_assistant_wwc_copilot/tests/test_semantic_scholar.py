@@ -17,7 +17,9 @@ def test_rate_limiting():
     assert api.last_request_time >= initial_time
 
 
-@patch("jupyterlab_research_assistant_wwc_copilot.services.semantic_scholar.requests.Session")
+@patch(
+    "jupyterlab_research_assistant_wwc_copilot.services.semantic_scholar.requests.Session"
+)
 def test_search_papers_success(mock_session_class):
     """Test successful paper search."""
     # Mock the session and response
@@ -33,10 +35,10 @@ def test_search_papers_success(mock_session_class):
                 "abstract": "Test abstract",
                 "doi": "10.1234/test",
                 "citationCount": 10,
-                "openAccessPdf": None
+                "openAccessPdf": None,
             }
         ],
-        "total": 1
+        "total": 1,
     }
     mock_response.raise_for_status = Mock()
     mock_session.get.return_value = mock_response
@@ -51,7 +53,9 @@ def test_search_papers_success(mock_session_class):
     assert results["data"][0]["paperId"] == "123"
 
 
-@patch("jupyterlab_research_assistant_wwc_copilot.services.semantic_scholar.requests.Session")
+@patch(
+    "jupyterlab_research_assistant_wwc_copilot.services.semantic_scholar.requests.Session"
+)
 def test_search_papers_with_year(mock_session_class):
     """Test paper search with year filter."""
     mock_session = Mock()
@@ -70,10 +74,13 @@ def test_search_papers_with_year(mock_session_class):
     assert call_args[1]["params"]["year"] == "2020-2024"
 
 
-@patch("jupyterlab_research_assistant_wwc_copilot.services.semantic_scholar.requests.Session")
+@patch(
+    "jupyterlab_research_assistant_wwc_copilot.services.semantic_scholar.requests.Session"
+)
 def test_search_papers_error(mock_session_class):
     """Test error handling in paper search."""
     import requests
+
     mock_session = Mock()
     # Use requests.exceptions.RequestException to match the actual exception type
     mock_session.get.side_effect = requests.exceptions.RequestException("Network error")
@@ -85,7 +92,9 @@ def test_search_papers_error(mock_session_class):
     assert "Semantic Scholar API error" in str(exc_info.value)
 
 
-@patch("jupyterlab_research_assistant_wwc_copilot.services.semantic_scholar.requests.Session")
+@patch(
+    "jupyterlab_research_assistant_wwc_copilot.services.semantic_scholar.requests.Session"
+)
 def test_get_paper_details_success(mock_session_class):
     """Test successful paper details retrieval."""
     mock_session = Mock()
@@ -99,7 +108,7 @@ def test_get_paper_details_success(mock_session_class):
         "doi": "10.1234/test",
         "citationCount": 10,
         "referenceCount": 5,
-        "openAccessPdf": None
+        "openAccessPdf": None,
     }
     mock_response.status_code = 200
     mock_response.raise_for_status = Mock()
@@ -115,7 +124,9 @@ def test_get_paper_details_success(mock_session_class):
     assert result["reference_count"] == 5
 
 
-@patch("jupyterlab_research_assistant_wwc_copilot.services.semantic_scholar.requests.Session")
+@patch(
+    "jupyterlab_research_assistant_wwc_copilot.services.semantic_scholar.requests.Session"
+)
 def test_get_paper_details_not_found(mock_session_class):
     """Test handling of paper not found."""
     mock_session = Mock()
@@ -128,4 +139,3 @@ def test_get_paper_details_not_found(mock_session_class):
     result = api.get_paper_details("nonexistent")
 
     assert result is None
-

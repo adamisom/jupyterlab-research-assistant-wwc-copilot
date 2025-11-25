@@ -34,10 +34,7 @@ async def test_subgroup_analysis_insufficient_papers(jp_fetch):
             "jupyterlab-research-assistant-wwc-copilot",
             "subgroup-analysis",
             method="POST",
-            body=json.dumps({
-                "paper_ids": [1],
-                "subgroup_variable": "age_group"
-            }),
+            body=json.dumps({"paper_ids": [1], "subgroup_variable": "age_group"}),
         )
         assert response.code == 400
         payload = json.loads(response.body)
@@ -99,28 +96,16 @@ async def test_subgroup_analysis_with_papers(jp_fetch):
         "title": "Study A",
         "authors": ["Author 1"],
         "year": 2023,
-        "study_metadata": {
-            "effect_sizes": {
-                "outcome1": {"d": 0.5, "se": 0.15}
-            }
-        },
-        "learning_science_metadata": {
-            "age_group": "young"
-        }
+        "study_metadata": {"effect_sizes": {"outcome1": {"d": 0.5, "se": 0.15}}},
+        "learning_science_metadata": {"age_group": "young"},
     }
 
     paper2 = {
         "title": "Study B",
         "authors": ["Author 2"],
         "year": 2023,
-        "study_metadata": {
-            "effect_sizes": {
-                "outcome1": {"d": 0.3, "se": 0.12}
-            }
-        },
-        "learning_science_metadata": {
-            "age_group": "young"
-        }
+        "study_metadata": {"effect_sizes": {"outcome1": {"d": 0.3, "se": 0.12}}},
+        "learning_science_metadata": {"age_group": "young"},
     }
 
     # Add papers
@@ -128,7 +113,7 @@ async def test_subgroup_analysis_with_papers(jp_fetch):
         "jupyterlab-research-assistant-wwc-copilot",
         "library",
         method="POST",
-        body=json.dumps(paper1)
+        body=json.dumps(paper1),
     )
     paper1_id = json.loads(response1.body)["data"]["id"]
 
@@ -136,7 +121,7 @@ async def test_subgroup_analysis_with_papers(jp_fetch):
         "jupyterlab-research-assistant-wwc-copilot",
         "library",
         method="POST",
-        body=json.dumps(paper2)
+        body=json.dumps(paper2),
     )
     paper2_id = json.loads(response2.body)["data"]["id"]
 
@@ -145,11 +130,13 @@ async def test_subgroup_analysis_with_papers(jp_fetch):
         "jupyterlab-research-assistant-wwc-copilot",
         "subgroup-analysis",
         method="POST",
-        body=json.dumps({
-            "paper_ids": [paper1_id, paper2_id],
-            "subgroup_variable": "age_group",
-            "outcome_name": "outcome1"
-        })
+        body=json.dumps(
+            {
+                "paper_ids": [paper1_id, paper2_id],
+                "subgroup_variable": "age_group",
+                "outcome_name": "outcome1",
+            }
+        ),
     )
 
     assert response.code == 200
@@ -171,20 +158,18 @@ async def test_bias_assessment_with_papers(jp_fetch):
     papers = []
     for i in range(3):
         paper = {
-            "title": f"Study {i+1}",
-            "authors": [f"Author {i+1}"],
+            "title": f"Study {i + 1}",
+            "authors": [f"Author {i + 1}"],
             "year": 2023,
             "study_metadata": {
-                "effect_sizes": {
-                    "outcome1": {"d": 0.5 + i * 0.1, "se": 0.15}
-                }
-            }
+                "effect_sizes": {"outcome1": {"d": 0.5 + i * 0.1, "se": 0.15}}
+            },
         }
         response = await jp_fetch(
             "jupyterlab-research-assistant-wwc-copilot",
             "library",
             method="POST",
-            body=json.dumps(paper)
+            body=json.dumps(paper),
         )
         papers.append(json.loads(response.body)["data"]["id"])
 
@@ -197,10 +182,7 @@ async def test_bias_assessment_with_papers(jp_fetch):
             "jupyterlab-research-assistant-wwc-copilot",
             "bias-assessment",
             method="POST",
-            body=json.dumps({
-                "paper_ids": papers,
-                "outcome_name": "outcome1"
-            })
+            body=json.dumps({"paper_ids": papers, "outcome_name": "outcome1"}),
         )
 
     assert response.code == 200
@@ -221,20 +203,18 @@ async def test_sensitivity_analysis_with_papers(jp_fetch):
     papers = []
     for i in range(3):
         paper = {
-            "title": f"Study {i+1}",
-            "authors": [f"Author {i+1}"],
+            "title": f"Study {i + 1}",
+            "authors": [f"Author {i + 1}"],
             "year": 2023,
             "study_metadata": {
-                "effect_sizes": {
-                    "outcome1": {"d": 0.5 + i * 0.1, "se": 0.15}
-                }
-            }
+                "effect_sizes": {"outcome1": {"d": 0.5 + i * 0.1, "se": 0.15}}
+            },
         }
         response = await jp_fetch(
             "jupyterlab-research-assistant-wwc-copilot",
             "library",
             method="POST",
-            body=json.dumps(paper)
+            body=json.dumps(paper),
         )
         papers.append(json.loads(response.body)["data"]["id"])
 
@@ -243,10 +223,7 @@ async def test_sensitivity_analysis_with_papers(jp_fetch):
         "jupyterlab-research-assistant-wwc-copilot",
         "sensitivity-analysis",
         method="POST",
-        body=json.dumps({
-            "paper_ids": papers,
-            "outcome_name": "outcome1"
-        })
+        body=json.dumps({"paper_ids": papers, "outcome_name": "outcome1"}),
     )
 
     assert response.code == 200
@@ -261,4 +238,3 @@ async def test_sensitivity_analysis_with_papers(jp_fetch):
     assert data["n_studies"] == 3
     assert len(data["leave_one_out"]) == 3
     assert len(data["influence_diagnostics"]) == 3
-

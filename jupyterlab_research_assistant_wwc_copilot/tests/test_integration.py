@@ -31,7 +31,7 @@ def temp_db(tmp_path, monkeypatch):
 
     monkeypatch.setattr(
         "jupyterlab_research_assistant_wwc_copilot.database.models.get_db_path",
-        mock_get_db_path
+        mock_get_db_path,
     )
 
     # Create the database
@@ -54,10 +54,14 @@ def db(temp_db):
         # Cleanup: delete all test papers and related metadata
         try:
             # Delete related metadata first (foreign key constraints)
-            test_papers = db.session.query(Paper).filter(Paper.title.like("TEST_%")).all()
+            test_papers = (
+                db.session.query(Paper).filter(Paper.title.like("TEST_%")).all()
+            )
             for paper in test_papers:
                 db.session.query(StudyMetadata).filter_by(paper_id=paper.id).delete()
-                db.session.query(LearningScienceMetadata).filter_by(paper_id=paper.id).delete()
+                db.session.query(LearningScienceMetadata).filter_by(
+                    paper_id=paper.id
+                ).delete()
             # Then delete papers
             db.session.query(Paper).filter(Paper.title.like("TEST_%")).delete()
             db.session.commit()
@@ -65,23 +69,27 @@ def db(temp_db):
             db.session.rollback()
 
 
-@patch("jupyterlab_research_assistant_wwc_copilot.services.semantic_scholar.requests.Session")
+@patch(
+    "jupyterlab_research_assistant_wwc_copilot.services.semantic_scholar.requests.Session"
+)
 def test_complete_workflow(mock_session_class, db):
     """Test: Search → Import → View → Search → Export"""
     # Mock Semantic Scholar API
     mock_session = Mock()
     mock_response = Mock()
     mock_response.json.return_value = {
-        "data": [{
-            "paperId": "123",
-            "title": "Test Paper on Spaced Repetition",
-            "authors": [{"name": "Test Author"}],
-            "year": 2023,
-            "abstract": "This is a test abstract about spaced repetition",
-            "doi": "10.1234/test",
-            "citationCount": 10
-        }],
-        "total": 1
+        "data": [
+            {
+                "paperId": "123",
+                "title": "Test Paper on Spaced Repetition",
+                "authors": [{"name": "Test Author"}],
+                "year": 2023,
+                "abstract": "This is a test abstract about spaced repetition",
+                "doi": "10.1234/test",
+                "citationCount": 10,
+            }
+        ],
+        "total": 1,
     }
     mock_response.raise_for_status = Mock()
     mock_session.get.return_value = mock_response
@@ -94,12 +102,14 @@ def test_complete_workflow(mock_session_class, db):
 
     # 2. Import paper
     paper_data = results["data"][0]
-    imported = db.add_paper({
-        "title": f"TEST_{paper_data['title']}",
-        "authors": paper_data.get("authors", []),
-        "year": paper_data.get("year"),
-        "abstract": paper_data.get("abstract", "")
-    })
+    imported = db.add_paper(
+        {
+            "title": f"TEST_{paper_data['title']}",
+            "authors": paper_data.get("authors", []),
+            "year": paper_data.get("year"),
+            "abstract": paper_data.get("abstract", ""),
+        }
+    )
     assert imported["id"] is not None
 
     # 3. View in library
@@ -127,28 +137,29 @@ def test_error_handling(db):
     assert paper is None
 
 
-@patch("jupyterlab_research_assistant_wwc_copilot.services.semantic_scholar.requests.Session")
-@pytest.mark.parametrize("query", [
-    "spaced repetition",
-    "learning science",
-    "meta-analysis",
-    "RCT education"
-])
+@patch(
+    "jupyterlab_research_assistant_wwc_copilot.services.semantic_scholar.requests.Session"
+)
+@pytest.mark.parametrize(
+    "query", ["spaced repetition", "learning science", "meta-analysis", "RCT education"]
+)
 def test_search_variations(mock_session_class, query, db):
     """Test various search queries."""
     # Mock Semantic Scholar API
     mock_session = Mock()
     mock_response = Mock()
     mock_response.json.return_value = {
-        "data": [{
-            "paperId": "123",
-            "title": f"Test Paper on {query}",
-            "authors": [{"name": "Test Author"}],
-            "year": 2023,
-            "abstract": f"Test abstract about {query}",
-            "citationCount": 5
-        }],
-        "total": 1
+        "data": [
+            {
+                "paperId": "123",
+                "title": f"Test Paper on {query}",
+                "authors": [{"name": "Test Author"}],
+                "year": 2023,
+                "abstract": f"Test abstract about {query}",
+                "citationCount": 5,
+            }
+        ],
+        "total": 1,
     }
     mock_response.raise_for_status = Mock()
     mock_session.get.return_value = mock_response
@@ -171,14 +182,12 @@ def test_paper_with_metadata(db):
             "methodology": "RCT",
             "sample_size_baseline": 100,
             "sample_size_endline": 95,
-            "effect_sizes": {
-                "test_score": {"d": 0.5, "se": 0.1}
-            }
+            "effect_sizes": {"test_score": {"d": 0.5, "se": 0.1}},
         },
         "learning_science_metadata": {
             "learning_domain": "cognitive",
-            "intervention_type": "Spaced Repetition"
-        }
+            "intervention_type": "Spaced Repetition",
+        },
     }
 
     imported = db.add_paper(paper_data)
@@ -191,4 +200,3 @@ def test_paper_with_metadata(db):
     assert retrieved is not None
     assert retrieved["study_metadata"]["methodology"] == "RCT"
     assert retrieved["learning_science_metadata"]["learning_domain"] == "cognitive"
-

@@ -79,7 +79,10 @@ async def test_wwc_assessment_success(jp_fetch):
     # Now run WWC assessment
     assessment_data = {
         "paper_id": paper_id,
-        "judgments": {"chosen_attrition_boundary": "cautious", "randomization_documented": True},
+        "judgments": {
+            "chosen_attrition_boundary": "cautious",
+            "randomization_documented": True,
+        },
     }
 
     response = await jp_fetch(
@@ -166,12 +169,18 @@ async def test_meta_analysis_no_effect_sizes(jp_fetch):
         assert response.code == 400
         payload = json.loads(response.body)
         assert payload["status"] == "error"
-        assert "insufficient" in payload["message"].lower() or "effect size" in payload["message"].lower()
+        assert (
+            "insufficient" in payload["message"].lower()
+            or "effect size" in payload["message"].lower()
+        )
     except HTTPClientError as e:
         assert e.code == 400
         payload = json.loads(e.response.body)
         assert payload["status"] == "error"
-        assert "insufficient" in payload["message"].lower() or "effect size" in payload["message"].lower()
+        assert (
+            "insufficient" in payload["message"].lower()
+            or "effect size" in payload["message"].lower()
+        )
 
 
 async def test_meta_analysis_success(jp_fetch):
@@ -288,7 +297,9 @@ async def test_meta_analysis_with_outcome_name(jp_fetch):
         "jupyterlab-research-assistant-wwc-copilot",
         "meta-analysis",
         method="POST",
-        body=json.dumps({"paper_ids": [paper1_id, paper2_id], "outcome_name": "retention_test"}),
+        body=json.dumps(
+            {"paper_ids": [paper1_id, paper2_id], "outcome_name": "retention_test"}
+        ),
     )
 
     assert response.code == 200
@@ -297,7 +308,10 @@ async def test_meta_analysis_with_outcome_name(jp_fetch):
     data = payload["data"]
     assert len(data["studies"]) == 2
     # Verify both studies have the retention_test effect size
-    assert all("retention_test" in s.get("study_label", "") or s.get("effect_size", 0) > 0 for s in data["studies"])
+    assert all(
+        "retention_test" in s.get("study_label", "") or s.get("effect_size", 0) > 0
+        for s in data["studies"]
+    )
 
 
 async def test_conflict_detection_insufficient_papers(jp_fetch):
@@ -373,4 +387,3 @@ async def test_conflict_detection_success(jp_fetch):
     assert "n_contradictions" in data
     assert data["n_papers"] == 2
     assert isinstance(data["contradictions"], list)
-

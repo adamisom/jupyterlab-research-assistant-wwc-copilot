@@ -15,7 +15,7 @@ def test_to_json():
             "year": 2023,
             "doi": "10.1234/test",
             "citation_count": 10,
-            "abstract": "Test abstract"
+            "abstract": "Test abstract",
         }
     ]
 
@@ -35,7 +35,7 @@ def test_to_csv():
             "year": 2023,
             "doi": "10.1234/test",
             "citation_count": 10,
-            "abstract": "Test abstract"
+            "abstract": "Test abstract",
         }
     ]
 
@@ -57,7 +57,7 @@ def test_to_bibtex():
             "authors": ["John Doe", "Jane Smith"],
             "year": 2023,
             "doi": "10.1234/test",
-            "abstract": "Test abstract"
+            "abstract": "Test abstract",
         }
     ]
 
@@ -72,14 +72,7 @@ def test_to_bibtex():
 
 def test_to_bibtex_no_authors():
     """Test BibTeX export with no authors."""
-    papers = [
-        {
-            "id": 1,
-            "title": "Test Paper",
-            "authors": [],
-            "year": 2023
-        }
-    ]
+    papers = [{"id": 1, "title": "Test Paper", "authors": [], "year": 2023}]
 
     result = ExportFormatter.to_bibtex(papers)
     assert "unknown2023" in result.lower()
@@ -93,11 +86,10 @@ def test_to_bibtex_escapes_special_chars():
             "title": "Test Paper",
             "authors": ["Author"],
             "year": 2023,
-            "abstract": "Abstract with {braces} and } more {"
+            "abstract": "Abstract with {braces} and } more {",
         }
     ]
 
     result = ExportFormatter.to_bibtex(papers)
     assert "\\{" in result
     assert "\\}" in result
-

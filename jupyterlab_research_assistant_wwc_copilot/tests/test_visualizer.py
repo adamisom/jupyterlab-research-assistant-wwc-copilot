@@ -14,8 +14,18 @@ class TestVisualizer:
         """Test that forest plot returns a valid base64 string."""
         visualizer = Visualizer()
         studies = [
-            {"effect_size": 0.5, "ci_lower": 0.2, "ci_upper": 0.8, "study_label": "Study A"},
-            {"effect_size": 0.3, "ci_lower": 0.1, "ci_upper": 0.5, "study_label": "Study B"},
+            {
+                "effect_size": 0.5,
+                "ci_lower": 0.2,
+                "ci_upper": 0.8,
+                "study_label": "Study A",
+            },
+            {
+                "effect_size": 0.3,
+                "ci_lower": 0.1,
+                "ci_upper": 0.5,
+                "study_label": "Study B",
+            },
         ]
 
         image_base64 = visualizer.create_forest_plot(
@@ -53,7 +63,12 @@ class TestVisualizer:
         """Test forest plot with custom title."""
         visualizer = Visualizer()
         studies = [
-            {"effect_size": 0.5, "ci_lower": 0.2, "ci_upper": 0.8, "study_label": "Study A"},
+            {
+                "effect_size": 0.5,
+                "ci_lower": 0.2,
+                "ci_upper": 0.8,
+                "study_label": "Study A",
+            },
         ]
 
         image_base64 = visualizer.create_forest_plot(
@@ -71,7 +86,12 @@ class TestVisualizer:
         """Test forest plot with multiple studies."""
         visualizer = Visualizer()
         studies = [
-            {"effect_size": 0.5, "ci_lower": 0.2, "ci_upper": 0.8, "study_label": f"Study {i}"}
+            {
+                "effect_size": 0.5,
+                "ci_lower": 0.2,
+                "ci_upper": 0.8,
+                "study_label": f"Study {i}",
+            }
             for i in range(10)
         ]
 
@@ -86,7 +106,12 @@ class TestVisualizer:
         """Test forest plot with custom figure size."""
         visualizer = Visualizer()
         studies = [
-            {"effect_size": 0.5, "ci_lower": 0.2, "ci_upper": 0.8, "study_label": "Study A"},
+            {
+                "effect_size": 0.5,
+                "ci_lower": 0.2,
+                "ci_upper": 0.8,
+                "study_label": "Study A",
+            },
         ]
 
         image_base64 = visualizer.create_forest_plot(
@@ -142,4 +167,3 @@ class TestVisualizer:
 
         assert isinstance(image_base64, str)
         assert len(image_base64) > 0
-

@@ -171,4 +171,3 @@ async def test_synthesis_export_success(jp_fetch):
     assert "References" in markdown_content
     # Verify it's actually Markdown format
     assert "##" in markdown_content or "###" in markdown_content
-

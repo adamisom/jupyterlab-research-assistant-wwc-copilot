@@ -196,7 +196,10 @@ class TestWWCAssessment:
             "control_attrition": 0.30,
             "methodology": "RCT",
             "randomization_documented": True,
-            "baseline_means": {"treatment": 50.0, "control": 51.5},  # d ≈ 0.15 (adjustable range)
+            "baseline_means": {
+                "treatment": 50.0,
+                "control": 51.5,
+            },  # d ≈ 0.15 (adjustable range)
             "baseline_sds": {"treatment": 10.0, "control": 10.0},
         }
         user_judgments = {
@@ -276,4 +279,3 @@ class TestWWCAssessment:
         assessment = assessor.assess(extracted_data, user_judgments)
 
         assert assessment.chosen_attrition_boundary == AttritionBoundary.CAUTIOUS
-

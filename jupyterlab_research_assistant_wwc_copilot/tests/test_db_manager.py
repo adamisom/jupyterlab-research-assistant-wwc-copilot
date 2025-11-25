@@ -24,7 +24,7 @@ def temp_db(tmp_path, monkeypatch):
 
     monkeypatch.setattr(
         "jupyterlab_research_assistant_wwc_copilot.database.models.get_db_path",
-        mock_get_db_path
+        mock_get_db_path,
     )
 
     # Create the database
@@ -46,7 +46,7 @@ def test_add_paper(temp_db):
             "title": "Test Paper",
             "authors": ["John Doe", "Jane Smith"],
             "year": 2023,
-            "abstract": "This is a test abstract"
+            "abstract": "This is a test abstract",
         }
         result = db.add_paper(paper_data)
         assert result["id"] is not None
@@ -59,16 +59,8 @@ def test_get_all_papers(temp_db):
     """Test retrieving all papers."""
     with DatabaseManager() as db:
         # Add a paper
-        db.add_paper({
-            "title": "Paper 1",
-            "authors": ["Author 1"],
-            "year": 2023
-        })
-        db.add_paper({
-            "title": "Paper 2",
-            "authors": ["Author 2"],
-            "year": 2024
-        })
+        db.add_paper({"title": "Paper 1", "authors": ["Author 1"], "year": 2023})
+        db.add_paper({"title": "Paper 2", "authors": ["Author 2"], "year": 2024})
 
     with DatabaseManager() as db:
         papers = db.get_all_papers()
@@ -80,11 +72,9 @@ def test_get_all_papers(temp_db):
 def test_get_paper_by_id(temp_db):
     """Test retrieving a paper by ID."""
     with DatabaseManager() as db:
-        paper = db.add_paper({
-            "title": "Test Paper",
-            "authors": ["Author"],
-            "year": 2023
-        })
+        paper = db.add_paper(
+            {"title": "Test Paper", "authors": ["Author"], "year": 2023}
+        )
         paper_id = paper["id"]
 
     with DatabaseManager() as db:
@@ -97,18 +87,22 @@ def test_get_paper_by_id(temp_db):
 def test_search_papers(temp_db):
     """Test searching papers."""
     with DatabaseManager() as db:
-        db.add_paper({
-            "title": "Spaced Repetition Study",
-            "authors": ["Researcher"],
-            "abstract": "This paper studies spaced repetition",
-            "year": 2023
-        })
-        db.add_paper({
-            "title": "Different Topic",
-            "authors": ["Another Researcher"],
-            "abstract": "This is about something else",
-            "year": 2024
-        })
+        db.add_paper(
+            {
+                "title": "Spaced Repetition Study",
+                "authors": ["Researcher"],
+                "abstract": "This paper studies spaced repetition",
+                "year": 2023,
+            }
+        )
+        db.add_paper(
+            {
+                "title": "Different Topic",
+                "authors": ["Another Researcher"],
+                "abstract": "This is about something else",
+                "year": 2024,
+            }
+        )
 
     with DatabaseManager() as db:
         results = db.search_papers("spaced repetition")
@@ -127,16 +121,13 @@ def test_add_paper_with_metadata(temp_db):
                 "methodology": "RCT",
                 "sample_size_baseline": 100,
                 "sample_size_endline": 95,
-                "effect_sizes": {
-                    "outcome1": {"d": 0.5, "se": 0.1}
-                }
+                "effect_sizes": {"outcome1": {"d": 0.5, "se": 0.1}},
             },
             "learning_science_metadata": {
                 "learning_domain": "cognitive",
-                "intervention_type": "Spaced Repetition"
-            }
+                "intervention_type": "Spaced Repetition",
+            },
         }
         result = db.add_paper(paper_data)
         assert result["study_metadata"]["methodology"] == "RCT"
         assert result["learning_science_metadata"]["learning_domain"] == "cognitive"
-

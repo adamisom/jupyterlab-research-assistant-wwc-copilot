@@ -20,7 +20,7 @@ class AIExtractor:
         provider: str = "ollama",
         api_key: Optional[str] = None,
         model: str = "llama3",
-        ollama_url: str = "http://localhost:11434"
+        ollama_url: str = "http://localhost:11434",
     ):
         self.provider = provider
         self.model = model
@@ -31,9 +31,12 @@ class AIExtractor:
                 raise ValueError(f"API key required for {provider}")
             try:
                 from openai import OpenAI  # noqa: PLC0415
+
                 self.client = OpenAI(
                     api_key=api_key,
-                    base_url="https://api.anthropic.com/v1" if provider == "claude" else None
+                    base_url="https://api.anthropic.com/v1"
+                    if provider == "claude"
+                    else None,
                 )
             except ImportError as e:
                 raise ImportError(
@@ -90,9 +93,9 @@ Return only valid JSON, no additional text."""
                 "model": self.model,
                 "prompt": prompt,
                 "stream": False,
-                "format": "json"
+                "format": "json",
             },
-            timeout=120
+            timeout=120,
         )
         response.raise_for_status()
         result = response.json()
@@ -106,7 +109,7 @@ Return only valid JSON, no additional text."""
                 "Ollama returned invalid JSON, attempting to extract JSON from response"
             )
             # Try to extract JSON from text
-            json_match = re.search(r'\{.*\}', extracted_text, re.DOTALL)
+            json_match = re.search(r"\{.*\}", extracted_text, re.DOTALL)
             if json_match:
                 return json.loads(json_match.group())
             return {}
@@ -116,10 +119,7 @@ Return only valid JSON, no additional text."""
         response = self.client.chat.completions.create(
             model=self.model,
             messages=[{"role": "user", "content": prompt}],
-            response_format={"type": "json_object"}
+            response_format={"type": "json_object"},
         )
         content = response.choices[0].message.content
         return json.loads(content)
-
-
-

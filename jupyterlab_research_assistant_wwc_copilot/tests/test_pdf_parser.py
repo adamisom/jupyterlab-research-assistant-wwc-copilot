@@ -22,4 +22,3 @@ def test_extract_text_chunk_empty_file(tmp_path):
 # Note: Testing with actual PDFs would require sample PDF files
 # For now, we test error cases and structure
 # Integration tests with real PDFs should be added separately
-

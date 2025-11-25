@@ -5,6 +5,3 @@ from .pdf_parser import PDFParser
 from .semantic_scholar import SemanticScholarAPI
 
 __all__ = ["DatabaseManager", "PDFParser", "SemanticScholarAPI"]
-
-
-

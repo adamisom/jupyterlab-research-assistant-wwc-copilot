@@ -63,7 +63,7 @@ class PDFParser:
                 "subject": metadata.get("subject", "").strip() or None,
                 "full_text": full_text,
                 "page_count": page_count,
-                "total_pages": total_pages
+                "total_pages": total_pages,
             }
         except Exception as e:
             logger.exception(f"Error parsing PDF {pdf_path}")
@@ -83,6 +83,3 @@ class PDFParser:
         result = self.extract_text_and_metadata(pdf_path)
         text = result["full_text"]
         return text[:max_chars] if len(text) > max_chars else text
-
-
-

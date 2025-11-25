@@ -64,12 +64,19 @@ class Visualizer:
             ax.plot([ci_low, ci_high], [y_pos, y_pos], "b-", linewidth=2)
 
             # Add study label
-            label = study.get("study_label", f"Study {i+1}")
+            label = study.get("study_label", f"Study {i + 1}")
             ax.text(-0.5, y_pos, label, va="center", ha="right", fontsize=9)
 
         # Plot pooled effect (diamond shape)
         pooled_y = y_positions[-1]
-        ax.plot(pooled_effect, pooled_y, "D", markersize=12, color="red", label="Pooled Effect")
+        ax.plot(
+            pooled_effect,
+            pooled_y,
+            "D",
+            markersize=12,
+            color="red",
+            label="Pooled Effect",
+        )
         ax.plot([ci_lower, ci_upper], [pooled_y, pooled_y], "r-", linewidth=3)
 
         # Add vertical line at effect = 0
@@ -84,7 +91,7 @@ class Visualizer:
         ax.set_title(title, fontsize=12, fontweight="bold")
         ax.set_yticks(y_positions)
         ax.set_yticklabels(
-            [s.get("study_label", f"Study {i+1}") for i, s in enumerate(studies)]
+            [s.get("study_label", f"Study {i + 1}") for i, s in enumerate(studies)]
             + ["Pooled Effect"]
         )
         ax.grid(True, alpha=0.3, axis="x")
@@ -120,7 +127,7 @@ class Visualizer:
         labels: list[str],
         title: str = "Funnel Plot",
         figsize: tuple = (8, 8),
-        dpi: int = 100
+        dpi: int = 100,
     ) -> str:
         """
         Generate a funnel plot for publication bias assessment.
@@ -141,7 +148,7 @@ class Visualizer:
         # Plot effect sizes vs precision (1/SE)
         precision = [1.0 / se for se in std_errors]
 
-        ax.scatter(effect_sizes, precision, alpha=0.6, s=50, color='steelblue')
+        ax.scatter(effect_sizes, precision, alpha=0.6, s=50, color="steelblue")
 
         # Add labels for outliers
         for _i, (es, prec, label) in enumerate(zip(effect_sizes, precision, labels)):
@@ -153,25 +160,24 @@ class Visualizer:
                     fontsize=8,
                     alpha=0.7,
                     xytext=(5, 5),
-                    textcoords='offset points'
+                    textcoords="offset points",
                 )
 
-        ax.set_xlabel('Effect Size', fontsize=11)
-        ax.set_ylabel('Precision (1/SE)', fontsize=11)
-        ax.set_title(title, fontsize=12, fontweight='bold')
+        ax.set_xlabel("Effect Size", fontsize=11)
+        ax.set_ylabel("Precision (1/SE)", fontsize=11)
+        ax.set_title(title, fontsize=12, fontweight="bold")
         ax.grid(True, alpha=0.3)
-        ax.axvline(x=0, color='black', linestyle='--', linewidth=1, alpha=0.5)
+        ax.axvline(x=0, color="black", linestyle="--", linewidth=1, alpha=0.5)
 
         plt.tight_layout()
 
         # Convert to base64
         buf = io.BytesIO()
-        fig.savefig(buf, format='png', bbox_inches='tight', dpi=dpi)
+        fig.savefig(buf, format="png", bbox_inches="tight", dpi=dpi)
         plt.close(fig)
         buf.seek(0)
 
-        image_base64 = base64.b64encode(buf.read()).decode('utf-8')
+        image_base64 = base64.b64encode(buf.read()).decode("utf-8")
         buf.close()
 
         return image_base64
-
