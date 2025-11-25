@@ -59,7 +59,10 @@ class SemanticScholarAPI:
             "query": query,
             "limit": min(limit, 100),  # API max is 100
             "offset": offset,
-            "fields": "title,authors,year,abstract,doi,openAccessPdf,paperId,citationCount"
+            "fields": (
+                "title,authors,year,abstract,doi,openAccessPdf,"
+                "paperId,citationCount"
+            )
         }
 
         if year:
@@ -115,7 +118,10 @@ class SemanticScholarAPI:
         self._rate_limit()
 
         params = {
-            "fields": "title,authors,year,abstract,doi,openAccessPdf,paperId,citationCount,referenceCount"
+            "fields": (
+                "title,authors,year,abstract,doi,openAccessPdf,"
+                "paperId,citationCount,referenceCount"
+            )
         }
 
         try:

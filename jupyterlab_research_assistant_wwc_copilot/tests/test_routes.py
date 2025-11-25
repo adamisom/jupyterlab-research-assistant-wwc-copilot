@@ -116,7 +116,9 @@ async def test_discovery_no_query(jp_fetch):
     """Test discovery endpoint without query parameter."""
     from tornado.httpclient import HTTPClientError
     try:
-        response = await jp_fetch("jupyterlab-research-assistant-wwc-copilot", "discovery")
+        response = await jp_fetch(
+            "jupyterlab-research-assistant-wwc-copilot", "discovery"
+        )
         assert response.code == 400
         payload = json.loads(response.body)
         assert payload["status"] == "error"
@@ -127,7 +129,10 @@ async def test_discovery_no_query(jp_fetch):
 
 
 async def test_discovery_with_query(jp_fetch):
-    """Test discovery endpoint with query (may fail if API is down, but structure should work)."""
+    """Test discovery endpoint with query.
+
+    May fail if API is down, but structure should work.
+    """
     from tornado.httpclient import HTTPClientError
     try:
         response = await jp_fetch(

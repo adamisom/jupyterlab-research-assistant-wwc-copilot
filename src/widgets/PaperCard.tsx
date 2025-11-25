@@ -1,12 +1,12 @@
 import React from 'react';
-import { Paper } from '../api';
+import { IPaper } from '../api';
 
-interface PaperCardProps {
-  paper: Paper;
+interface IPaperCardProps {
+  paper: IPaper;
   onImport?: () => void;
 }
 
-export const PaperCard: React.FC<PaperCardProps> = ({ paper, onImport }) => {
+export const PaperCard: React.FC<IPaperCardProps> = ({ paper, onImport }) => {
   return (
     <div className="jp-jupyterlab-research-assistant-wwc-copilot-paper-card">
       <h3 className="jp-jupyterlab-research-assistant-wwc-copilot-paper-title">

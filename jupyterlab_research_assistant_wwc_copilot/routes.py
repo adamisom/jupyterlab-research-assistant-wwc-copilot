@@ -20,8 +20,8 @@ class HelloRouteHandler(APIHandler):
         self.finish(json.dumps({
             "data": (
                 "Hello, world!"
-                " This is the '/jupyterlab-research-assistant-wwc-copilot/hello' endpoint."
-                " Try visiting me in your browser!"
+                " This is the '/jupyterlab-research-assistant-wwc-copilot/"
+                "hello' endpoint. Try visiting me in your browser!"
             ),
         }))
 
@@ -47,7 +47,10 @@ class LibraryHandler(APIHandler):
             data = self.get_json_body()
             if data is None or (isinstance(data, dict) and not data):
                 self.set_status(400)
-                self.finish(json.dumps({"status": "error", "message": "No data provided"}))
+                self.finish(json.dumps({
+                    "status": "error",
+                    "message": "No data provided"
+                }))
                 return
 
             with DatabaseManager() as db:
@@ -69,7 +72,10 @@ class SearchHandler(APIHandler):
             query = self.get_argument("q", "")
             if not query:
                 self.set_status(400)
-                self.finish(json.dumps({"status": "error", "message": "Query parameter 'q' required"}))
+                self.finish(json.dumps({
+                    "status": "error",
+                    "message": "Query parameter 'q' required"
+                }))
                 return
 
             with DatabaseManager() as db:
@@ -94,11 +100,16 @@ class DiscoveryHandler(APIHandler):
 
             if not query:
                 self.set_status(400)
-                self.finish(json.dumps({"status": "error", "message": "Query parameter 'q' required"}))
+                self.finish(json.dumps({
+                    "status": "error",
+                    "message": "Query parameter 'q' required"
+                }))
                 return
 
             api = SemanticScholarAPI()
-            results = api.search_papers(query, year=year, limit=limit, offset=offset)
+            results = api.search_papers(
+                query, year=year, limit=limit, offset=offset
+            )
             self.finish(json.dumps({"status": "success", "data": results}))
         except Exception as e:
             self.set_status(500)
@@ -115,7 +126,10 @@ class ImportHandler(APIHandler):
             # Get uploaded file
             if "file" not in self.request.files:
                 self.set_status(400)
-                self.finish(json.dumps({"status": "error", "message": "No file provided"}))
+                self.finish(json.dumps({
+                    "status": "error",
+                    "message": "No file provided"
+                }))
                 return
 
             file_info = self.request.files["file"][0]

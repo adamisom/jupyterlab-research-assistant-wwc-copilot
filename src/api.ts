@@ -1,7 +1,7 @@
 import { requestAPI } from './request';
 
 // Type definitions matching backend responses
-export interface Paper {
+export interface IPaper {
   id?: number;
   paperId?: string;
   title: string;
@@ -24,20 +24,20 @@ export interface Paper {
   };
 }
 
-export interface DiscoveryResponse {
-  data: Paper[];
+export interface IDiscoveryResponse {
+  data: IPaper[];
   total: number;
 }
 
-export interface APIResponse<T> {
+export interface IAPIResponse<T> {
   status: 'success' | 'error';
   data?: T;
   message?: string;
 }
 
 // API functions
-export async function getLibrary(): Promise<Paper[]> {
-  const response = await requestAPI<APIResponse<Paper[]>>('library', {
+export async function getLibrary(): Promise<IPaper[]> {
+  const response = await requestAPI<IAPIResponse<IPaper[]>>('library', {
     method: 'GET'
   });
 
@@ -48,8 +48,8 @@ export async function getLibrary(): Promise<Paper[]> {
   return response.data || [];
 }
 
-export async function searchLibrary(query: string): Promise<Paper[]> {
-  const response = await requestAPI<APIResponse<Paper[]>>(
+export async function searchLibrary(query: string): Promise<IPaper[]> {
+  const response = await requestAPI<IAPIResponse<IPaper[]>>(
     `search?q=${encodeURIComponent(query)}`,
     {
       method: 'GET'
@@ -68,7 +68,7 @@ export async function searchSemanticScholar(
   year?: string,
   limit: number = 20,
   offset: number = 0
-): Promise<DiscoveryResponse> {
+): Promise<IDiscoveryResponse> {
   const params = new URLSearchParams({ q: query });
   if (year) {
     params.append('year', year);
@@ -76,7 +76,7 @@ export async function searchSemanticScholar(
   params.append('limit', limit.toString());
   params.append('offset', offset.toString());
 
-  const response = await requestAPI<APIResponse<DiscoveryResponse>>(
+  const response = await requestAPI<IAPIResponse<IDiscoveryResponse>>(
     `discovery?${params.toString()}`,
     { method: 'GET' }
   );
@@ -88,8 +88,8 @@ export async function searchSemanticScholar(
   return response.data || { data: [], total: 0 };
 }
 
-export async function importPaper(paper: Paper): Promise<Paper> {
-  const response = await requestAPI<APIResponse<Paper>>('library', {
+export async function importPaper(paper: IPaper): Promise<IPaper> {
+  const response = await requestAPI<IAPIResponse<IPaper>>('library', {
     method: 'POST',
     body: JSON.stringify(paper)
   });
@@ -105,11 +105,11 @@ export async function importPaper(paper: Paper): Promise<Paper> {
   return response.data;
 }
 
-export async function importPDF(file: File): Promise<Paper> {
+export async function importPDF(file: File): Promise<IPaper> {
   const formData = new FormData();
   formData.append('file', file);
 
-  const response = await requestAPI<APIResponse<Paper>>('import', {
+  const response = await requestAPI<IAPIResponse<IPaper>>('import', {
     method: 'POST',
     body: formData
   });

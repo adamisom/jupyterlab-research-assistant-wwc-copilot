@@ -3,13 +3,7 @@ import { ReactWidget } from '@jupyterlab/apputils';
 import { DiscoveryTab } from './DiscoveryTab';
 import { LibraryTab } from './LibraryTab';
 
-interface ResearchLibraryPanelProps {
-  // Add any props needed
-}
-
-const ResearchLibraryPanelComponent: React.FC<
-  ResearchLibraryPanelProps
-> = () => {
+const ResearchLibraryPanelComponent: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'discovery' | 'library'>(
     'discovery'
   );

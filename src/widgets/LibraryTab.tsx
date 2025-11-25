@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Paper, getLibrary, searchLibrary } from '../api';
+import { IPaper, getLibrary, searchLibrary } from '../api';
 import { PaperCard } from './PaperCard';
 
 export const LibraryTab: React.FC = () => {
-  const [papers, setPapers] = useState<Paper[]>([]);
+  const [papers, setPapers] = useState<IPaper[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

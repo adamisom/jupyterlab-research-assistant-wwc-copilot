@@ -2,7 +2,9 @@
 
 import pytest
 from unittest.mock import Mock, patch
-from jupyterlab_research_assistant_wwc_copilot.services.semantic_scholar import SemanticScholarAPI
+from jupyterlab_research_assistant_wwc_copilot.services.semantic_scholar import (
+    SemanticScholarAPI
+)
 
 
 def test_rate_limiting():

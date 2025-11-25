@@ -2,7 +2,9 @@
 
 import pytest
 import os
-from jupyterlab_research_assistant_wwc_copilot.services.db_manager import DatabaseManager
+from jupyterlab_research_assistant_wwc_copilot.services.db_manager import (
+    DatabaseManager
+)
 from jupyterlab_research_assistant_wwc_copilot.database.models import (
     create_db_engine,
     Base

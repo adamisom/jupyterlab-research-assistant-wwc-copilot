@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { Paper, searchSemanticScholar, importPaper } from '../api';
+import { IPaper, searchSemanticScholar, importPaper } from '../api';
 import { PaperCard } from './PaperCard';
 
 export const DiscoveryTab: React.FC = () => {
   const [query, setQuery] = useState('');
   const [year, setYear] = useState('');
-  const [results, setResults] = useState<Paper[]>([]);
+  const [results, setResults] = useState<IPaper[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -31,7 +31,7 @@ export const DiscoveryTab: React.FC = () => {
     }
   };
 
-  const handleImport = async (paper: Paper) => {
+  const handleImport = async (paper: IPaper) => {
     try {
       await importPaper(paper);
       // Show success notification

@@ -75,13 +75,13 @@
   font-weight: 500;
 }
 
-.jp-jupyterlab-research-assistant-wwc-copilot-button:hover:not(:disabled) {
-  background-color: var(--jp-brand-color0);
-}
-
 .jp-jupyterlab-research-assistant-wwc-copilot-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-button:hover:not(:disabled) {
+  background-color: var(--jp-brand-color0);
 }
 
 /* Paper Card Styles */
@@ -99,7 +99,7 @@
 }
 
 .jp-jupyterlab-research-assistant-wwc-copilot-paper-title {
-  margin: 0 0 8px 0;
+  margin: 0 0 8px;
   font-size: var(--jp-ui-font-size1);
   font-weight: 600;
   color: var(--jp-content-font-color1);
