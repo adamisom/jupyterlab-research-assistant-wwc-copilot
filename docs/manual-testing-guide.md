@@ -3,6 +3,7 @@
 This guide provides incremental testing instructions for each commit in the repository. Check out each commit sequentially and follow the testing steps below.
 
 **How to use this guide:**
+
 1. Check out a commit: `git checkout <commit-hash>`
 2. Build and install the extension (if needed): `jlpm build && pip install -e . && jupyter labextension develop . --overwrite`
 3. Start JupyterLab: `jupyter lab`
@@ -14,12 +15,15 @@ This guide provides incremental testing instructions for each commit in the repo
 
 ## Commit: 0c9c0f1 - initial commit
 
-**Summary:** Initial repository setup with template files, configuration, and basic structure.
+**Summary:** Initial repository setup with template files, configuration,
+and basic structure.
 
 **Testing:**
-- Nothing to test - this is just the initial template structure with no functional code yet.
 
-**findings:** 
+- Nothing to test - this is just the initial template structure with no
+  functional code yet.
+
+**findings:**
 
 ---
 
@@ -28,9 +32,10 @@ This guide provides incremental testing instructions for each commit in the repo
 **Summary:** Added package.json dependencies for the extension.
 
 **Testing:**
+
 - Nothing to test - dependency installation only.
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -39,9 +44,10 @@ This guide provides incremental testing instructions for each commit in the repo
 **Summary:** Added planning documentation files.
 
 **Testing:**
+
 - Nothing to test - documentation only.
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -50,9 +56,10 @@ This guide provides incremental testing instructions for each commit in the repo
 **Summary:** Added CI configuration, fixed linting, updated .gitignore.
 
 **Testing:**
+
 - Nothing to test - build/CI configuration only.
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -61,9 +68,10 @@ This guide provides incremental testing instructions for each commit in the repo
 **Summary:** Fixed markdown documentation links.
 
 **Testing:**
+
 - Nothing to test - documentation only.
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -72,9 +80,10 @@ This guide provides incremental testing instructions for each commit in the repo
 **Summary:** Fixed additional broken documentation links.
 
 **Testing:**
+
 - Nothing to test - documentation only.
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -83,9 +92,10 @@ This guide provides incremental testing instructions for each commit in the repo
 **Summary:** Added comprehensive implementation guide documentation.
 
 **Testing:**
+
 - Nothing to test - documentation only.
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -94,9 +104,10 @@ This guide provides incremental testing instructions for each commit in the repo
 **Summary:** Added parallelization plan and API contract documentation.
 
 **Testing:**
+
 - Nothing to test - documentation only.
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -112,7 +123,7 @@ This guide provides incremental testing instructions for each commit in the repo
 5. Test the `/hello` endpoint by visiting: `http://localhost:8888/jupyterlab-research-assistant-wwc-copilot/hello` (should return JSON with success message)
 6. Check that database file is created at `~/.jupyter/research_assistant/research_library.db`
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -130,7 +141,7 @@ This guide provides incremental testing instructions for each commit in the repo
 7. Check that Discovery tab shows a search interface
 8. Check that Library tab shows (likely empty) library view
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -146,7 +157,7 @@ This guide provides incremental testing instructions for each commit in the repo
 5. Check browser console for any React-related errors
 6. Verify panel renders correctly with tabs
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -155,9 +166,10 @@ This guide provides incremental testing instructions for each commit in the repo
 **Summary:** Added implementation status documentation.
 
 **Testing:**
+
 - Nothing to test - documentation only.
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -166,9 +178,10 @@ This guide provides incremental testing instructions for each commit in the repo
 **Summary:** Added documentation analysis.
 
 **Testing:**
+
 - Nothing to test - documentation only.
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -177,9 +190,10 @@ This guide provides incremental testing instructions for each commit in the repo
 **Summary:** Fixed linting issues.
 
 **Testing:**
+
 - Nothing to test - code quality fixes only.
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -188,9 +202,10 @@ This guide provides incremental testing instructions for each commit in the repo
 **Summary:** Added remaining work implementation guide.
 
 **Testing:**
+
 - Nothing to test - documentation only.
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -218,7 +233,7 @@ This guide provides incremental testing instructions for each commit in the repo
    - Try exporting as JSON, CSV, and BibTeX
    - Verify files download correctly
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -233,7 +248,7 @@ This guide provides incremental testing instructions for each commit in the repo
 4. Click the option and verify PDF is imported
 5. Check that imported PDF appears in Research Library panel
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -242,9 +257,10 @@ This guide provides incremental testing instructions for each commit in the repo
 **Summary:** Removed obsolete planning documents.
 
 **Testing:**
+
 - Nothing to test - documentation cleanup only.
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -253,9 +269,10 @@ This guide provides incremental testing instructions for each commit in the repo
 **Summary:** Added Stage 2 implementation guide documentation.
 
 **Testing:**
+
 - Nothing to test - documentation only.
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -264,9 +281,10 @@ This guide provides incremental testing instructions for each commit in the repo
 **Summary:** Fixed integration tests and added backend tests to CI.
 
 **Testing:**
+
 - Nothing to test - test infrastructure only (run `pytest` to verify tests pass if desired).
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -275,9 +293,10 @@ This guide provides incremental testing instructions for each commit in the repo
 **Summary:** Updated documentation and fixed tests.
 
 **Testing:**
+
 - Nothing to test - documentation and test fixes only.
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -286,9 +305,10 @@ This guide provides incremental testing instructions for each commit in the repo
 **Summary:** Added parallelization guide documentation.
 
 **Testing:**
+
 - Nothing to test - documentation only.
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -305,7 +325,7 @@ This guide provides incremental testing instructions for each commit in the repo
    - Import/export works
 3. Check browser console for any errors introduced by refactoring
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -318,7 +338,7 @@ This guide provides incremental testing instructions for each commit in the repo
 2. Verify all existing functionality still works (same as previous commit)
 3. Test backend API endpoints still respond correctly
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -334,7 +354,7 @@ This guide provides incremental testing instructions for each commit in the repo
 5. Verify extension loads without errors
 6. (API functions won't be callable until backend routes are added - just verify no build errors)
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -350,7 +370,7 @@ This guide provides incremental testing instructions for each commit in the repo
 5. Verify selected papers are visually indicated
 6. Check that a "Synthesize" or similar button appears when 2+ papers are selected
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -367,7 +387,7 @@ This guide provides incremental testing instructions for each commit in the repo
 6. Click it - should open WWC Co-Pilot widget in main area
 7. Verify widget displays (may show errors if backend not ready, but UI should render)
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -381,7 +401,7 @@ This guide provides incremental testing instructions for each commit in the repo
 3. Verify no build errors
 4. Check browser console for component loading
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -395,7 +415,7 @@ This guide provides incremental testing instructions for each commit in the repo
 3. Verify no build errors
 4. Check browser console for component loading
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -412,7 +432,7 @@ This guide provides incremental testing instructions for each commit in the repo
 6. Check that it has tabs or sections for different analyses
 7. Verify widget displays correctly (may show errors if backend not ready)
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -428,7 +448,7 @@ This guide provides incremental testing instructions for each commit in the repo
    - Verify response contains assessment with rating and justification
 3. Or test via frontend if WWC Co-Pilot widget is integrated
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -450,7 +470,7 @@ This guide provides incremental testing instructions for each commit in the repo
    - Check that commands are available in command palette
 4. Verify events work between components (e.g., opening synthesis from library)
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -466,7 +486,7 @@ This guide provides incremental testing instructions for each commit in the repo
 5. Verify all components are properly styled
 6. Check responsive behavior and layout
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -483,7 +503,7 @@ This guide provides incremental testing instructions for each commit in the repo
 6. Click button - should open WWC Co-Pilot widget
 7. Verify button is properly styled and positioned
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -499,7 +519,7 @@ This guide provides incremental testing instructions for each commit in the repo
    - Verify response contains pooled effect, confidence intervals, heterogeneity stats
 3. Or test via Synthesis Workbench if integrated
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -514,7 +534,7 @@ This guide provides incremental testing instructions for each commit in the repo
 4. If frontend integrated, verify forest plot displays in MetaAnalysisView
 5. Check plot looks correct with study labels, effect sizes, confidence intervals
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -523,9 +543,10 @@ This guide provides incremental testing instructions for each commit in the repo
 **Summary:** Added documentation for remaining Stage 2 features.
 
 **Testing:**
+
 - Nothing to test - documentation only.
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -546,7 +567,7 @@ This guide provides incremental testing instructions for each commit in the repo
    - Verify results appear with pooled effect, CI, heterogeneity stats
    - Verify forest plot displays
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -555,9 +576,10 @@ This guide provides incremental testing instructions for each commit in the repo
 **Summary:** Added documentation for optional Stage 2 enhancements.
 
 **Testing:**
+
 - Nothing to test - documentation only.
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -574,7 +596,7 @@ This guide provides incremental testing instructions for each commit in the repo
 3. Or test via Synthesis Workbench if integrated
 4. Verify conflicts are detected and displayed correctly
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -591,7 +613,7 @@ This guide provides incremental testing instructions for each commit in the repo
 6. Export synthesis report as Markdown - verify file downloads
 7. Open exported files and verify content is correct
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -600,9 +622,10 @@ This guide provides incremental testing instructions for each commit in the repo
 **Summary:** Added implementation guide for Stage 2 enhancements.
 
 **Testing:**
+
 - Nothing to test - documentation only.
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -615,7 +638,7 @@ This guide provides incremental testing instructions for each commit in the repo
 2. Verify build completes without errors
 3. Restart JupyterLab and verify extension loads
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -624,9 +647,10 @@ This guide provides incremental testing instructions for each commit in the repo
 **Summary:** Added work distribution documentation.
 
 **Testing:**
+
 - Nothing to test - documentation only.
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -639,7 +663,7 @@ This guide provides incremental testing instructions for each commit in the repo
 2. Verify build completes without lint errors
 3. Restart JupyterLab and verify extension works
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -648,9 +672,10 @@ This guide provides incremental testing instructions for each commit in the repo
 **Summary:** Added refactoring opportunities documentation.
 
 **Testing:**
+
 - Nothing to test - documentation only.
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -671,7 +696,7 @@ This guide provides incremental testing instructions for each commit in the repo
    - Conflict detection works
 3. Check browser console for errors
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -680,9 +705,10 @@ This guide provides incremental testing instructions for each commit in the repo
 **Summary:** Fixed linting issues.
 
 **Testing:**
+
 - Nothing to test - code quality fixes only.
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -691,9 +717,10 @@ This guide provides incremental testing instructions for each commit in the repo
 **Summary:** Removed obsolete documentation files.
 
 **Testing:**
+
 - Nothing to test - documentation cleanup only.
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -707,7 +734,7 @@ This guide provides incremental testing instructions for each commit in the repo
 3. Restart JupyterLab and verify extension loads
 4. (Functions won't be callable until backend routes added - just verify no build errors)
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -721,7 +748,7 @@ This guide provides incremental testing instructions for each commit in the repo
 3. Verify no build errors
 4. Check browser console for component loading
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -738,7 +765,7 @@ This guide provides incremental testing instructions for each commit in the repo
    - Sensitivity Analysis
 4. Check that tabs are accessible and UI renders correctly
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -753,7 +780,7 @@ This guide provides incremental testing instructions for each commit in the repo
 4. Verify styling looks correct and consistent with rest of UI
 5. Check layout and responsive behavior
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -762,9 +789,10 @@ This guide provides incremental testing instructions for each commit in the repo
 **Summary:** Updated documentation to reflect completion of Stage 2 enhancements.
 
 **Testing:**
+
 - Nothing to test - documentation only.
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -777,7 +805,7 @@ This guide provides incremental testing instructions for each commit in the repo
 2. Build and restart: `jlpm build && jupyter lab`
 3. Test statistical features (meta-analysis, bias assessment) to ensure scipy integration works
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -794,7 +822,7 @@ This guide provides incremental testing instructions for each commit in the repo
 3. Or test via Synthesis Workbench Subgroup Analysis tab
 4. Verify results show separate meta-analyses for each subgroup and comparison statistics
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -810,7 +838,7 @@ This guide provides incremental testing instructions for each commit in the repo
 5. Run subgroup analysis
 6. Verify results display with subgroup breakdowns and comparison statistics
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -828,7 +856,7 @@ This guide provides incremental testing instructions for each commit in the repo
 4. Verify Egger's test results display with interpretation
 5. Verify funnel plot displays correctly
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -845,7 +873,7 @@ This guide provides incremental testing instructions for each commit in the repo
 6. Verify funnel plot displays with effect sizes vs standard errors
 7. Check that plot is readable and properly formatted
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -862,7 +890,7 @@ This guide provides incremental testing instructions for each commit in the repo
 6. Verify contradictions are detected and displayed
 7. Check that findings are shown alongside contradictions for context
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -876,7 +904,7 @@ This guide provides incremental testing instructions for each commit in the repo
 3. Restart JupyterLab and verify extension loads
 4. (Type safety improvement - verify no runtime errors related to type mismatches)
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -899,7 +927,7 @@ This guide provides incremental testing instructions for each commit in the repo
 6. Complete all steps and run assessment
 7. Verify final rating displays on review step
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -915,7 +943,7 @@ This guide provides incremental testing instructions for each commit in the repo
 5. Check that subgroup comparisons are clearly displayed
 6. Verify numbers are formatted correctly (decimals, percentages, etc.)
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -934,7 +962,7 @@ This guide provides incremental testing instructions for each commit in the repo
    - Sensitivity Analysis: Verify formatting looks good
 4. Check that all numbers, labels, and results are properly formatted
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -950,15 +978,17 @@ This guide provides incremental testing instructions for each commit in the repo
 5. Check that paper titles, findings, and confidence scores are readable
 6. Verify contradictions are highlighted or clearly marked
 
-**findings:** 
+**findings:**
 
 ---
 
 ## Commit: f8eb8fa - feat: integrate Stage 2 enhancements into Synthesis Workbench
 
-**Summary:** Integrated all Stage 2 enhancements (subgroup, bias, sensitivity) into Synthesis Workbench tabs.
+**Summary:** Integrated all Stage 2 enhancements (subgroup, bias,
+sensitivity) into Synthesis Workbench tabs.
 
 **Testing:**
+
 1. Build and restart: `jlpm build && jupyter lab`
 2. Open Synthesis Workbench with 3+ papers
 3. Verify all tabs are present and accessible:
@@ -973,7 +1003,7 @@ This guide provides incremental testing instructions for each commit in the repo
    - Verify results display correctly
    - Verify you can switch between tabs smoothly
 
-**findings:** 
+**findings:**
 
 ---
 
@@ -982,20 +1012,23 @@ This guide provides incremental testing instructions for each commit in the repo
 **Summary:** Removed unneeded documentation file.
 
 **Testing:**
+
 - Nothing to test - documentation cleanup only.
 
-**findings:** 
+**findings:**
 
 ---
 
 ## Commit: 81138a5 - Add comprehensive code analysis report documentation
 
-**Summary:** Added comprehensive code analysis report documenting all components and their relationships.
+**Summary:** Added comprehensive code analysis report documenting all
+components and their relationships.
 
 **Testing:**
+
 - Nothing to test - documentation only.
 
-**findings:** 
+**findings:**
 
 ---
 

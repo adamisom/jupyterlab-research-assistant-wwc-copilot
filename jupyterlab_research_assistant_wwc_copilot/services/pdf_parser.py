@@ -84,3 +84,4 @@ class PDFParser:
         text = result["full_text"]
         return text[:max_chars] if len(text) > max_chars else text
 
+

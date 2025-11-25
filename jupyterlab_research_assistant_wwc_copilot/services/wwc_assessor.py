@@ -337,3 +337,4 @@ class WWCQualityAssessor:
             "rating_justification": assessment.rating_justification,
         }
 
+

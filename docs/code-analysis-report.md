@@ -1,27 +1,38 @@
 # Code Analysis Report
 
-A high-level overview of the JupyterLab Research Assistant & WWC Co-Pilot extension codebase, covering all major components and their relationships.
+A high-level overview of the JupyterLab Research Assistant & WWC
+Co-Pilot extension codebase, covering all major components and their
+relationships.
 
 ## Project Overview
 
-This is a **JupyterLab extension** (frontend + server extension) that provides two main features:
+This is a **JupyterLab extension** (frontend + server extension) that
+provides two main features:
 
-1. **Research Library & Discovery Engine** (Stage 1): Discover, import, and manage academic papers with Semantic Scholar integration, PDF parsing, and AI-powered metadata extraction
-2. **WWC Co-Pilot & Synthesis Engine** (Stage 2): Perform WWC quality assessments, meta-analysis, conflict detection, subgroup analysis, publication bias assessment, and sensitivity analysis
+1. **Research Library & Discovery Engine** (Stage 1): Discover, import,
+   and manage academic papers with Semantic Scholar integration, PDF
+   parsing, and AI-powered metadata extraction
+2. **WWC Co-Pilot & Synthesis Engine** (Stage 2): Perform WWC quality
+   assessments, meta-analysis, conflict detection, subgroup analysis,
+   publication bias assessment, and sensitivity analysis
 
-**Architecture**: Frontend (TypeScript/React) communicates with backend (Python) via REST API endpoints. Data is stored in SQLite database.
+**Architecture**: Frontend (TypeScript/React) communicates with backend
+(Python) via REST API endpoints. Data is stored in SQLite database.
 
 ---
 
 ## Entry Points
 
 ### Backend Entry Point
+
 - **`jupyterlab_research_assistant_wwc_copilot/__init__.py`**
-  - Defines `_load_jupyter_server_extension()` which calls `setup_route_handlers()` from `routes.py`
+  - Defines `_load_jupyter_server_extension()` which calls
+    `setup_route_handlers()` from `routes.py`
   - Registers the server extension with JupyterLab
   - Entry point for all backend functionality
 
 ### Frontend Entry Point
+
 - **`src/index.tsx`**
   - Main plugin definition (`JupyterFrontEndPlugin`)
   - Registers commands, creates widgets, sets up event listeners
@@ -34,7 +45,7 @@ This is a **JupyterLab extension** (frontend + server extension) that provides t
 
 ### Core Structure
 
-```
+```text
 jupyterlab_research_assistant_wwc_copilot/
 ├── __init__.py              # Server extension entry point
 ├── routes.py                 # All API route handlers (single file)
@@ -55,9 +66,12 @@ jupyterlab_research_assistant_wwc_copilot/
 
 ### API Routes (`routes.py`)
 
-All routes extend `BaseAPIHandler` and are registered in `setup_route_handlers()`. Routes are prefixed with `/jupyterlab-research-assistant-wwc-copilot/`:
+All routes extend `BaseAPIHandler` and are registered in
+`setup_route_handlers()`. Routes are prefixed with
+`/jupyterlab-research-assistant-wwc-copilot/`:
 
 **Stage 1 Routes:**
+
 - `GET /hello` - Health check
 - `GET /library` - Get all papers
 - `POST /library` - Add paper
@@ -67,6 +81,7 @@ All routes extend `BaseAPIHandler` and are registered in `setup_route_handlers()
 - `GET /export?format=...` - Export library (JSON/CSV/BibTeX)
 
 **Stage 2 Routes:**
+
 - `POST /wwc-assessment` - Run WWC quality assessment
 - `POST /meta-analysis` - Perform meta-analysis
 - `POST /conflict-detection` - Detect conflicts between papers
@@ -79,13 +94,18 @@ All routes extend `BaseAPIHandler` and are registered in `setup_route_handlers()
 ### Database Models (`database/models.py`)
 
 **Paper** (main table):
-- Core fields: `id`, `title`, `authors` (JSON), `year`, `doi`, `s2_id`, `citation_count`, `pdf_path`, `abstract`, `full_text`
+
+- Core fields: `id`, `title`, `authors` (JSON), `year`, `doi`, `s2_id`,
+  `citation_count`, `pdf_path`, `abstract`, `full_text`
 - Relationships: `study_metadata`, `learning_science_metadata`
 
 **StudyMetadata**:
-- `paper_id` (FK), `methodology`, `sample_size_baseline`, `sample_size_endline`, `effect_sizes` (JSON)
+
+- `paper_id` (FK), `methodology`, `sample_size_baseline`,
+  `sample_size_endline`, `effect_sizes` (JSON)
 
 **LearningScienceMetadata**:
+
 - `paper_id` (FK), `learning_domain`, `intervention_type`, `age_group`
 
 Database file: `~/.jupyter/research_assistant/research_library.db` (SQLite)
@@ -93,6 +113,7 @@ Database file: `~/.jupyter/research_assistant/research_library.db` (SQLite)
 ### Key Services
 
 **`wwc_assessor.py`** - WWC Quality Assessment Engine:
+
 - Implements WWC Handbook v5.0 decision rules
 - `WWCQualityAssessor.assess()` - Main assessment method
 - Calculates attrition thresholds (cautious/optimistic boundaries)
@@ -100,21 +121,27 @@ Database file: `~/.jupyter/research_assistant/research_library.db` (SQLite)
 - Returns `WWCAssessment` dataclass with final rating
 
 **`meta_analyzer.py`** - Meta-Analysis Engine:
-- `perform_random_effects_meta_analysis()` - Random-effects meta-analysis using statsmodels
+
+- `perform_random_effects_meta_analysis()` - Random-effects meta-analysis
+  using statsmodels
 - `perform_subgroup_meta_analysis()` - Subgroup comparisons
 - `perform_eggers_test()` - Publication bias test
 - `perform_sensitivity_analysis()` - Leave-one-out analysis
-- Returns pooled effect, confidence intervals, heterogeneity statistics (I², Q)
+- Returns pooled effect, confidence intervals, heterogeneity statistics
+  (I², Q)
 
 **`visualizer.py`** - Plot Generation:
+
 - `create_forest_plot()` - Forest plot (base64 PNG)
 - `create_funnel_plot()` - Funnel plot for bias assessment
 
 **`conflict_detector.py`** - Conflict Detection:
+
 - `extract_key_findings()` - Extract findings from paper text
 - `find_contradictions()` - Use NLI model to detect contradictions
 
 **`import_service.py`** - PDF Import Orchestration:
+
 - Coordinates PDF parsing, AI extraction, and database storage
 - `import_pdf()` - Main import method
 
@@ -122,9 +149,9 @@ Database file: `~/.jupyter/research_assistant/research_library.db` (SQLite)
 
 ## Frontend Architecture (TypeScript/React)
 
-### Core Structure
+### Frontend Structure
 
-```
+```text
 src/
 ├── index.tsx                 # Plugin entry point, command registration
 ├── request.ts                # Low-level API request helper (uses ServerConnection)
@@ -157,36 +184,51 @@ src/
 ### Widget Hierarchy
 
 **Sidebar Widgets:**
+
 - `ResearchLibraryPanel` - Main panel with tabs
   - `DiscoveryTab` - Search Semantic Scholar, import papers
-  - `LibraryTab` - Browse/search local library, open detail view, launch synthesis
+  - `LibraryTab` - Browse/search local library, open detail view, launch
+    synthesis
 
 **Main Area Widgets:**
+
 - `WWCCoPilot` - WWC assessment wizard (5-step process)
-- `SynthesisWorkbench` - Synthesis dashboard with tabs for meta-analysis, conflicts, subgroups, bias, sensitivity
+- `SynthesisWorkbench` - Synthesis dashboard with tabs for meta-analysis,
+  conflicts, subgroups, bias, sensitivity
 
 ### API Client (`api.ts`)
 
 All backend communication goes through typed functions in `api.ts`:
-- `getLibrary()`, `searchLibrary()`, `searchSemanticScholar()`, `importPaper()`, `importPDF()`, `exportLibrary()`
-- `runWWCAssessment()`, `performMetaAnalysis()`, `detectConflicts()`, `performSubgroupAnalysis()`, `assessPublicationBias()`, `performSensitivityAnalysis()`
+
+- `getLibrary()`, `searchLibrary()`, `searchSemanticScholar()`,
+  `importPaper()`, `importPDF()`, `exportLibrary()`
+- `runWWCAssessment()`, `performMetaAnalysis()`, `detectConflicts()`,
+  `performSubgroupAnalysis()`, `assessPublicationBias()`,
+  `performSensitivityAnalysis()`
 
 All functions use `requestAPI()` from `request.ts` which handles authentication and base URL construction.
 
 ### Command System (`index.tsx`)
 
 Commands registered with JupyterLab:
-- `jupyterlab-research-assistant-wwc-copilot:open-library` - Open research library panel
-- `jupyterlab-research-assistant-wwc-copilot:import-pdf` - Import PDF dialog
-- `jupyterlab-research-assistant-wwc-copilot:export-library` - Export library dialog
-- `jupyterlab-research-assistant-wwc-copilot:open-synthesis` - Open synthesis workbench (requires paperIds)
-- `jupyterlab-research-assistant-wwc-copilot:open-wwc` - Open WWC Co-Pilot (requires paperId)
+
+- `jupyterlab-research-assistant-wwc-copilot:open-library` - Open research
+  library panel
+- `jupyterlab-research-assistant-wwc-copilot:import-pdf` - Import PDF
+  dialog
+- `jupyterlab-research-assistant-wwc-copilot:export-library` - Export
+  library dialog
+- `jupyterlab-research-assistant-wwc-copilot:open-synthesis` - Open
+  synthesis workbench (requires paperIds)
+- `jupyterlab-research-assistant-wwc-copilot:open-wwc` - Open WWC Co-Pilot
+  (requires paperId)
 
 Commands are added to command palette and can be triggered programmatically via `app.commands.execute()`.
 
 ### Event System (`utils/events.ts`)
 
 Custom events for cross-component communication:
+
 - `AppEvents.onOpenSynthesisWorkbench()` - LibraryTab → SynthesisWorkbench
 - `AppEvents.onOpenWWCCopilot()` - DetailView → WWCCoPilot
 
@@ -208,8 +250,10 @@ Custom events for cross-component communication:
 ### Semantic Scholar Discovery Flow
 
 1. **User searches** → `DiscoveryTab` component
-2. **Frontend** → `api.ts:searchSemanticScholar()` → `GET /discovery?q=...`
-3. **Backend** → `DiscoveryHandler.get()` → `SemanticScholarAPI.search_papers()`
+2. **Frontend** → `api.ts:searchSemanticScholar()` →
+   `GET /discovery?q=...`
+3. **Backend** → `DiscoveryHandler.get()` →
+   `SemanticScholarAPI.search_papers()`
 4. **Response** → Display results, user can import
 
 ### WWC Assessment Flow
@@ -272,6 +316,7 @@ Custom events for cross-component communication:
 ### External Dependencies
 
 **Backend:**
+
 - `sqlalchemy` - ORM and database
 - `statsmodels` - Meta-analysis
 - `matplotlib` - Plot generation
@@ -281,6 +326,7 @@ Custom events for cross-component communication:
 - `openai` / `anthropic` - AI extraction (optional)
 
 **Frontend:**
+
 - `@jupyterlab/application` - JupyterLab core
 - `@jupyterlab/apputils` - Widgets, dialogs, notifications
 - `@jupyterlab/services` - ServerConnection for API calls
@@ -334,6 +380,7 @@ Custom events for cross-component communication:
 ### Settings Schema (`schema/plugin.json`)
 
 Defines JupyterLab settings for:
+
 - AI extraction configuration (provider, API key, model, etc.)
 
 ### Server Extension Config (`jupyter-config/server-config/...`)
@@ -345,15 +392,18 @@ Enables the server extension in JupyterLab.
 ## Testing
 
 ### Backend Tests (`jupyterlab_research_assistant_wwc_copilot/tests/`)
+
 - Unit tests for services
 - Integration tests for routes
 - Test fixtures for database
 
 ### Frontend Tests (`src/utils/__tests__/`)
+
 - Unit tests for utility functions
 - Component tests (Jest + React Testing Library)
 
 ### Integration Tests (`ui-tests/`)
+
 - Playwright tests for end-to-end workflows
 
 ---
@@ -389,12 +439,15 @@ Enables the server extension in JupyterLab.
 ## Summary
 
 This extension follows a **clear separation of concerns**:
-- **Backend** handles data processing, external APIs, database, and statistical analysis
+
+- **Backend** handles data processing, external APIs, database, and
+  statistical analysis
 - **Frontend** handles UI, user interactions, and API communication
 - **Database** stores papers and metadata
 - **Services** encapsulate business logic
 - **Routes** provide REST API interface
 - **Widgets** provide user-facing components
 
-The codebase is organized into logical modules with clear responsibilities, making it maintainable and extensible.
+The codebase is organized into logical modules with clear
+responsibilities, making it maintainable and extensible.
 

@@ -120,3 +120,4 @@ Return only valid JSON, no additional text."""
         content = response.choices[0].message.content
         return json.loads(content)
 
+
