@@ -113,3 +113,65 @@ class Visualizer:
 
         return image_base64
 
+    def create_funnel_plot(
+        self,
+        effect_sizes: List[float],
+        std_errors: List[float],
+        labels: List[str],
+        title: str = "Funnel Plot",
+        figsize: tuple = (8, 8),
+        dpi: int = 100
+    ) -> str:
+        """
+        Generate a funnel plot for publication bias assessment.
+
+        Args:
+            effect_sizes: List of effect sizes
+            std_errors: List of standard errors
+            labels: List of study labels
+            title: Plot title
+            figsize: Figure size (width, height) in inches
+            dpi: Resolution in dots per inch
+
+        Returns:
+            Base64-encoded PNG image string
+        """
+        fig, ax = plt.subplots(figsize=figsize, dpi=dpi)
+
+        # Plot effect sizes vs precision (1/SE)
+        precision = [1.0 / se for se in std_errors]
+
+        ax.scatter(effect_sizes, precision, alpha=0.6, s=50, color='steelblue')
+
+        # Add labels for outliers
+        for i, (es, prec, label) in enumerate(zip(effect_sizes, precision, labels)):
+            # Label studies with extreme values
+            if abs(es) > 2 or prec > max(precision) * 0.8:
+                ax.annotate(
+                    label[:20] if len(label) > 20 else label,
+                    (es, prec),
+                    fontsize=8,
+                    alpha=0.7,
+                    xytext=(5, 5),
+                    textcoords='offset points'
+                )
+
+        ax.set_xlabel('Effect Size', fontsize=11)
+        ax.set_ylabel('Precision (1/SE)', fontsize=11)
+        ax.set_title(title, fontsize=12, fontweight='bold')
+        ax.grid(True, alpha=0.3)
+        ax.axvline(x=0, color='black', linestyle='--', linewidth=1, alpha=0.5)
+
+        plt.tight_layout()
+
+        # Convert to base64
+        buf = io.BytesIO()
+        fig.savefig(buf, format='png', bbox_inches='tight', dpi=dpi)
+        plt.close(fig)
+        buf.seek(0)
+
+        image_base64 = base64.b64encode(buf.read()).decode('utf-8')
+        buf.close()
+
+        return image_base64
+
