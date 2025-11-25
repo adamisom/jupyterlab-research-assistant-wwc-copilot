@@ -43,7 +43,9 @@ const SynthesisWorkbenchComponent: React.FC<SynthesisWorkbenchProps> = ({
     useState<IConflictDetectionResult | null>(null);
   const [subgroupResult, setSubgroupResult] =
     useState<ISubgroupAnalysisResult | null>(null);
-  const [biasResult, setBiasResult] = useState<IBiasAssessmentResult | null>(null);
+  const [biasResult, setBiasResult] = useState<IBiasAssessmentResult | null>(
+    null
+  );
   const [sensitivityResult, setSensitivityResult] =
     useState<ISensitivityAnalysisResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -170,7 +172,7 @@ const SynthesisWorkbenchComponent: React.FC<SynthesisWorkbenchProps> = ({
         <div className="jp-jupyterlab-research-assistant-wwc-copilot-subgroup-controls">
           <select
             value={subgroupVariable}
-            onChange={(e) => setSubgroupVariable(e.target.value)}
+            onChange={e => setSubgroupVariable(e.target.value)}
             className="jp-jupyterlab-research-assistant-wwc-copilot-select"
           >
             <option value="">Select Subgroup Variable...</option>
