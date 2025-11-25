@@ -264,6 +264,18 @@ const plugin: JupyterFrontEndPlugin<void> = {
       }
     }) as EventListener);
 
+    // Listen for custom event from DetailView to open WWC Co-Pilot
+    window.addEventListener('open-wwc-copilot', ((event: CustomEvent) => {
+      const paperId = event.detail?.paperId as number;
+      const paperTitle = event.detail?.paperTitle as string;
+      if (paperId) {
+        app.commands.execute('jupyterlab-research-assistant-wwc-copilot:open-wwc', {
+          paperId,
+          paperTitle: paperTitle || 'Paper'
+        });
+      }
+    }) as EventListener);
+
     // Add to command palette
     if (palette) {
       palette.addItem({

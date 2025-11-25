@@ -141,6 +141,24 @@ export const DetailView: React.FC<IDetailViewProps> = ({ paper, onClose }) => {
       </div>
 
       <div className="jp-jupyterlab-research-assistant-wwc-copilot-detail-actions">
+        {paper.id !== undefined && (
+          <button
+            onClick={() => {
+              // Dispatch custom event to open WWC Co-Pilot
+              window.dispatchEvent(
+                new CustomEvent('open-wwc-copilot', {
+                  detail: {
+                    paperId: paper.id,
+                    paperTitle: paper.title
+                  }
+                })
+              );
+            }}
+            className="jp-jupyterlab-research-assistant-wwc-copilot-button"
+          >
+            Open WWC Co-Pilot
+          </button>
+        )}
         {paper.pdf_path && (
           <button
             onClick={openPDF}
