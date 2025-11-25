@@ -17,6 +17,7 @@ from .services.import_service import ImportService
 from .services.wwc_assessor import WWCQualityAssessor
 from .services.meta_analyzer import MetaAnalyzer
 from .services.visualizer import Visualizer
+from .services.conflict_detector import ConflictDetector
 
 logger = logging.getLogger(__name__)
 
@@ -388,6 +389,295 @@ class MetaAnalysisHandler(BaseAPIHandler):
             self.send_error(500, str(e))
 
 
+class ConflictDetectionHandler(BaseAPIHandler):
+    """Handler for conflict detection."""
+
+    @tornado.web.authenticated
+    def post(self):
+        """Detect conflicts between papers."""
+        try:
+            data = self.get_json_body()
+            if not data:
+                self.send_error(400, "No data provided")
+                return
+
+            paper_ids = data.get("paper_ids", [])
+            confidence_threshold = data.get("confidence_threshold", 0.8)
+
+            if len(paper_ids) < 2:
+                self.send_error(400, "At least 2 papers required for conflict detection")
+                return
+
+            # Fetch papers from database
+            with DatabaseManager() as db:
+                papers = []
+                for paper_id in paper_ids:
+                    paper = db.get_paper_by_id(paper_id)
+                    if paper:
+                        papers.append(paper)
+
+                if len(papers) < 2:
+                    self.send_error(400, "Insufficient papers found")
+                    return
+
+                # Extract findings and detect conflicts
+                detector = ConflictDetector()
+                all_contradictions = []
+
+                # Compare each pair of papers
+                for i in range(len(papers)):
+                    for j in range(i + 1, len(papers)):
+                        paper1 = papers[i]
+                        paper2 = papers[j]
+
+                        # Extract findings (placeholder - use AI extraction in production)
+                        findings1 = detector.extract_key_findings(
+                            paper1.get("full_text", "") or paper1.get("abstract", "")
+                        )
+                        findings2 = detector.extract_key_findings(
+                            paper2.get("full_text", "") or paper2.get("abstract", "")
+                        )
+
+                        if findings1 and findings2:
+                            contradictions = detector.find_contradictions(
+                                findings1, findings2, confidence_threshold=confidence_threshold
+                            )
+
+                            for contradiction in contradictions:
+                                contradiction["paper1_id"] = paper1["id"]
+                                contradiction["paper1_title"] = paper1["title"]
+                                contradiction["paper2_id"] = paper2["id"]
+                                contradiction["paper2_title"] = paper2["title"]
+                                all_contradictions.append(contradiction)
+
+                self.send_success(
+                    {
+                        "contradictions": all_contradictions,
+                        "n_papers": len(papers),
+                        "n_contradictions": len(all_contradictions),
+                    }
+                )
+        except Exception as e:
+            logger.exception("Conflict detection failed")
+            self.send_error(500, str(e))
+
+
+class MetaAnalysisExportHandler(BaseAPIHandler):
+    """Handler for exporting meta-analysis as CSV."""
+
+    @tornado.web.authenticated
+    def post(self):
+        """Export meta-analysis results as CSV."""
+        try:
+            data = self.get_json_body()
+            if not data:
+                self.send_error(400, "No data provided")
+                return
+
+            paper_ids = data.get("paper_ids", [])
+            outcome_name = data.get("outcome_name")
+
+            if len(paper_ids) < 2:
+                self.send_error(400, "At least 2 papers required for meta-analysis")
+                return
+
+            # Fetch papers and perform meta-analysis
+            with DatabaseManager() as db:
+                studies = []
+                for paper_id in paper_ids:
+                    paper = db.get_paper_by_id(paper_id)
+                    if not paper:
+                        continue
+
+                    study_metadata = paper.get("study_metadata", {})
+                    effect_sizes = study_metadata.get("effect_sizes", {})
+
+                    if outcome_name:
+                        outcome_data = effect_sizes.get(outcome_name)
+                        if outcome_data:
+                            studies.append(
+                                {
+                                    "paper_id": paper["id"],
+                                    "study_label": paper["title"],
+                                    "effect_size": outcome_data.get("d", 0.0),
+                                    "std_error": outcome_data.get("se", 0.1),
+                                }
+                            )
+                    else:
+                        if effect_sizes:
+                            first_outcome = list(effect_sizes.values())[0]
+                            studies.append(
+                                {
+                                    "paper_id": paper["id"],
+                                    "study_label": paper["title"],
+                                    "effect_size": first_outcome.get("d", 0.0),
+                                    "std_error": first_outcome.get("se", 0.1),
+                                }
+                            )
+
+                if len(studies) < 2:
+                    self.send_error(400, "Insufficient studies with effect size data")
+                    return
+
+                # Perform meta-analysis
+                analyzer = MetaAnalyzer()
+                result = analyzer.perform_random_effects_meta_analysis(studies)
+
+                # Generate CSV
+                formatter = ExportFormatter()
+                csv_content = formatter.export_meta_analysis_csv(result, result["studies"])
+
+                # Set headers for file download (clear default JSON content type)
+                self.clear_header("Content-Type")
+                self.set_header("Content-Type", "text/csv")
+                self.set_header(
+                    "Content-Disposition",
+                    f'attachment; filename="meta_analysis_{len(studies)}_studies.csv"',
+                )
+                self.set_status(200)
+                self.finish(csv_content)
+        except Exception as e:
+            logger.exception("Meta-analysis export failed")
+            self.send_error(500, str(e))
+
+
+class SynthesisExportHandler(BaseAPIHandler):
+    """Handler for exporting synthesis report as Markdown."""
+
+    @tornado.web.authenticated
+    def post(self):
+        """Export synthesis report as Markdown."""
+        try:
+            data = self.get_json_body()
+            if not data:
+                self.send_error(400, "No data provided")
+                return
+
+            paper_ids = data.get("paper_ids", [])
+            include_meta_analysis = data.get("include_meta_analysis", True)
+            include_conflicts = data.get("include_conflicts", True)
+            include_wwc_assessments = data.get("include_wwc_assessments", False)
+
+            if len(paper_ids) < 2:
+                self.send_error(400, "At least 2 papers required for synthesis")
+                return
+
+            # Fetch papers
+            with DatabaseManager() as db:
+                papers = []
+                for paper_id in paper_ids:
+                    paper = db.get_paper_by_id(paper_id)
+                    if paper:
+                        papers.append(paper)
+
+                if len(papers) < 2:
+                    self.send_error(400, "Insufficient papers found")
+                    return
+
+                meta_analysis_result = None
+                conflict_result = None
+
+                # Perform meta-analysis if requested
+                if include_meta_analysis:
+                    try:
+                        studies = []
+                        for paper in papers:
+                            study_metadata = paper.get("study_metadata", {})
+                            effect_sizes = study_metadata.get("effect_sizes", {})
+                            if effect_sizes:
+                                first_outcome = list(effect_sizes.values())[0]
+                                studies.append(
+                                    {
+                                        "paper_id": paper["id"],
+                                        "study_label": paper["title"],
+                                        "effect_size": first_outcome.get("d", 0.0),
+                                        "std_error": first_outcome.get("se", 0.1),
+                                    }
+                                )
+
+                        if len(studies) >= 2:
+                            analyzer = MetaAnalyzer()
+                            meta_analysis_result = analyzer.perform_random_effects_meta_analysis(studies)
+
+                            # Generate forest plot
+                            visualizer = Visualizer()
+                            forest_plot_base64 = visualizer.create_forest_plot(
+                                meta_analysis_result["studies"],
+                                meta_analysis_result["pooled_effect"],
+                                meta_analysis_result["ci_lower"],
+                                meta_analysis_result["ci_upper"],
+                                title=f"Meta-Analysis: {len(studies)} Studies",
+                            )
+                            meta_analysis_result["forest_plot"] = forest_plot_base64
+                            meta_analysis_result["heterogeneity_interpretation"] = (
+                                analyzer.interpret_heterogeneity(meta_analysis_result["i_squared"])
+                            )
+                    except Exception as e:
+                        logger.warning(f"Meta-analysis failed during export: {str(e)}")
+
+                # Perform conflict detection if requested
+                if include_conflicts:
+                    try:
+                        detector = ConflictDetector()
+                        all_contradictions = []
+
+                        for i in range(len(papers)):
+                            for j in range(i + 1, len(papers)):
+                                paper1 = papers[i]
+                                paper2 = papers[j]
+
+                                findings1 = detector.extract_key_findings(
+                                    paper1.get("full_text", "") or paper1.get("abstract", "")
+                                )
+                                findings2 = detector.extract_key_findings(
+                                    paper2.get("full_text", "") or paper2.get("abstract", "")
+                                )
+
+                                if findings1 and findings2:
+                                    contradictions = detector.find_contradictions(
+                                        findings1, findings2, confidence_threshold=0.8
+                                    )
+
+                                    for contradiction in contradictions:
+                                        contradiction["paper1_id"] = paper1["id"]
+                                        contradiction["paper1_title"] = paper1["title"]
+                                        contradiction["paper2_id"] = paper2["id"]
+                                        contradiction["paper2_title"] = paper2["title"]
+                                        all_contradictions.append(contradiction)
+
+                        conflict_result = {
+                            "contradictions": all_contradictions,
+                            "n_papers": len(papers),
+                            "n_contradictions": len(all_contradictions),
+                        }
+                    except Exception as e:
+                        logger.warning(f"Conflict detection failed during export: {str(e)}")
+
+                # Generate Markdown
+                formatter = ExportFormatter()
+                markdown_content = formatter.export_synthesis_markdown(
+                    meta_analysis_result,
+                    conflict_result,
+                    papers,
+                    include_meta_analysis=include_meta_analysis,
+                    include_conflicts=include_conflicts,
+                    include_wwc_assessments=include_wwc_assessments,
+                )
+
+                # Set headers for file download (clear default JSON content type)
+                self.clear_header("Content-Type")
+                self.set_header("Content-Type", "text/markdown")
+                self.set_header(
+                    "Content-Disposition",
+                    f'attachment; filename="synthesis_report_{len(papers)}_studies.md"',
+                )
+                self.set_status(200)
+                self.finish(markdown_content)
+        except Exception as e:
+            logger.exception("Synthesis export failed")
+            self.send_error(500, str(e))
+
+
 def setup_route_handlers(web_app):
     """Register all API route handlers."""
     host_pattern = ".*$"
@@ -403,6 +693,9 @@ def setup_route_handlers(web_app):
         (url_path_join(base_url, route_prefix, "export"), ExportHandler),
         (url_path_join(base_url, route_prefix, "wwc-assessment"), WWCAssessmentHandler),
         (url_path_join(base_url, route_prefix, "meta-analysis"), MetaAnalysisHandler),
+        (url_path_join(base_url, route_prefix, "conflict-detection"), ConflictDetectionHandler),
+        (url_path_join(base_url, route_prefix, "meta-analysis", "export"), MetaAnalysisExportHandler),
+        (url_path_join(base_url, route_prefix, "synthesis", "export"), SynthesisExportHandler),
     ]
 
     web_app.add_handlers(host_pattern, handlers)

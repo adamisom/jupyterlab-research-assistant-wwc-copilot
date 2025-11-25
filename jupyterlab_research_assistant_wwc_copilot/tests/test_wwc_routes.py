@@ -300,3 +300,78 @@ async def test_meta_analysis_with_outcome_name(jp_fetch):
     # Verify both studies have the retention_test effect size
     assert all("retention_test" in s.get("study_label", "") or s.get("effect_size", 0) > 0 for s in data["studies"])
 
+
+async def test_conflict_detection_insufficient_papers(jp_fetch):
+    """Test conflict detection endpoint with insufficient papers."""
+    from tornado.httpclient import HTTPClientError
+
+    try:
+        response = await jp_fetch(
+            "jupyterlab-research-assistant-wwc-copilot",
+            "conflict-detection",
+            method="POST",
+            body=json.dumps({"paper_ids": [1]}),
+        )
+        assert response.code == 400
+        payload = json.loads(response.body)
+        assert payload["status"] == "error"
+        assert "at least 2" in payload["message"].lower()
+    except HTTPClientError as e:
+        assert e.code == 400
+        payload = json.loads(e.response.body)
+        assert payload["status"] == "error"
+        assert "at least 2" in payload["message"].lower()
+
+
+async def test_conflict_detection_success(jp_fetch):
+    """Test successful conflict detection."""
+    # Create two papers with abstracts
+    paper1_data = {
+        "title": "Study A",
+        "authors": ["Author 1"],
+        "year": 2023,
+        "abstract": "The results show a significant positive effect. We found that the intervention worked well.",
+    }
+
+    paper2_data = {
+        "title": "Study B",
+        "authors": ["Author 2"],
+        "year": 2023,
+        "abstract": "The results show no significant effect. We found that the intervention did not work.",
+    }
+
+    create1_response = await jp_fetch(
+        "jupyterlab-research-assistant-wwc-copilot",
+        "library",
+        method="POST",
+        body=json.dumps(paper1_data),
+    )
+
+    create2_response = await jp_fetch(
+        "jupyterlab-research-assistant-wwc-copilot",
+        "library",
+        method="POST",
+        body=json.dumps(paper2_data),
+    )
+
+    paper1_id = json.loads(create1_response.body)["data"]["id"]
+    paper2_id = json.loads(create2_response.body)["data"]["id"]
+
+    response = await jp_fetch(
+        "jupyterlab-research-assistant-wwc-copilot",
+        "conflict-detection",
+        method="POST",
+        body=json.dumps({"paper_ids": [paper1_id, paper2_id]}),
+    )
+
+    assert response.code == 200
+    payload = json.loads(response.body)
+    assert payload["status"] == "success"
+    assert "data" in payload
+    data = payload["data"]
+    assert "contradictions" in data
+    assert "n_papers" in data
+    assert "n_contradictions" in data
+    assert data["n_papers"] == 2
+    assert isinstance(data["contradictions"], list)
+
