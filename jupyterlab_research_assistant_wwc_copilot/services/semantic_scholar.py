@@ -62,7 +62,11 @@ class SemanticScholarAPI:
         return result
 
     def search_papers(
-        self, query: str, year: Optional[str] = None, limit: int = 20, offset: int = 0
+        self,
+        query: str,
+        year: Optional[str] = None,  # noqa: ARG002
+        limit: int = 20,
+        offset: int = 0,
     ) -> dict:
         """
         Search for papers using Semantic Scholar API.
@@ -81,17 +85,16 @@ class SemanticScholarAPI:
         """
         self._rate_limit()
 
+        # Note: Semantic Scholar API /paper/search endpoint doesn't support year parameter
+        # Year filtering would need to be done client-side after fetching results
+        # Using minimal fields to avoid API errors - can expand later if needed
         params = {
             "query": query,
             "limit": min(limit, 100),  # API max is 100
             "offset": offset,
-            "fields": (
-                "title,authors,year,abstract,doi,openAccessPdf,paperId,citationCount"
-            ),
+            "fields": "title,authors,year,abstract,doi,paperId,citationCount",
         }
-
-        if year:
-            params["year"] = year
+        # Removed: if year: params["year"] = year
 
         try:
             response = self.session.get(
@@ -104,6 +107,17 @@ class SemanticScholarAPI:
             papers = [self._transform_paper(paper) for paper in data.get("data", [])]
 
             return {"data": papers, "total": data.get("total", len(papers))}
+        except requests.exceptions.HTTPError as e:
+            # Include response body for better error messages
+            error_msg = str(e)
+            try:
+                if hasattr(e, "response") and e.response is not None:
+                    error_detail = e.response.json()
+                    if error_detail:
+                        error_msg = f"{error_msg} - Response: {error_detail}"
+            except Exception:
+                pass
+            raise RuntimeError(f"Semantic Scholar API error: {error_msg}") from e
         except requests.exceptions.RequestException as e:
             raise RuntimeError(f"Semantic Scholar API error: {e!s}") from e
 

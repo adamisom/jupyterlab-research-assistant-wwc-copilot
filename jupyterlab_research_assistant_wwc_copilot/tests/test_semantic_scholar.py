@@ -57,7 +57,7 @@ def test_search_papers_success(mock_session_class):
     "jupyterlab_research_assistant_wwc_copilot.services.semantic_scholar.requests.Session"
 )
 def test_search_papers_with_year(mock_session_class):
-    """Test paper search with year filter."""
+    """Test paper search with year filter (year parameter is ignored as API doesn't support it)."""
     mock_session = Mock()
     mock_response = Mock()
     mock_response.json.return_value = {"data": [], "total": 0}
@@ -68,10 +68,9 @@ def test_search_papers_with_year(mock_session_class):
     api = SemanticScholarAPI()
     api.search_papers("test", year="2020-2024")
 
-    # Verify year parameter was passed
+    # Verify year parameter was NOT passed (API doesn't support it)
     call_args = mock_session.get.call_args
-    assert "year" in call_args[1]["params"]
-    assert call_args[1]["params"]["year"] == "2020-2024"
+    assert "year" not in call_args[1]["params"]
 
 
 @patch(
