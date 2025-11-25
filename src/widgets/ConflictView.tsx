@@ -1,12 +1,14 @@
 import React from 'react';
-import { IConflictDetectionResult } from '../api';
+import { IConflictDetectionResult, IConflictDetectionWithFindingsResult } from '../api';
 import { formatPercent } from '../utils/format';
 
 interface ConflictViewProps {
-  result: IConflictDetectionResult;
+  result: IConflictDetectionResult | IConflictDetectionWithFindingsResult;
 }
 
 export const ConflictView: React.FC<ConflictViewProps> = ({ result }) => {
+  const hasFindings = 'findings' in result && result.findings && Object.keys(result.findings).length > 0;
+
   return (
     <div className="jp-jupyterlab-research-assistant-wwc-copilot-conflicts">
       <h3>Conflict Detection Results</h3>
@@ -17,6 +19,26 @@ export const ConflictView: React.FC<ConflictViewProps> = ({ result }) => {
           <strong>{result.n_papers}</strong> papers.
         </p>
       </div>
+
+      {/* Findings Preview */}
+      {hasFindings && (
+        <div className="jp-jupyterlab-research-assistant-wwc-copilot-findings-preview">
+          <h4>Extracted Key Findings</h4>
+          {Object.entries(result.findings!).map(([paperId, paperFindings]) => (
+            <div
+              key={paperId}
+              className="jp-jupyterlab-research-assistant-wwc-copilot-finding-item"
+            >
+              <strong>Paper {paperId}:</strong>
+              <ul>
+                {paperFindings.map((finding, idx) => (
+                  <li key={idx}>{finding}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      )}
 
       {result.contradictions.length === 0 ? (
         <div className="jp-jupyterlab-research-assistant-wwc-copilot-conflicts-empty">

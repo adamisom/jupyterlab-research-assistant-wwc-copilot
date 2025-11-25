@@ -3,11 +3,20 @@ import { ReactWidget } from '@jupyterlab/apputils';
 import {
   performMetaAnalysis,
   detectConflicts,
+  performSubgroupAnalysis,
+  assessPublicationBias,
+  performSensitivityAnalysis,
   IMetaAnalysisResult,
-  IConflictDetectionResult
+  IConflictDetectionResult,
+  ISubgroupAnalysisResult,
+  IBiasAssessmentResult,
+  ISensitivityAnalysisResult
 } from '../api';
 import { MetaAnalysisView } from './MetaAnalysisView';
 import { ConflictView } from './ConflictView';
+import { SubgroupAnalysisView } from './SubgroupAnalysisView';
+import { BiasAssessmentView } from './BiasAssessmentView';
+import { SensitivityAnalysisView } from './SensitivityAnalysisView';
 import { showError } from '../utils/notifications';
 import { Tabs } from './Tabs';
 
@@ -16,18 +25,29 @@ interface SynthesisWorkbenchProps {
   onClose?: () => void;
 }
 
+type SynthesisTab =
+  | 'meta-analysis'
+  | 'conflicts'
+  | 'subgroups'
+  | 'bias'
+  | 'sensitivity';
+
 const SynthesisWorkbenchComponent: React.FC<SynthesisWorkbenchProps> = ({
   paperIds,
   onClose
 }) => {
-  const [activeTab, setActiveTab] = useState<'meta-analysis' | 'conflicts'>(
-    'meta-analysis'
-  );
+  const [activeTab, setActiveTab] = useState<SynthesisTab>('meta-analysis');
   const [metaAnalysisResult, setMetaAnalysisResult] =
     useState<IMetaAnalysisResult | null>(null);
   const [conflictResult, setConflictResult] =
     useState<IConflictDetectionResult | null>(null);
+  const [subgroupResult, setSubgroupResult] =
+    useState<ISubgroupAnalysisResult | null>(null);
+  const [biasResult, setBiasResult] = useState<IBiasAssessmentResult | null>(null);
+  const [sensitivityResult, setSensitivityResult] =
+    useState<ISensitivityAnalysisResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [subgroupVariable, setSubgroupVariable] = useState<string>('');
 
   const handleRunMetaAnalysis = async () => {
     setIsLoading(true);
@@ -55,6 +75,61 @@ const SynthesisWorkbenchComponent: React.FC<SynthesisWorkbenchProps> = ({
     } catch (err) {
       showError(
         'Conflict Detection Error',
+        err instanceof Error ? err.message : 'Unknown error',
+        err instanceof Error ? err : undefined
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleRunSubgroupAnalysis = async () => {
+    if (!subgroupVariable) {
+      showError('Subgroup Analysis', 'Please select a subgroup variable');
+      return;
+    }
+    setIsLoading(true);
+    try {
+      const result = await performSubgroupAnalysis(paperIds, subgroupVariable);
+      setSubgroupResult(result);
+      setActiveTab('subgroups');
+    } catch (err) {
+      showError(
+        'Subgroup Analysis Error',
+        err instanceof Error ? err.message : 'Unknown error',
+        err instanceof Error ? err : undefined
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleAssessBias = async () => {
+    setIsLoading(true);
+    try {
+      const result = await assessPublicationBias(paperIds);
+      setBiasResult(result);
+      setActiveTab('bias');
+    } catch (err) {
+      showError(
+        'Bias Assessment Error',
+        err instanceof Error ? err.message : 'Unknown error',
+        err instanceof Error ? err : undefined
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleRunSensitivityAnalysis = async () => {
+    setIsLoading(true);
+    try {
+      const result = await performSensitivityAnalysis(paperIds);
+      setSensitivityResult(result);
+      setActiveTab('sensitivity');
+    } catch (err) {
+      showError(
+        'Sensitivity Analysis Error',
         err instanceof Error ? err.message : 'Unknown error',
         err instanceof Error ? err : undefined
       );
@@ -92,6 +167,39 @@ const SynthesisWorkbenchComponent: React.FC<SynthesisWorkbenchProps> = ({
         >
           Detect Conflicts
         </button>
+        <div className="jp-jupyterlab-research-assistant-wwc-copilot-subgroup-controls">
+          <select
+            value={subgroupVariable}
+            onChange={(e) => setSubgroupVariable(e.target.value)}
+            className="jp-jupyterlab-research-assistant-wwc-copilot-select"
+          >
+            <option value="">Select Subgroup Variable...</option>
+            <option value="age_group">Age Group</option>
+            <option value="intervention_type">Intervention Type</option>
+            <option value="learning_domain">Learning Domain</option>
+          </select>
+          <button
+            onClick={handleRunSubgroupAnalysis}
+            disabled={isLoading || !subgroupVariable}
+            className="jp-jupyterlab-research-assistant-wwc-copilot-button"
+          >
+            Run Subgroup Analysis
+          </button>
+        </div>
+        <button
+          onClick={handleAssessBias}
+          disabled={isLoading || !metaAnalysisResult}
+          className="jp-jupyterlab-research-assistant-wwc-copilot-button"
+        >
+          Assess Publication Bias
+        </button>
+        <button
+          onClick={handleRunSensitivityAnalysis}
+          disabled={isLoading || !metaAnalysisResult}
+          className="jp-jupyterlab-research-assistant-wwc-copilot-button"
+        >
+          Sensitivity Analysis
+        </button>
       </div>
 
       {isLoading && (
@@ -107,12 +215,17 @@ const SynthesisWorkbenchComponent: React.FC<SynthesisWorkbenchProps> = ({
             id: 'conflicts',
             label: 'Conflicts',
             badge: conflictResult?.n_contradictions || 0
-          }
+          },
+          {
+            id: 'subgroups',
+            label: 'Subgroups',
+            badge: subgroupResult ? subgroupResult.n_subgroups : undefined
+          },
+          { id: 'bias', label: 'Bias Assessment' },
+          { id: 'sensitivity', label: 'Sensitivity' }
         ]}
         activeTab={activeTab}
-        onTabChange={(tabId: string) =>
-          setActiveTab(tabId as 'meta-analysis' | 'conflicts')
-        }
+        onTabChange={(tabId: string) => setActiveTab(tabId as SynthesisTab)}
       />
 
       <div className="jp-jupyterlab-research-assistant-wwc-copilot-synthesis-content">
@@ -122,11 +235,24 @@ const SynthesisWorkbenchComponent: React.FC<SynthesisWorkbenchProps> = ({
         {activeTab === 'conflicts' && conflictResult && (
           <ConflictView result={conflictResult} />
         )}
-        {!metaAnalysisResult && !conflictResult && (
-          <div className="jp-jupyterlab-research-assistant-wwc-copilot-synthesis-empty">
-            Click "Run Meta-Analysis" or "Detect Conflicts" to begin.
-          </div>
+        {activeTab === 'subgroups' && subgroupResult && (
+          <SubgroupAnalysisView result={subgroupResult} />
         )}
+        {activeTab === 'bias' && biasResult && (
+          <BiasAssessmentView result={biasResult} />
+        )}
+        {activeTab === 'sensitivity' && sensitivityResult && (
+          <SensitivityAnalysisView result={sensitivityResult} />
+        )}
+        {!metaAnalysisResult &&
+          !conflictResult &&
+          !subgroupResult &&
+          !biasResult &&
+          !sensitivityResult && (
+            <div className="jp-jupyterlab-research-assistant-wwc-copilot-synthesis-empty">
+              Click "Run Meta-Analysis" or "Detect Conflicts" to begin.
+            </div>
+          )}
       </div>
     </div>
   );
