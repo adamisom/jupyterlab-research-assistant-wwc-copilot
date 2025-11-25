@@ -6,9 +6,9 @@ interface SensitivityAnalysisViewProps {
   result: ISensitivityAnalysisResult;
 }
 
-export const SensitivityAnalysisView: React.FC<SensitivityAnalysisViewProps> = ({
-  result
-}) => {
+export const SensitivityAnalysisView: React.FC<
+  SensitivityAnalysisViewProps
+> = ({ result }) => {
   return (
     <div className="jp-jupyterlab-research-assistant-wwc-copilot-sensitivity-analysis">
       <h3>Sensitivity Analysis</h3>
@@ -92,4 +92,3 @@ export const SensitivityAnalysisView: React.FC<SensitivityAnalysisViewProps> = (
     </div>
   );
 };
-

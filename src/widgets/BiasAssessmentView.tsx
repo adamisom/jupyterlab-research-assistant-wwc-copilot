@@ -63,4 +63,3 @@ export const BiasAssessmentView: React.FC<BiasAssessmentViewProps> = ({
     </div>
   );
 };
-
