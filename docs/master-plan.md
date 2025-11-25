@@ -203,7 +203,7 @@ This phase establishes the server-side foundation. It will be a JupyterLab serve
 
       class SemanticScholarAPI:
           BASE_URL = "https://api.semanticscholar.org/graph/v1"
-          
+
           def __init__(self, api_key: Optional[str] = None):
               self.session = requests.Session()
               if api_key:

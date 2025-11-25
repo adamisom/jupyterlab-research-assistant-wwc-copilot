@@ -235,6 +235,6 @@ By following these guidelines, you can create a WWC Co-Pilot extension that not 
 
 ---
 
-**Author**: Manus AI  
-**Date**: November 25, 2025  
+**Author**: Manus AI
+**Date**: November 25, 2025
 **Purpose**: Styling guide for the JupyterLab WWC Co-Pilot extension.

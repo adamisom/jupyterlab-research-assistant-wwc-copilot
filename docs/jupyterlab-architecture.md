@@ -489,6 +489,6 @@ Now that you understand the architecture, here's your action plan:
 
 ---
 
-**Author**: Manus AI  
-**Date**: November 24, 2025  
+**Author**: Manus AI
+**Date**: November 24, 2025
 **Purpose**: Architecture guide for the JupyterLab WWC Co-Pilot extension project
