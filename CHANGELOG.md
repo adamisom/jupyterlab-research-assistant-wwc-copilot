@@ -4,13 +4,18 @@
 
 ### Added
 
-- Stage 2 core features (WWC assessment, meta-analysis, conflict detection) are complete
-- Stage 2 enhancements guide (`docs/stage-2-enhancements-implementation-guide.md`) for optional enhancements
+- Stage 2 enhancements (all features now complete):
+  - **Enhanced WWC UI**: Multi-step wizard interface with progress indicators and localStorage persistence
+  - **Subgroup Analysis**: Meta-analysis by subgroups (age group, intervention type, learning domain)
+  - **Publication Bias Assessment**: Egger's test and funnel plots for detecting publication bias
+  - **Advanced Conflict Detection**: AI-extracted findings preview for better conflict identification
+  - **Sensitivity Analysis**: Leave-one-out analysis and influence diagnostics to identify influential studies
+- Stage 2 enhancements guide (`docs/stage-2-enhancements-implementation-guide.md`) for implementation reference
 
 ### Changed
 
-- Updated documentation to reflect Stage 1 completion and Stage 2 implementation guide availability
-- Updated main README with feature status and documentation links
+- Updated documentation to reflect Stage 2 completion (core features + enhancements)
+- Updated main README with complete feature status
 
 ### Completed
 
@@ -21,6 +26,10 @@
   - SQLite database for paper storage and search
   - Research Library sidebar panel with Discovery and Library tabs
   - Export functionality (CSV, JSON, BibTeX)
+
+- **Stage 2: WWC Co-Pilot & Synthesis Engine** - Fully implemented with:
+  - Core features: WWC quality assessment, meta-analysis, conflict detection
+  - Enhanced features: Multi-step WWC wizard, subgroup analysis, publication bias assessment, advanced conflict detection, sensitivity analysis
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 

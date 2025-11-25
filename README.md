@@ -7,7 +7,7 @@ A JupyterLab extension for academic research management and WWC quality assessme
 This extension provides two main features:
 
 - **Research Library & Discovery Engine** (Stage 1 - ✅ Complete): Discover, import, and manage academic papers with Semantic Scholar integration, PDF parsing, and AI-powered metadata extraction
-- **WWC Co-Pilot & Synthesis Engine** (Stage 2 - 📋 Implementation Guide Available): Perform rigorous WWC quality assessments, meta-analysis, and conflict detection across multiple studies
+- **WWC Co-Pilot & Synthesis Engine** (Stage 2 - ✅ Complete): Perform rigorous WWC quality assessments, meta-analysis, conflict detection, subgroup analysis, publication bias assessment, and sensitivity analysis across multiple studies
 
 This extension is composed of a Python package named `jupyterlab_research_assistant_wwc_copilot`
 for the server extension and a NPM package named `jupyterlab-research-assistant-wwc-copilot`
@@ -199,10 +199,10 @@ Comprehensive documentation is available in the [`docs/`](./docs/) directory:
 
 ### Implementation Guides
 
-- **[Stage 2 Enhancements Guide](./docs/stage-2-enhancements-implementation-guide.md)** ⭐ **FOR OPTIONAL ENHANCEMENTS**
-  - Step-by-step guide for implementing optional Stage 2 enhancements
+- **[Stage 2 Enhancements Guide](./docs/stage-2-enhancements-implementation-guide.md)** ⭐ **IMPLEMENTATION REFERENCE**
+  - Implementation guide for Stage 2 enhancements (now complete)
   - Enhanced WWC UI, subgroup analysis, publication bias assessment, advanced conflict detection, sensitivity analysis
-  - **Note**: Stage 2 core features (WWC assessment, meta-analysis, conflict detection) are complete. See master-plan.md for full project details.
+  - **Note**: All Stage 2 features (core + enhancements) are complete. See master-plan.md for full project details.
 
 ### Reference Documentation
 
@@ -233,7 +233,7 @@ Comprehensive documentation is available in the [`docs/`](./docs/) directory:
    - Frontend: `jlpm watch` (auto-rebuilds) + refresh browser
    - Backend: Make changes + restart JupyterLab
 
-3. **Testing**: Follow checkpoints in `stage-2-enhancements-implementation-guide.md` after each enhancement
+3. **Testing**: Run tests after making changes (see Testing section above)
 
 ## Changelog
 
