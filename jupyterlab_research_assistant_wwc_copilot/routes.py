@@ -4,6 +4,7 @@ import json
 import logging
 from pathlib import Path
 from typing import Dict, Optional
+import numpy as np
 from jupyter_server.base.handlers import APIHandler
 from jupyter_server.utils import url_path_join
 import tornado
@@ -678,6 +679,236 @@ class SynthesisExportHandler(BaseAPIHandler):
             self.send_error(500, str(e))
 
 
+class SubgroupAnalysisHandler(BaseAPIHandler):
+    """Handler for subgroup meta-analysis."""
+
+    @tornado.web.authenticated
+    def post(self):
+        """Perform subgroup meta-analysis."""
+        try:
+            data = self.get_json_body()
+            if not data:
+                self.send_error(400, "No data provided")
+                return
+
+            paper_ids = data.get("paper_ids", [])
+            subgroup_variable = data.get("subgroup_variable")  # e.g., "age_group"
+            outcome_name = data.get("outcome_name")
+
+            if not subgroup_variable:
+                self.send_error(400, "subgroup_variable required")
+                return
+
+            if len(paper_ids) < 2:
+                self.send_error(400, "At least 2 papers required for subgroup analysis")
+                return
+
+            # Fetch papers and extract subgroup metadata
+            with DatabaseManager() as db:
+                studies = []
+                for paper_id in paper_ids:
+                    paper = db.get_paper_by_id(paper_id)
+                    if not paper:
+                        continue
+
+                    # Extract effect sizes and subgroup value
+                    study_metadata = paper.get("study_metadata", {})
+                    effect_sizes = study_metadata.get("effect_sizes", {})
+                    learning_metadata = paper.get("learning_science_metadata", {})
+
+                    # Get subgroup value from appropriate metadata field
+                    subgroup_value = None
+                    if subgroup_variable == "age_group":
+                        subgroup_value = learning_metadata.get("age_group")
+                    elif subgroup_variable == "intervention_type":
+                        subgroup_value = learning_metadata.get("intervention_type")
+                    elif subgroup_variable == "learning_domain":
+                        subgroup_value = learning_metadata.get("learning_domain")
+                    else:
+                        # Try to get from study_metadata or top-level
+                        subgroup_value = study_metadata.get(subgroup_variable) or paper.get(subgroup_variable)
+
+                    if outcome_name and effect_sizes:
+                        outcome_data = effect_sizes.get(outcome_name)
+                        if outcome_data and subgroup_value:
+                            studies.append({
+                                "paper_id": paper["id"],
+                                "study_label": paper["title"],
+                                "effect_size": outcome_data.get("d", 0.0),
+                                "std_error": outcome_data.get("se", 0.1),
+                                subgroup_variable: subgroup_value
+                            })
+                    elif effect_sizes:
+                        # Use first available outcome if no outcome_name specified
+                        first_outcome = list(effect_sizes.values())[0]
+                        if first_outcome and subgroup_value:
+                            studies.append({
+                                "paper_id": paper["id"],
+                                "study_label": paper["title"],
+                                "effect_size": first_outcome.get("d", 0.0),
+                                "std_error": first_outcome.get("se", 0.1),
+                                subgroup_variable: subgroup_value
+                            })
+
+                if len(studies) < 2:
+                    self.send_error(400, "Insufficient studies with subgroup data")
+                    return
+
+                # Perform subgroup analysis
+                analyzer = MetaAnalyzer()
+                result = analyzer.perform_subgroup_meta_analysis(studies, subgroup_variable)
+
+                self.send_success(result)
+        except Exception as e:
+            logger.exception("Subgroup analysis failed")
+            self.send_error(500, str(e))
+
+
+class BiasAssessmentHandler(BaseAPIHandler):
+    """Handler for publication bias assessment."""
+
+    @tornado.web.authenticated
+    def post(self):
+        """Assess publication bias."""
+        try:
+            data = self.get_json_body()
+            if not data:
+                self.send_error(400, "No data provided")
+                return
+
+            paper_ids = data.get("paper_ids", [])
+            outcome_name = data.get("outcome_name")
+
+            if len(paper_ids) < 3:
+                self.send_error(400, "At least 3 studies required for bias assessment")
+                return
+
+            # Fetch papers and extract effect sizes
+            with DatabaseManager() as db:
+                studies = []
+                for paper_id in paper_ids:
+                    paper = db.get_paper_by_id(paper_id)
+                    if not paper:
+                        continue
+
+                    study_metadata = paper.get("study_metadata", {})
+                    effect_sizes = study_metadata.get("effect_sizes", {})
+
+                    if outcome_name:
+                        outcome_data = effect_sizes.get(outcome_name)
+                        if outcome_data:
+                            studies.append({
+                                "paper_id": paper["id"],
+                                "study_label": paper["title"],
+                                "effect_size": outcome_data.get("d", 0.0),
+                                "std_error": outcome_data.get("se", 0.1)
+                            })
+                    elif effect_sizes:
+                        # Use first available outcome
+                        first_outcome = list(effect_sizes.values())[0]
+                        if first_outcome:
+                            studies.append({
+                                "paper_id": paper["id"],
+                                "study_label": paper["title"],
+                                "effect_size": first_outcome.get("d", 0.0),
+                                "std_error": first_outcome.get("se", 0.1)
+                            })
+
+                if len(studies) < 3:
+                    self.send_error(400, "Insufficient studies with effect size data")
+                    return
+
+                # Extract arrays
+                effect_sizes = np.array([s["effect_size"] for s in studies])
+                std_errors = np.array([s["std_error"] for s in studies])
+                labels = [s["study_label"] for s in studies]
+
+                # Perform Egger's test
+                analyzer = MetaAnalyzer()
+                eggers_result = analyzer.perform_eggers_test(effect_sizes, std_errors)
+
+                # Generate funnel plot
+                visualizer = Visualizer()
+                funnel_plot = visualizer.create_funnel_plot(
+                    effect_sizes.tolist(),
+                    std_errors.tolist(),
+                    labels
+                )
+
+                result = {
+                    "eggers_test": eggers_result,
+                    "funnel_plot": funnel_plot,
+                    "n_studies": len(studies)
+                }
+
+                self.send_success(result)
+        except Exception as e:
+            logger.exception("Bias assessment failed")
+            self.send_error(500, str(e))
+
+
+class SensitivityAnalysisHandler(BaseAPIHandler):
+    """Handler for sensitivity analysis."""
+
+    @tornado.web.authenticated
+    def post(self):
+        """Perform sensitivity analysis."""
+        try:
+            data = self.get_json_body()
+            if not data:
+                self.send_error(400, "No data provided")
+                return
+
+            paper_ids = data.get("paper_ids", [])
+            outcome_name = data.get("outcome_name")
+
+            if len(paper_ids) < 3:
+                self.send_error(400, "At least 3 studies required for sensitivity analysis")
+                return
+
+            # Fetch papers
+            with DatabaseManager() as db:
+                studies = []
+                for paper_id in paper_ids:
+                    paper = db.get_paper_by_id(paper_id)
+                    if not paper:
+                        continue
+
+                    study_metadata = paper.get("study_metadata", {})
+                    effect_sizes = study_metadata.get("effect_sizes", {})
+
+                    if outcome_name:
+                        outcome_data = effect_sizes.get(outcome_name)
+                        if outcome_data:
+                            studies.append({
+                                "paper_id": paper["id"],
+                                "study_label": paper["title"],
+                                "effect_size": outcome_data.get("d", 0.0),
+                                "std_error": outcome_data.get("se", 0.1)
+                            })
+                    elif effect_sizes:
+                        first_outcome = list(effect_sizes.values())[0]
+                        if first_outcome:
+                            studies.append({
+                                "paper_id": paper["id"],
+                                "study_label": paper["title"],
+                                "effect_size": first_outcome.get("d", 0.0),
+                                "std_error": first_outcome.get("se", 0.1)
+                            })
+
+                if len(studies) < 3:
+                    self.send_error(400, "Insufficient studies with effect size data")
+                    return
+
+                analyzer = MetaAnalyzer()
+                result = analyzer.perform_sensitivity_analysis(studies)
+
+                self.send_success(result)
+        except Exception as e:
+            logger.exception("Sensitivity analysis failed")
+            self.send_error(500, str(e))
+
+
 def setup_route_handlers(web_app):
     """Register all API route handlers."""
     host_pattern = ".*$"
@@ -696,6 +927,9 @@ def setup_route_handlers(web_app):
         (url_path_join(base_url, route_prefix, "conflict-detection"), ConflictDetectionHandler),
         (url_path_join(base_url, route_prefix, "meta-analysis", "export"), MetaAnalysisExportHandler),
         (url_path_join(base_url, route_prefix, "synthesis", "export"), SynthesisExportHandler),
+        (url_path_join(base_url, route_prefix, "subgroup-analysis"), SubgroupAnalysisHandler),
+        (url_path_join(base_url, route_prefix, "bias-assessment"), BiasAssessmentHandler),
+        (url_path_join(base_url, route_prefix, "sensitivity-analysis"), SensitivityAnalysisHandler),
     ]
 
     web_app.add_handlers(host_pattern, handlers)
