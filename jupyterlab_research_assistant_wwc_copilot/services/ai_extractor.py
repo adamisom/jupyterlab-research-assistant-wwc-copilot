@@ -1,0 +1,122 @@
+"""AI-powered metadata extraction from PDF text."""
+
+import json
+import logging
+import re
+from typing import Dict, Optional, Any
+import requests
+
+from .extraction_schema import LEARNING_SCIENCE_EXTRACTION_SCHEMA
+
+logger = logging.getLogger(__name__)
+
+
+class AIExtractor:
+    """Extract metadata from PDF text using AI."""
+
+    def __init__(
+        self,
+        provider: str = "ollama",
+        api_key: Optional[str] = None,
+        model: str = "llama3",
+        ollama_url: str = "http://localhost:11434"
+    ):
+        self.provider = provider
+        self.model = model
+        self.ollama_url = ollama_url
+
+        if provider in ["claude", "openai"]:
+            if not api_key:
+                raise ValueError(f"API key required for {provider}")
+            try:
+                from openai import OpenAI
+                self.client = OpenAI(
+                    api_key=api_key,
+                    base_url="https://api.anthropic.com/v1" if provider == "claude" else None
+                )
+            except ImportError:
+                raise ImportError(
+                    "openai package required for Claude/OpenAI. Install with: pip install openai"
+                )
+        else:
+            self.client = None
+
+    def extract_metadata(
+        self, text: str, schema: Dict = None
+    ) -> Dict[str, Any]:
+        """
+        Extract metadata from text using AI.
+
+        Args:
+            text: PDF text to extract from
+            schema: JSON schema for extraction (defaults to learning science schema)
+
+        Returns:
+            Extracted metadata dictionary
+        """
+        if schema is None:
+            schema = LEARNING_SCIENCE_EXTRACTION_SCHEMA
+
+        # Truncate text to fit in context window
+        max_chars = 16000
+        truncated_text = text[:max_chars] if len(text) > max_chars else text
+
+        prompt = f"""Extract the following information from this academic paper.
+Respond with a single, valid JSON object that conforms to the provided schema.
+
+Schema:
+{json.dumps(schema, indent=2)}
+
+Paper Text:
+{truncated_text}
+
+Return only valid JSON, no additional text."""
+
+        try:
+            if self.provider == "ollama":
+                return self._extract_with_ollama(prompt)
+            else:
+                return self._extract_with_openai(prompt)
+        except Exception as e:
+            logger.error(f"AI extraction failed: {str(e)}")
+            return {}
+
+    def _extract_with_ollama(self, prompt: str) -> Dict[str, Any]:
+        """Extract using Ollama API."""
+        response = requests.post(
+            f"{self.ollama_url}/api/generate",
+            json={
+                "model": self.model,
+                "prompt": prompt,
+                "stream": False,
+                "format": "json"
+            },
+            timeout=120
+        )
+        response.raise_for_status()
+        result = response.json()
+        extracted_text = result.get("response", "")
+
+        # Parse JSON from response
+        try:
+            return json.loads(extracted_text)
+        except json.JSONDecodeError:
+            logger.warning(
+                "Ollama returned invalid JSON, attempting to extract JSON from response"
+            )
+            # Try to extract JSON from text
+            json_match = re.search(r'\{.*\}', extracted_text, re.DOTALL)
+            if json_match:
+                return json.loads(json_match.group())
+            return {}
+
+    def _extract_with_openai(self, prompt: str) -> Dict[str, Any]:
+        """Extract using OpenAI/Anthropic API."""
+        response = self.client.chat.completions.create(
+            model=self.model,
+            messages=[{"role": "user", "content": prompt}],
+            response_format={"type": "json_object"}
+        )
+        content = response.choices[0].message.content
+        return json.loads(content)
+

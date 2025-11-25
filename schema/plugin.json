@@ -1,8 +1,54 @@
 {
   "jupyter.lab.shortcuts": [],
-  "title": "jupyterlab-research-assistant-wwc-copilot",
-  "description": "jupyterlab-research-assistant-wwc-copilot settings.",
+  "title": "Research Assistant",
+  "description": "Settings for the Research Assistant extension",
   "type": "object",
-  "properties": {},
+  "properties": {
+    "aiExtraction": {
+      "title": "AI Metadata Extraction",
+      "description": "Configure AI provider for metadata extraction",
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "title": "Enable AI Extraction",
+          "description": "Enable AI-powered metadata extraction from PDFs",
+          "type": "boolean",
+          "default": false
+        },
+        "provider": {
+          "title": "AI Provider",
+          "description": "Choose AI provider for extraction",
+          "type": "string",
+          "enum": ["claude", "openai", "ollama"],
+          "default": "ollama"
+        },
+        "apiKey": {
+          "title": "API Key",
+          "description": "API key for Claude or OpenAI (leave empty for Ollama)",
+          "type": "string",
+          "default": ""
+        },
+        "model": {
+          "title": "Model",
+          "description": "Model name (e.g., 'claude-3-opus-20240229', 'gpt-4', 'llama3')",
+          "type": "string",
+          "default": "llama3"
+        },
+        "ollamaUrl": {
+          "title": "Ollama URL",
+          "description": "URL for local Ollama instance",
+          "type": "string",
+          "default": "http://localhost:11434"
+        }
+      },
+      "default": {
+        "enabled": false,
+        "provider": "ollama",
+        "apiKey": "",
+        "model": "llama3",
+        "ollamaUrl": "http://localhost:11434"
+      }
+    }
+  },
   "additionalProperties": false
 }

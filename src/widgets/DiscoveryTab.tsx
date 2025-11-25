@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { IPaper, searchSemanticScholar, importPaper } from '../api';
 import { PaperCard } from './PaperCard';
+import { showError, showSuccess } from '../utils/notifications';
+import { SkeletonLoader } from './SkeletonLoader';
 
 export const DiscoveryTab: React.FC = () => {
   const [query, setQuery] = useState('');
@@ -34,11 +36,12 @@ export const DiscoveryTab: React.FC = () => {
   const handleImport = async (paper: IPaper) => {
     try {
       await importPaper(paper);
-      // Show success notification
-      alert(`Imported: ${paper.title}`);
+      showSuccess('Paper Imported', `Successfully imported: ${paper.title}`);
     } catch (err) {
-      alert(
-        `Import failed: ${err instanceof Error ? err.message : 'Unknown error'}`
+      showError(
+        'Import Failed',
+        err instanceof Error ? err.message : 'Unknown error occurred',
+        err instanceof Error ? err : undefined
       );
     }
   };
@@ -80,15 +83,25 @@ export const DiscoveryTab: React.FC = () => {
         </div>
       )}
 
-      <div className="jp-jupyterlab-research-assistant-wwc-copilot-results">
-        {results.map(paper => (
-          <PaperCard
-            key={paper.paperId || paper.id}
-            paper={paper}
-            onImport={() => handleImport(paper)}
-          />
-        ))}
-      </div>
+      {isLoading && (
+        <div>
+          <SkeletonLoader />
+          <SkeletonLoader />
+          <SkeletonLoader />
+        </div>
+      )}
+
+      {!isLoading && (
+        <div className="jp-jupyterlab-research-assistant-wwc-copilot-results">
+          {results.map(paper => (
+            <PaperCard
+              key={paper.paperId || paper.id}
+              paper={paper}
+              onImport={() => handleImport(paper)}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };

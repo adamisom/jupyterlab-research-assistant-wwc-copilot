@@ -1,4 +1,7 @@
+import { URLExt } from '@jupyterlab/coreutils';
+import { ServerConnection } from '@jupyterlab/services';
 import { requestAPI } from './request';
+import { retryWithBackoff } from './utils/retry';
 
 // Type definitions matching backend responses
 export interface IPaper {
@@ -12,6 +15,7 @@ export interface IPaper {
   citation_count?: number;
   abstract?: string;
   full_text?: string;
+  pdf_path?: string;
   study_metadata?: {
     methodology?: string;
     sample_size_baseline?: number;
@@ -69,23 +73,25 @@ export async function searchSemanticScholar(
   limit: number = 20,
   offset: number = 0
 ): Promise<IDiscoveryResponse> {
-  const params = new URLSearchParams({ q: query });
-  if (year) {
-    params.append('year', year);
-  }
-  params.append('limit', limit.toString());
-  params.append('offset', offset.toString());
+  return retryWithBackoff(async () => {
+    const params = new URLSearchParams({ q: query });
+    if (year) {
+      params.append('year', year);
+    }
+    params.append('limit', limit.toString());
+    params.append('offset', offset.toString());
 
-  const response = await requestAPI<IAPIResponse<IDiscoveryResponse>>(
-    `discovery?${params.toString()}`,
-    { method: 'GET' }
-  );
+    const response = await requestAPI<IAPIResponse<IDiscoveryResponse>>(
+      `discovery?${params.toString()}`,
+      { method: 'GET' }
+    );
 
-  if (response.status === 'error') {
-    throw new Error(response.message || 'Semantic Scholar search failed');
-  }
+    if (response.status === 'error') {
+      throw new Error(response.message || 'Semantic Scholar search failed');
+    }
 
-  return response.data || { data: [], total: 0 };
+    return response.data || { data: [], total: 0 };
+  });
 }
 
 export async function importPaper(paper: IPaper): Promise<IPaper> {
@@ -123,4 +129,36 @@ export async function importPDF(file: File): Promise<IPaper> {
   }
 
   return response.data;
+}
+
+export async function exportLibrary(
+  format: 'json' | 'csv' | 'bibtex'
+): Promise<void> {
+  const settings = ServerConnection.makeSettings();
+  const url = URLExt.join(
+    settings.baseUrl,
+    'jupyterlab-research-assistant-wwc-copilot',
+    `export?format=${format}`
+  );
+
+  const response = await ServerConnection.makeRequest(
+    url,
+    { method: 'GET' },
+    settings
+  );
+
+  if (!response.ok) {
+    throw new Error(`Export failed: ${response.statusText}`);
+  }
+
+  // Download file
+  const blob = await response.blob();
+  const downloadUrl = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = downloadUrl;
+  a.download = `library.${format === 'bibtex' ? 'bib' : format}`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  window.URL.revokeObjectURL(downloadUrl);
 }

@@ -1,7 +1,11 @@
 """API route handlers for the research assistant extension."""
 
+import csv
+import io
 import json
+import logging
 from pathlib import Path
+from typing import Dict, Optional
 from jupyter_server.base.handlers import APIHandler
 from jupyter_server.utils import url_path_join
 import tornado
@@ -9,6 +13,7 @@ import tornado
 from .services.semantic_scholar import SemanticScholarAPI
 from .services.pdf_parser import PDFParser
 from .services.db_manager import DatabaseManager
+from .services.ai_extractor import AIExtractor
 
 
 class HelloRouteHandler(APIHandler):
@@ -156,6 +161,33 @@ class ImportHandler(APIHandler):
                 "pdf_path": str(file_path)
             }
 
+            # AI extraction (if enabled)
+            ai_config = self._get_ai_config()
+            if ai_config and ai_config.get("enabled"):
+                try:
+                    extractor = AIExtractor(
+                        provider=ai_config.get("provider", "ollama"),
+                        api_key=ai_config.get("apiKey"),
+                        model=ai_config.get("model", "llama3"),
+                        ollama_url=ai_config.get("ollamaUrl", "http://localhost:11434")
+                    )
+                    ai_metadata = extractor.extract_metadata(
+                        extracted.get("full_text", "")
+                    )
+
+                    # Merge AI-extracted metadata
+                    if "study_metadata" in ai_metadata:
+                        paper_data["study_metadata"] = ai_metadata["study_metadata"]
+                    if "learning_science_metadata" in ai_metadata:
+                        paper_data["learning_science_metadata"] = (
+                            ai_metadata["learning_science_metadata"]
+                        )
+                except Exception as e:
+                    # Log but don't fail the import if AI extraction fails
+                    import logging
+                    logger = logging.getLogger(__name__)
+                    logger.warning(f"AI extraction failed: {str(e)}, continuing without AI metadata")
+
             with DatabaseManager() as db:
                 paper = db.add_paper(paper_data)
                 self.set_status(201)
@@ -163,6 +195,128 @@ class ImportHandler(APIHandler):
         except Exception as e:
             self.set_status(500)
             self.finish(json.dumps({"status": "error", "message": str(e)}))
+
+
+    def _get_ai_config(self) -> Optional[Dict]:
+        """Get AI extraction configuration from settings."""
+        # Try to get settings from JupyterLab settings registry
+        # This is a simplified version - in production, you'd read from settings registry
+        # For now, return None (disabled by default)
+        # TODO: Implement proper settings reading from JupyterLab settings registry
+        return None
+
+
+class ExportHandler(APIHandler):
+    """Handler for exporting library."""
+
+    @tornado.web.authenticated
+    def get(self):
+        """Export library in specified format."""
+        try:
+            format_type = self.get_argument("format", "json")  # json, csv, bibtex
+
+            with DatabaseManager() as db:
+                papers = db.get_all_papers()
+
+            if format_type == "json":
+                self.set_header("Content-Type", "application/json")
+                self.set_header(
+                    "Content-Disposition", "attachment; filename=library.json"
+                )
+                self.finish(json.dumps(papers, indent=2))
+
+            elif format_type == "csv":
+                output = io.StringIO()
+                writer = csv.DictWriter(
+                    output,
+                    fieldnames=[
+                        "id",
+                        "title",
+                        "authors",
+                        "year",
+                        "doi",
+                        "citation_count",
+                        "abstract"
+                    ]
+                )
+                writer.writeheader()
+                for paper in papers:
+                    row = {
+                        "id": paper.get("id", ""),
+                        "title": paper.get("title", ""),
+                        "authors": ", ".join(paper.get("authors", [])),
+                        "year": paper.get("year", ""),
+                        "doi": paper.get("doi", ""),
+                        "citation_count": paper.get("citation_count", ""),
+                        "abstract": (paper.get("abstract", "") or "")[:500]  # Truncate
+                    }
+                    writer.writerow(row)
+
+                self.set_header("Content-Type", "text/csv")
+                self.set_header(
+                    "Content-Disposition", "attachment; filename=library.csv"
+                )
+                self.finish(output.getvalue())
+
+            elif format_type == "bibtex":
+                bibtex = self._generate_bibtex(papers)
+                self.set_header("Content-Type", "text/plain")
+                self.set_header(
+                    "Content-Disposition", "attachment; filename=library.bib"
+                )
+                self.finish(bibtex)
+
+            else:
+                self.set_status(400)
+                self.finish(json.dumps({
+                    "status": "error",
+                    "message": f"Unknown format: {format_type}"
+                }))
+
+        except Exception as e:
+            self.set_status(500)
+            self.finish(json.dumps({"status": "error", "message": str(e)}))
+
+    def _generate_bibtex(self, papers: list) -> str:
+        """Generate BibTeX entries from papers."""
+        entries = []
+        for paper in papers:
+            # Generate citation key from first author and year
+            authors = paper.get("authors", [])
+            year = paper.get("year", "unknown")
+            first_author = (
+                authors[0].split()[-1].lower() if authors else "unknown"
+            )
+            citation_key = f"{first_author}{year}"
+
+            # Determine entry type (default to @article)
+            entry_type = "@article"
+
+            entry = f"{entry_type}{{{citation_key},\n"
+            entry += f"  title = {{{paper.get('title', '')}}},\n"
+
+            if authors:
+                entry += f"  author = {{{' and '.join(authors)}}},\n"
+
+            if year:
+                entry += f"  year = {{{year}}},\n"
+
+            if paper.get("doi"):
+                entry += f"  doi = {{{paper.get('doi')}}},\n"
+
+            if paper.get("abstract"):
+                # Escape special characters for BibTeX
+                abstract = (
+                    paper.get("abstract", "")
+                    .replace("{", "\\{")
+                    .replace("}", "\\}")
+                )
+                entry += f"  abstract = {{{abstract[:200]}...}},\n"
+
+            entry += "}\n"
+            entries.append(entry)
+
+        return "\n".join(entries)
 
 
 def setup_route_handlers(web_app):
@@ -177,6 +331,7 @@ def setup_route_handlers(web_app):
         (url_path_join(base_url, route_prefix, "search"), SearchHandler),
         (url_path_join(base_url, route_prefix, "discovery"), DiscoveryHandler),
         (url_path_join(base_url, route_prefix, "import"), ImportHandler),
+        (url_path_join(base_url, route_prefix, "export"), ExportHandler),
     ]
 
     web_app.add_handlers(host_pattern, handlers)
