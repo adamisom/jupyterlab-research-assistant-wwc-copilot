@@ -62,7 +62,9 @@
   font-size: var(--jp-ui-font-size1);
   background-color: var(--jp-layout-color0);
   color: var(--jp-content-font-color1);
-  transition: border-color 0.2s ease-in-out, outline 0.2s ease-in-out;
+  transition:
+    border-color 0.2s ease-in-out,
+    outline 0.2s ease-in-out;
 }
 
 .jp-WWCExtension-input:focus {
@@ -78,7 +80,9 @@
   background-color: var(--jp-layout-color0);
   color: var(--jp-content-font-color1);
   cursor: pointer;
-  transition: border-color 0.2s ease-in-out, outline 0.2s ease-in-out;
+  transition:
+    border-color 0.2s ease-in-out,
+    outline 0.2s ease-in-out;
 }
 
 .jp-WWCExtension-select:focus {
@@ -515,7 +519,9 @@
   background-color: var(--jp-layout-color0);
   color: var(--jp-content-font-color1);
   cursor: pointer;
-  transition: border-color 0.2s ease-in-out, outline 0.2s ease-in-out;
+  transition:
+    border-color 0.2s ease-in-out,
+    outline 0.2s ease-in-out;
 }
 
 .jp-WWCExtension-wwc-field select:focus {

@@ -9,9 +9,5 @@ export const ErrorDisplay: React.FC<ErrorDisplayProps> = ({ error }) => {
     return null;
   }
 
-  return (
-    <div className="jp-WWCExtension-error">
-      Error: {error}
-    </div>
-  );
+  return <div className="jp-WWCExtension-error">Error: {error}</div>;
 };

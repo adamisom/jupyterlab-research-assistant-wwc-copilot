@@ -31,10 +31,7 @@ export const ConflictView: React.FC<ConflictViewProps> = ({ result }) => {
         <div className="jp-WWCExtension-findings-preview">
           <h4>Extracted Key Findings</h4>
           {Object.entries(result.findings!).map(([paperId, paperFindings]) => (
-            <div
-              key={paperId}
-              className="jp-WWCExtension-finding-item"
-            >
+            <div key={paperId} className="jp-WWCExtension-finding-item">
               <strong>Paper {paperId}:</strong>
               <ul>
                 {paperFindings.map((finding, idx) => (
@@ -53,10 +50,7 @@ export const ConflictView: React.FC<ConflictViewProps> = ({ result }) => {
       ) : (
         <div className="jp-WWCExtension-conflicts-list">
           {result.contradictions.map((conflict, idx) => (
-            <div
-              key={idx}
-              className="jp-WWCExtension-conflict-item"
-            >
+            <div key={idx} className="jp-WWCExtension-conflict-item">
               <div className="jp-WWCExtension-conflict-header">
                 <strong>Contradiction #{idx + 1}</strong>
                 <span>Confidence: {formatPercent(conflict.confidence, 1)}</span>

@@ -24,10 +24,7 @@ export const DetailView: React.FC<DetailViewProps> = ({ paper, onClose }) => {
   return (
     <div className="jp-WWCExtension-detail-view">
       <div className="jp-WWCExtension-detail-header">
-        <button
-          onClick={onClose}
-          className="jp-WWCExtension-close-button"
-        >
+        <button onClick={onClose} className="jp-WWCExtension-close-button">
           ×
         </button>
         <h2>{paper.title}</h2>
@@ -160,10 +157,7 @@ export const DetailView: React.FC<DetailViewProps> = ({ paper, onClose }) => {
           </button>
         )}
         {paper.pdf_path && (
-          <button
-            onClick={openPDF}
-            className="jp-WWCExtension-button"
-          >
+          <button onClick={openPDF} className="jp-WWCExtension-button">
             Open PDF
           </button>
         )}

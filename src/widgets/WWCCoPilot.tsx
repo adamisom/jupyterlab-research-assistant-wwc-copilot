@@ -157,10 +157,7 @@ export const WWCCoPilot: React.FC<WWCCoPilotProps> = ({
       <div className="jp-WWCExtension-wwc-header">
         <h2>WWC Co-Pilot: {paperTitle}</h2>
         {onClose && (
-          <button
-            onClick={onClose}
-            className="jp-WWCExtension-close"
-          >
+          <button onClick={onClose} className="jp-WWCExtension-close">
             ×
           </button>
         )}
@@ -191,9 +188,7 @@ export const WWCCoPilot: React.FC<WWCCoPilotProps> = ({
       </div>
 
       {isAssessmentLoading && (
-        <div className="jp-WWCExtension-loading">
-          Running assessment...
-        </div>
+        <div className="jp-WWCExtension-loading">Running assessment...</div>
       )}
 
       {/* Step Content */}
@@ -251,10 +246,7 @@ export const WWCCoPilot: React.FC<WWCCoPilotProps> = ({
           Previous
         </button>
         {currentStep !== steps[steps.length - 1] ? (
-          <button
-            onClick={handleNext}
-            className="jp-WWCExtension-button"
-          >
+          <button onClick={handleNext} className="jp-WWCExtension-button">
             Next
           </button>
         ) : (

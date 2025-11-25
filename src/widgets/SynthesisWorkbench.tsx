@@ -145,10 +145,7 @@ const SynthesisWorkbenchComponent: React.FC<SynthesisWorkbenchProps> = ({
       <div className="jp-WWCExtension-synthesis-header">
         <h2>Synthesis Workbench ({paperIds.length} studies)</h2>
         {onClose && (
-          <button
-            onClick={onClose}
-            className="jp-WWCExtension-close"
-          >
+          <button onClick={onClose} className="jp-WWCExtension-close">
             ×
           </button>
         )}
@@ -205,9 +202,7 @@ const SynthesisWorkbenchComponent: React.FC<SynthesisWorkbenchProps> = ({
       </div>
 
       {isLoading && (
-        <div className="jp-WWCExtension-loading">
-          Processing...
-        </div>
+        <div className="jp-WWCExtension-loading">Processing...</div>
       )}
 
       <Tabs
@@ -266,9 +261,7 @@ export class SynthesisWorkbench extends ReactWidget {
   constructor(paperIds: number[]) {
     super();
     this.paperIds = paperIds;
-    this.addClass(
-      'jp-WWCExtension-synthesis-widget'
-    );
+    this.addClass('jp-WWCExtension-synthesis-widget');
     this.id = 'synthesis-workbench';
     this.title.label = 'Synthesis Workbench';
     this.title.caption = 'Meta-Analysis & Conflict Detection';

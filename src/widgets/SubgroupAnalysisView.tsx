@@ -24,10 +24,7 @@ export const SubgroupAnalysisView: React.FC<SubgroupAnalysisViewProps> = ({
         <h4>Results by Subgroup</h4>
         {Object.entries(result.subgroups).map(
           ([subgroupName, subgroupResult]) => (
-            <div
-              key={subgroupName}
-              className="jp-WWCExtension-subgroup-item"
-            >
+            <div key={subgroupName} className="jp-WWCExtension-subgroup-item">
               <h5>
                 {subgroupName} (n={subgroupResult.n_studies})
               </h5>

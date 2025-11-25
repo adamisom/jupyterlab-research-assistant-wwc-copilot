@@ -19,9 +19,7 @@ export const PaperCard: React.FC<PaperCardProps> = ({
   return (
     <div
       className={`jp-WWCExtension-paper-card ${
-        selected
-          ? 'jp-WWCExtension-paper-card-selected'
-          : ''
+        selected ? 'jp-WWCExtension-paper-card-selected' : ''
       }`}
     >
       {onToggleSelection && (
@@ -50,9 +48,7 @@ export const PaperCard: React.FC<PaperCardProps> = ({
           </div>
         )}
         {paper.year && (
-          <div className="jp-WWCExtension-paper-year">
-            Year: {paper.year}
-          </div>
+          <div className="jp-WWCExtension-paper-year">Year: {paper.year}</div>
         )}
         {paper.citation_count !== undefined && (
           <div className="jp-WWCExtension-paper-citations">
@@ -68,10 +64,7 @@ export const PaperCard: React.FC<PaperCardProps> = ({
       )}
       <div className="jp-WWCExtension-paper-actions">
         {onViewDetails && (
-          <button
-            onClick={onViewDetails}
-            className="jp-WWCExtension-button"
-          >
+          <button onClick={onViewDetails} className="jp-WWCExtension-button">
             View Details
           </button>
         )}
