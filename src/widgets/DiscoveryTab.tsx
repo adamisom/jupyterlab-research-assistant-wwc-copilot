@@ -9,7 +9,6 @@ import { getPaperKey } from '../utils/paper';
 
 export const DiscoveryTab: React.FC = () => {
   const [query, setQuery] = useState('');
-  const [year, setYear] = useState('');
   const [results, setResults] = useState<IPaper[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -23,11 +22,7 @@ export const DiscoveryTab: React.FC = () => {
     setError(null);
 
     try {
-      const response = await searchSemanticScholar(
-        query,
-        year || undefined,
-        20
-      );
+      const response = await searchSemanticScholar(query, 20);
       setResults(response.data);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Search failed');
@@ -57,15 +52,6 @@ export const DiscoveryTab: React.FC = () => {
         onSearch={handleSearch}
         isLoading={isLoading}
         placeholder="Search Semantic Scholar / OpenAlex..."
-        additionalInputs={
-          <input
-            type="text"
-            value={year}
-            onChange={e => setYear(e.target.value)}
-            placeholder="Year (e.g., 2020-2024)"
-            className="jp-WWCExtension-input"
-          />
-        }
       />
 
       <ErrorDisplay error={error} />

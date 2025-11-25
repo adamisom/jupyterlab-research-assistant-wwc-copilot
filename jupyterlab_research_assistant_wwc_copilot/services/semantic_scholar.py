@@ -64,7 +64,7 @@ class SemanticScholarAPI:
     def search_papers(
         self,
         query: str,
-        year: Optional[str] = None,  # noqa: ARG002
+        year: Optional[str] = None,
         limit: int = 20,
         offset: int = 0,
     ) -> dict:
@@ -73,7 +73,7 @@ class SemanticScholarAPI:
 
         Args:
             query: Search query string
-            year: Year filter (e.g., "2015-2024" or "2020")
+            year: Year filter (e.g., "2015-2024" or "2020") - applied client-side
             limit: Maximum number of results (default 20, max 100)
             offset: Pagination offset
 
@@ -86,7 +86,7 @@ class SemanticScholarAPI:
         self._rate_limit()
 
         # Note: Semantic Scholar API /paper/search endpoint doesn't support year parameter
-        # Year filtering would need to be done client-side after fetching results
+        # Year filtering is done client-side after fetching results
         # Using minimal fields to avoid API errors - can expand later if needed
         params = {
             "query": query,
@@ -106,7 +106,35 @@ class SemanticScholarAPI:
             # Transform to our format
             papers = [self._transform_paper(paper) for paper in data.get("data", [])]
 
-            return {"data": papers, "total": data.get("total", len(papers))}
+            # Client-side year filtering (Semantic Scholar API doesn't support year parameter)
+            if year:
+                filtered_papers = []
+                if "-" in year:
+                    # Year range (e.g., "2020-2024")
+                    try:
+                        start_year, end_year = year.split("-", 1)
+                        start_year_int = int(start_year.strip())
+                        end_year_int = int(end_year.strip())
+                        for paper in papers:
+                            paper_year = paper.get("year")
+                            if paper_year and start_year_int <= paper_year <= end_year_int:
+                                filtered_papers.append(paper)
+                    except (ValueError, AttributeError):
+                        # Invalid year range format, return all papers
+                        filtered_papers = papers
+                else:
+                    # Single year (e.g., "2020")
+                    try:
+                        year_int = int(year.strip())
+                        for paper in papers:
+                            if paper.get("year") == year_int:
+                                filtered_papers.append(paper)
+                    except (ValueError, AttributeError):
+                        # Invalid year format, return all papers
+                        filtered_papers = papers
+                papers = filtered_papers
+
+            return {"data": papers, "total": len(papers)}
         except requests.exceptions.HTTPError as e:
             # Include response body for better error messages
             error_msg = str(e)

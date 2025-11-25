@@ -64,15 +64,11 @@ export async function searchLibrary(query: string): Promise<IPaper[]> {
 
 export async function searchSemanticScholar(
   query: string,
-  year?: string,
   limit: number = 20,
   offset: number = 0
 ): Promise<IDiscoveryResponse> {
   return retryWithBackoff(async () => {
     const params = new URLSearchParams({ q: query });
-    if (year) {
-      params.append('year', year);
-    }
     params.append('limit', limit.toString());
     params.append('offset', offset.toString());
 
