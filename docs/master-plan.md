@@ -482,7 +482,7 @@ export default plugin;
 
 ## Stage 2: Feature 2 - The WWC Co-Pilot & Synthesis Engine
 
-**Status**: 📋 **Implementation Guide Available** - See [`stage-2-implementation-guide.md`](./stage-2-implementation-guide.md) for step-by-step implementation instructions.
+**Status**: ✅ **Core Features Complete** - Stage 2 core features (WWC assessment, meta-analysis, conflict detection) are implemented. See [`stage-2-enhancements-implementation-guide.md`](./stage-2-enhancements-implementation-guide.md) for optional enhancements.
 
 **Objective**: To build an advanced feature that allows researchers to select multiple studies from their library, perform a rigorous, semi-automated WWC quality assessment, and generate a preliminary synthesis, including a meta-analysis and conflict detection.
 

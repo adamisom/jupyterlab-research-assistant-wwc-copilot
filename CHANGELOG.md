@@ -4,7 +4,8 @@
 
 ### Added
 
-- Stage 2 implementation guide (`docs/stage-2-implementation-guide.md`) with complete step-by-step instructions for implementing WWC Co-Pilot & Synthesis Engine features
+- Stage 2 core features (WWC assessment, meta-analysis, conflict detection) are complete
+- Stage 2 enhancements guide (`docs/stage-2-enhancements-implementation-guide.md`) for optional enhancements
 
 ### Changed
 

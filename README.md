@@ -199,10 +199,10 @@ Comprehensive documentation is available in the [`docs/`](./docs/) directory:
 
 ### Implementation Guides
 
-- **[Stage 2 Implementation Guide](./docs/stage-2-implementation-guide.md)** ⭐ **START HERE FOR STAGE 2**
-  - Step-by-step guide for implementing WWC Co-Pilot & Synthesis Engine features
-  - Complete project structure, backend/frontend implementation, testing checkpoints
-  - **Note**: Stage 1 (Research Library) is complete. See master-plan.md for Stage 1 details.
+- **[Stage 2 Enhancements Guide](./docs/stage-2-enhancements-implementation-guide.md)** ⭐ **FOR OPTIONAL ENHANCEMENTS**
+  - Step-by-step guide for implementing optional Stage 2 enhancements
+  - Enhanced WWC UI, subgroup analysis, publication bias assessment, advanced conflict detection, sensitivity analysis
+  - **Note**: Stage 2 core features (WWC assessment, meta-analysis, conflict detection) are complete. See master-plan.md for full project details.
 
 ### Reference Documentation
 
@@ -233,7 +233,7 @@ Comprehensive documentation is available in the [`docs/`](./docs/) directory:
    - Frontend: `jlpm watch` (auto-rebuilds) + refresh browser
    - Backend: Make changes + restart JupyterLab
 
-3. **Testing**: Follow checkpoints in `stage-2-implementation-guide.md` after each feature
+3. **Testing**: Follow checkpoints in `stage-2-enhancements-implementation-guide.md` after each enhancement
 
 ## Changelog
 
