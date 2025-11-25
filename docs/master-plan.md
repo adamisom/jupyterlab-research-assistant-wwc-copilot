@@ -157,6 +157,8 @@ Questions for Community:
 
 ## Stage 1: Feature 1 - The Academic Research Library & Discovery Engine
 
+**Status**: ✅ **Complete** - All core features implemented and functional.
+
 **Objective**: To build a robust, end-to-end JupyterLab extension that allows researchers to **discover, import, manage, and search** a local library of academic papers. This stage focuses on creating a seamless workflow from discovery via academic APIs to a searchable, enriched metadata database, with specific affordances for learning science research built-in from the start.
 
 ### Phase 1.1: Backend - Discovery, Processing, and Metadata Service
@@ -479,6 +481,8 @@ export default plugin;
 ---
 
 ## Stage 2: Feature 2 - The WWC Co-Pilot & Synthesis Engine
+
+**Status**: 📋 **Implementation Guide Available** - See [`stage-2-implementation-guide.md`](./stage-2-implementation-guide.md) for step-by-step implementation instructions.
 
 **Objective**: To build an advanced feature that allows researchers to select multiple studies from their library, perform a rigorous, semi-automated WWC quality assessment, and generate a preliminary synthesis, including a meta-analysis and conflict detection.
 

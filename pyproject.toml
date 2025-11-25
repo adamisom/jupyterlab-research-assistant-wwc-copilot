@@ -23,7 +23,10 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
 ]
 dependencies = [
-    "jupyter_server>=2.4.0,<3"
+    "jupyter_server>=2.4.0,<3",
+    "sqlalchemy>=2.0.0",
+    "PyMuPDF>=1.23.0",
+    "requests>=2.31.0"
 ]
 dynamic = ["version", "description", "authors", "urls", "keywords"]
 
@@ -89,3 +92,9 @@ before-build-python = ["jlpm clean:all"]
 
 [tool.check-wheel-contents]
 ignore = ["W002"]
+
+[tool.pytest.ini_options]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+    "ignore:builtin type.*has no __module__ attribute:DeprecationWarning"
+]

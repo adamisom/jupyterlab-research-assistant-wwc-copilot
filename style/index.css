@@ -1,1 +1,361 @@
 @import url('base.css');
+
+/* Research Library Panel Styles */
+.jp-jupyterlab-research-assistant-wwc-copilot-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 8px;
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--jp-border-color1);
+  margin-bottom: 8px;
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-tab {
+  background: none;
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  color: var(--jp-content-font-color2);
+  font-size: var(--jp-ui-font-size1);
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-tab:hover {
+  color: var(--jp-content-font-color1);
+  background-color: var(--jp-layout-color2);
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-tab.active {
+  color: var(--jp-content-font-color1);
+  border-bottom-color: var(--jp-brand-color1);
+  font-weight: 600;
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-content {
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* Search Bar Styles */
+.jp-jupyterlab-research-assistant-wwc-copilot-search-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-input {
+  flex: 1;
+  min-width: 150px;
+  padding: 6px 8px;
+  border: 1px solid var(--jp-border-color1);
+  border-radius: 2px;
+  font-size: var(--jp-ui-font-size1);
+  background-color: var(--jp-layout-color0);
+  color: var(--jp-content-font-color1);
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-input:focus {
+  outline: 1px solid var(--jp-brand-color1);
+  outline-offset: -1px;
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-select {
+  padding: 6px 8px;
+  border: 1px solid var(--jp-border-color1);
+  border-radius: 2px;
+  font-size: var(--jp-ui-font-size1);
+  background-color: var(--jp-layout-color0);
+  color: var(--jp-content-font-color1);
+  cursor: pointer;
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-select:focus {
+  outline: 1px solid var(--jp-brand-color1);
+  outline-offset: -1px;
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-button {
+  padding: 6px 16px;
+  border: 1px solid var(--jp-border-color1);
+  border-radius: 2px;
+  background-color: var(--jp-brand-color1);
+  color: var(--jp-ui-inverse-font-color1);
+  font-size: var(--jp-ui-font-size1);
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-button:hover:not(:disabled) {
+  background-color: var(--jp-brand-color0);
+}
+
+/* Paper Card Styles */
+.jp-jupyterlab-research-assistant-wwc-copilot-papers {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-paper-card {
+  padding: 12px;
+  border: 1px solid var(--jp-border-color1);
+  border-radius: 4px;
+  background-color: var(--jp-layout-color1);
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-paper-title {
+  margin: 0 0 8px;
+  font-size: var(--jp-ui-font-size1);
+  font-weight: 600;
+  color: var(--jp-content-font-color1);
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-paper-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 8px;
+  font-size: var(--jp-ui-font-size0);
+  color: var(--jp-content-font-color2);
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-paper-authors,
+.jp-jupyterlab-research-assistant-wwc-copilot-paper-year,
+.jp-jupyterlab-research-assistant-wwc-copilot-paper-citations {
+  margin: 0;
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-paper-abstract {
+  margin: 8px 0;
+  font-size: var(--jp-ui-font-size0);
+  color: var(--jp-content-font-color2);
+  line-height: 1.4;
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-import-button {
+  margin-top: 8px;
+  width: 100%;
+}
+
+/* Error and Loading Styles */
+.jp-jupyterlab-research-assistant-wwc-copilot-error {
+  padding: 8px;
+  margin-bottom: 16px;
+  background-color: var(--jp-error-color3);
+  color: var(--jp-ui-inverse-font-color1);
+  border-radius: 2px;
+  font-size: var(--jp-ui-font-size1);
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-loading {
+  padding: 16px;
+  text-align: center;
+  color: var(--jp-content-font-color2);
+  font-size: var(--jp-ui-font-size1);
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-empty {
+  padding: 32px;
+  text-align: center;
+  color: var(--jp-content-font-color2);
+  font-size: var(--jp-ui-font-size1);
+}
+
+/* Discovery and Library Tab Specific Styles */
+.jp-jupyterlab-research-assistant-wwc-copilot-discovery,
+.jp-jupyterlab-research-assistant-wwc-copilot-library {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-results {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Skeleton Loaders */
+.jp-jupyterlab-research-assistant-wwc-copilot-skeleton {
+  padding: 12px;
+  border: 1px solid var(--jp-border-color1);
+  border-radius: 4px;
+  background-color: var(--jp-layout-color1);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-skeleton-title {
+  height: 20px;
+  width: 80%;
+  background-color: var(--jp-border-color2);
+  border-radius: 2px;
+  margin-bottom: 8px;
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-skeleton-line {
+  height: 14px;
+  width: 100%;
+  background-color: var(--jp-border-color2);
+  border-radius: 2px;
+  margin-bottom: 4px;
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-skeleton-line.short {
+  width: 60%;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.6;
+  }
+}
+
+/* PDF Upload Section */
+.jp-jupyterlab-research-assistant-wwc-copilot-upload-section {
+  margin-bottom: 16px;
+  padding: 8px;
+  border: 1px dashed var(--jp-border-color1);
+  border-radius: 4px;
+  text-align: center;
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-upload-section label {
+  margin: 0;
+}
+
+/* Detail View Styles */
+
+.jp-jupyterlab-research-assistant-wwc-copilot-detail-view {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 8px;
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-detail-header {
+  margin-bottom: 16px;
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-close-button {
+  float: right;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: var(--jp-content-font-color2);
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  line-height: 32px;
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-close-button:hover {
+  color: var(--jp-content-font-color1);
+  background-color: var(--jp-layout-color2);
+  border-radius: 4px;
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-detail-header h2 {
+  margin: 0 0 8px;
+  font-size: var(--jp-ui-font-size2);
+  font-weight: 600;
+  color: var(--jp-content-font-color1);
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-detail-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: var(--jp-ui-font-size0);
+  color: var(--jp-content-font-color2);
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-detail-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--jp-border-color1);
+  margin-bottom: 16px;
+  gap: 8px;
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-detail-tabs button {
+  background: none;
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  color: var(--jp-content-font-color2);
+  font-size: var(--jp-ui-font-size1);
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-detail-tabs button:hover {
+  color: var(--jp-content-font-color1);
+  background-color: var(--jp-layout-color2);
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-detail-tabs button.active {
+  color: var(--jp-content-font-color1);
+  border-bottom-color: var(--jp-brand-color1);
+  font-weight: 600;
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-detail-content {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-detail-section {
+  margin-bottom: 24px;
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-detail-section h3 {
+  margin: 0 0 8px;
+  font-size: var(--jp-ui-font-size1);
+  font-weight: 600;
+  color: var(--jp-content-font-color1);
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-detail-section p {
+  margin: 0 0 8px;
+  color: var(--jp-content-font-color2);
+  line-height: 1.5;
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-detail-section table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-detail-section th,
+.jp-jupyterlab-research-assistant-wwc-copilot-detail-section td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid var(--jp-border-color1);
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-detail-section th {
+  font-weight: 600;
+  color: var(--jp-content-font-color1);
+  background-color: var(--jp-layout-color2);
+}
+
+.jp-jupyterlab-research-assistant-wwc-copilot-detail-actions {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--jp-border-color1);
+}

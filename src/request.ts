@@ -21,9 +21,29 @@ export async function requestAPI<T>(
     endPoint
   );
 
+  // Handle FormData - don't set Content-Type, browser will set it with boundary
+  const headers: HeadersInit = {};
+  if (init.body instanceof FormData) {
+    // Don't set Content-Type for FormData
+  } else if (init.body) {
+    headers['Content-Type'] = 'application/json';
+  }
+
+  const requestInit: RequestInit = {
+    ...init,
+    headers: {
+      ...headers,
+      ...(init.headers || {})
+    }
+  };
+
   let response: Response;
   try {
-    response = await ServerConnection.makeRequest(requestUrl, init, settings);
+    response = await ServerConnection.makeRequest(
+      requestUrl,
+      requestInit,
+      settings
+    );
   } catch (error) {
     throw new ServerConnection.NetworkError(error as any);
   }

@@ -52,16 +52,21 @@
         "stylelint": "jlpm stylelint:check --fix",
         "stylelint:check": "stylelint --cache \"style/**/*.css\"",
         "test": "jest --coverage",
-        "ci": "jlpm build && jlpm lint:check && jlpm test",
+        "test:python": "python -m pytest jupyterlab_research_assistant_wwc_copilot/tests/ -v",
+        "ci": "jlpm build && jlpm lint:check && jlpm test && jlpm test:python",
         "watch": "run-p watch:src watch:labextension",
         "watch:src": "tsc -w --sourceMap",
         "watch:labextension": "jupyter labextension watch ."
     },
     "dependencies": {
         "@jupyterlab/application": "^4.0.0",
+        "@jupyterlab/apputils": "^4.0.0",
         "@jupyterlab/coreutils": "^6.0.0",
+        "@jupyterlab/filebrowser": "^4.0.0",
         "@jupyterlab/services": "^7.0.0",
-        "@jupyterlab/settingregistry": "^4.0.0"
+        "@jupyterlab/settingregistry": "^4.0.0",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0"
     },
     "devDependencies": {
         "@jupyterlab/builder": "^4.0.0",

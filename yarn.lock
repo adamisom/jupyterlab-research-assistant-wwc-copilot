@@ -2154,7 +2154,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jupyterlab/apputils@npm:^4.6.0":
+"@jupyterlab/apputils@npm:^4.0.0, @jupyterlab/apputils@npm:^4.6.0":
   version: 4.6.0
   resolution: "@jupyterlab/apputils@npm:4.6.0"
   dependencies:
@@ -2425,7 +2425,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jupyterlab/filebrowser@npm:^4.5.0":
+"@jupyterlab/filebrowser@npm:^4.0.0, @jupyterlab/filebrowser@npm:^4.5.0":
   version: 4.5.0
   resolution: "@jupyterlab/filebrowser@npm:4.5.0"
   dependencies:
@@ -7836,8 +7836,10 @@ __metadata:
   resolution: "jupyterlab-research-assistant-wwc-copilot@workspace:."
   dependencies:
     "@jupyterlab/application": ^4.0.0
+    "@jupyterlab/apputils": ^4.0.0
     "@jupyterlab/builder": ^4.0.0
     "@jupyterlab/coreutils": ^6.0.0
+    "@jupyterlab/filebrowser": ^4.0.0
     "@jupyterlab/services": ^7.0.0
     "@jupyterlab/settingregistry": ^4.0.0
     "@jupyterlab/testutils": ^4.0.0
@@ -7855,6 +7857,8 @@ __metadata:
     mkdirp: ^1.0.3
     npm-run-all2: ^7.0.1
     prettier: ^3.0.0
+    react: ^18.2.0
+    react-dom: ^18.2.0
     rimraf: ^5.0.1
     source-map-loader: ^1.0.2
     style-loader: ^3.3.1
