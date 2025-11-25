@@ -158,3 +158,145 @@ export async function exportLibrary(
   document.body.removeChild(a);
   window.URL.revokeObjectURL(downloadUrl);
 }
+
+// WWC Assessment Types and Functions
+export interface IWWCAssessment {
+  paper_id?: number;
+  paper_title?: string;
+  chosen_attrition_boundary: string;
+  adjustment_strategy_is_valid?: boolean;
+  randomization_documented?: boolean;
+  is_rct: boolean;
+  overall_attrition?: number;
+  differential_attrition?: number;
+  is_high_attrition?: boolean;
+  baseline_effect_size?: number;
+  baseline_equivalence_satisfied?: boolean;
+  final_rating: string;
+  rating_justification: string[];
+}
+
+export interface IWWCAssessmentRequest {
+  paper_id: number;
+  judgments: {
+    chosen_attrition_boundary?: 'cautious' | 'optimistic';
+    adjustment_strategy_is_valid?: boolean;
+    randomization_documented?: boolean;
+  };
+}
+
+export async function runWWCAssessment(
+  request: IWWCAssessmentRequest
+): Promise<IWWCAssessment> {
+  const response = await requestAPI<IAPIResponse<IWWCAssessment>>(
+    'wwc-assessment',
+    {
+      method: 'POST',
+      body: JSON.stringify(request)
+    }
+  );
+
+  if (response.status === 'error') {
+    throw new Error(response.message || 'WWC assessment failed');
+  }
+
+  if (!response.data) {
+    throw new Error('No assessment data returned');
+  }
+
+  return response.data;
+}
+
+// Meta-Analysis Types and Functions
+export interface IMetaAnalysisStudy {
+  paper_id?: number;
+  study_label: string;
+  effect_size: number;
+  std_error: number;
+  weight: number;
+  ci_lower: number;
+  ci_upper: number;
+}
+
+export interface IMetaAnalysisResult {
+  pooled_effect: number;
+  ci_lower: number;
+  ci_upper: number;
+  p_value: number;
+  tau_squared: number;
+  i_squared: number;
+  q_statistic: number;
+  q_p_value: number;
+  n_studies: number;
+  studies: IMetaAnalysisStudy[];
+  forest_plot?: string; // Base64-encoded image
+  heterogeneity_interpretation?: string;
+}
+
+export async function performMetaAnalysis(
+  paperIds: number[],
+  outcomeName?: string
+): Promise<IMetaAnalysisResult> {
+  const response = await requestAPI<IAPIResponse<IMetaAnalysisResult>>(
+    'meta-analysis',
+    {
+      method: 'POST',
+      body: JSON.stringify({
+        paper_ids: paperIds,
+        outcome_name: outcomeName
+      })
+    }
+  );
+
+  if (response.status === 'error') {
+    throw new Error(response.message || 'Meta-analysis failed');
+  }
+
+  if (!response.data) {
+    throw new Error('No meta-analysis data returned');
+  }
+
+  return response.data;
+}
+
+// Conflict Detection Types and Functions
+export interface IConflictDetectionResult {
+  contradictions: Array<{
+    finding1: string;
+    finding2: string;
+    confidence: number;
+    label: string;
+    paper1_id?: number;
+    paper1_title?: string;
+    paper2_id?: number;
+    paper2_title?: string;
+  }>;
+  n_papers: number;
+  n_contradictions: number;
+}
+
+export async function detectConflicts(
+  paperIds: number[],
+  confidenceThreshold: number = 0.8
+): Promise<IConflictDetectionResult> {
+  const response = await requestAPI<IAPIResponse<IConflictDetectionResult>>(
+    'conflict-detection',
+    {
+      method: 'POST',
+      body: JSON.stringify({
+        paper_ids: paperIds,
+        confidence_threshold: confidenceThreshold
+      })
+    }
+  );
+
+  if (response.status === 'error') {
+    throw new Error(response.message || 'Conflict detection failed');
+  }
+
+  if (!response.data) {
+    throw new Error('No conflict detection data returned');
+  }
+
+  return response.data;
+}
