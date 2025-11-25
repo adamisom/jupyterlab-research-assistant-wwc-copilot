@@ -75,13 +75,21 @@ Use your available tools (web search, documentation search) to access and retrie
 
 ### Logging and Debugging
 
-**❌ Don't**: Use `console.log()`
+**❌ Don't**: Use `console.log()` or `alert()`
 **✅ Do**: Use structured logging or user-facing notifications
 
 ```typescript
 // In TypeScript files like src/index.ts
-import { INotification } from '@jupyterlab/apputils';
-app.commands.notifyCommandChanged();
+import { showErrorMessage, showSuccessMessage } from '@jupyterlab/apputils';
+
+// Show error notification
+showErrorMessage('Error Title', 'Error message to display to user');
+
+// Show success notification
+showSuccessMessage('Success Title', 'Success message to display to user');
+
+// For detailed errors, still log to console
+console.error('Detailed error for debugging:', error);
 ```
 
 **✅ Do**: Use `console.error()` to log low-level error details that should not be presented to users in the UI

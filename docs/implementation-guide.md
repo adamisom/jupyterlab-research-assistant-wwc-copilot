@@ -1357,12 +1357,35 @@ jlpm build
 
 ## Next Steps
 
-After completing Stage 1:
-1. Add AI metadata extraction (Phase 1.8)
-2. Add PDF upload UI (Phase 1.9)
-3. Polish UI/UX
-4. Add error handling and loading states
-5. Write comprehensive tests
+After completing Stage 1 Core Features:
 
-Then proceed to Stage 2: WWC Co-Pilot implementation.
+### Remaining Stage 1 Enhancements
+
+All remaining tasks have been fully documented with complete implementation guides. See:
+
+**📘 Complete Implementation Guide**: `docs/remaining-work-implementation-guide.md`
+
+This guide includes step-by-step instructions for:
+1. **PDF Upload UI** - File input component with progress (2-3 hours)
+2. **Enhanced Error Handling** - Proper notifications and retry logic (2-3 hours)
+3. **AI Metadata Extraction** - Complete integration with settings (4-6 hours)
+4. **Paper Detail View** - Full component specification (3-4 hours)
+5. **Export Functionality** - CSV, JSON, BibTeX export (2-3 hours)
+6. **Enhanced Loading States** - Skeleton loaders (1-2 hours)
+7. **Integration Testing** - Complete test plan and examples (3-4 hours)
+
+**Recommended Implementation Order**:
+1. PDF Upload UI (easiest, high value)
+2. Enhanced Error Handling (improves UX)
+3. Enhanced Loading States (quick win)
+4. Paper Detail View (user-requested)
+5. Export Functionality (useful utility)
+6. AI Metadata Extraction (complex but valuable)
+7. Integration Testing (quality assurance)
+
+**Total Estimated Time**: 20-30 hours
+
+### Stage 2: WWC Co-Pilot & Synthesis Engine
+
+After completing Stage 1 enhancements, proceed to Stage 2 implementation (see `docs/master-plan.md` for details).
 
