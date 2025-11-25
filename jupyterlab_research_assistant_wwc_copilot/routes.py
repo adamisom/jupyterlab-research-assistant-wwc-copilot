@@ -14,6 +14,9 @@ from .services.db_manager import DatabaseManager
 from .services.ai_extractor import AIExtractor
 from .services.export_formatter import ExportFormatter
 from .services.import_service import ImportService
+from .services.wwc_assessor import WWCQualityAssessor
+from .services.meta_analyzer import MetaAnalyzer
+from .services.visualizer import Visualizer
 
 logger = logging.getLogger(__name__)
 
@@ -231,6 +234,160 @@ class ExportHandler(BaseAPIHandler):
             self.send_error(400, f"Unknown format: {format_type}")
 
 
+class WWCAssessmentHandler(BaseAPIHandler):
+    """Handler for WWC quality assessment."""
+
+    @tornado.web.authenticated
+    def post(self):
+        """Run WWC assessment for a paper."""
+        try:
+            data = self.get_json_body()
+            if not data:
+                self.send_error(400, "No data provided")
+                return
+
+            paper_id = data.get("paper_id")
+            if not paper_id:
+                self.send_error(400, "paper_id required")
+                return
+
+            # Fetch paper from database
+            with DatabaseManager() as db:
+                paper = db.get_paper_by_id(paper_id)
+                if not paper:
+                    self.send_error(404, "Paper not found")
+                    return
+
+                # Prepare extracted data from paper
+                study_metadata = paper.get("study_metadata", {})
+                extracted_data = {
+                    "paper_id": paper["id"],
+                    "paper_title": paper["title"],
+                    "methodology": study_metadata.get("methodology"),
+                    "baseline_n": study_metadata.get("sample_size_baseline"),
+                    "endline_n": study_metadata.get("sample_size_endline"),
+                    "randomization_documented": None,  # Will be set from user judgment or extraction
+                }
+
+                # Extract attrition data if available
+                # Note: This assumes attrition rates are stored in study_metadata
+                # You may need to extract from full_text using AI if not available
+                treatment_attrition = study_metadata.get("treatment_attrition")
+                control_attrition = study_metadata.get("control_attrition")
+                if treatment_attrition is not None:
+                    extracted_data["treatment_attrition"] = treatment_attrition
+                if control_attrition is not None:
+                    extracted_data["control_attrition"] = control_attrition
+
+                # Extract baseline equivalence data if available
+                baseline_means = study_metadata.get("baseline_means")
+                baseline_sds = study_metadata.get("baseline_sds")
+                if baseline_means:
+                    extracted_data["baseline_means"] = baseline_means
+                if baseline_sds:
+                    extracted_data["baseline_sds"] = baseline_sds
+
+                # User judgments
+                user_judgments = data.get("judgments", {})
+
+                # Run assessment
+                assessor = WWCQualityAssessor()
+                assessment = assessor.assess(extracted_data, user_judgments)
+
+                # Convert to dict for JSON response
+                result = assessor.assessment_to_dict(assessment)
+
+                self.send_success(result)
+        except Exception as e:
+            logger.exception("WWC assessment failed")
+            self.send_error(500, str(e))
+
+
+class MetaAnalysisHandler(BaseAPIHandler):
+    """Handler for meta-analysis."""
+
+    @tornado.web.authenticated
+    def post(self):
+        """Perform meta-analysis on selected papers."""
+        try:
+            data = self.get_json_body()
+            if not data:
+                self.send_error(400, "No data provided")
+                return
+
+            paper_ids = data.get("paper_ids", [])
+            outcome_name = data.get("outcome_name")  # Optional: specific outcome to analyze
+
+            if len(paper_ids) < 2:
+                self.send_error(400, "At least 2 papers required for meta-analysis")
+                return
+
+            # Fetch papers from database
+            with DatabaseManager() as db:
+                studies = []
+                for paper_id in paper_ids:
+                    paper = db.get_paper_by_id(paper_id)
+                    if not paper:
+                        continue
+
+                    # Extract effect sizes
+                    study_metadata = paper.get("study_metadata", {})
+                    effect_sizes = study_metadata.get("effect_sizes", {})
+
+                    if outcome_name:
+                        # Use specific outcome
+                        outcome_data = effect_sizes.get(outcome_name)
+                        if outcome_data:
+                            studies.append(
+                                {
+                                    "paper_id": paper["id"],
+                                    "study_label": paper["title"],
+                                    "effect_size": outcome_data.get("d", 0.0),
+                                    "std_error": outcome_data.get("se", 0.1),
+                                }
+                            )
+                    else:
+                        # Use first available outcome
+                        if effect_sizes:
+                            first_outcome = list(effect_sizes.values())[0]
+                            studies.append(
+                                {
+                                    "paper_id": paper["id"],
+                                    "study_label": paper["title"],
+                                    "effect_size": first_outcome.get("d", 0.0),
+                                    "std_error": first_outcome.get("se", 0.1),
+                                }
+                            )
+
+                if len(studies) < 2:
+                    self.send_error(400, "Insufficient studies with effect size data")
+                    return
+
+                # Perform meta-analysis
+                analyzer = MetaAnalyzer()
+                result = analyzer.perform_random_effects_meta_analysis(studies)
+
+                # Generate forest plot
+                visualizer = Visualizer()
+                forest_plot_base64 = visualizer.create_forest_plot(
+                    result["studies"],
+                    result["pooled_effect"],
+                    result["ci_lower"],
+                    result["ci_upper"],
+                    title=f"Meta-Analysis: {len(studies)} Studies",
+                )
+
+                result["forest_plot"] = forest_plot_base64
+                result["heterogeneity_interpretation"] = analyzer.interpret_heterogeneity(
+                    result["i_squared"]
+                )
+
+                self.send_success(result)
+        except Exception as e:
+            logger.exception("Meta-analysis failed")
+            self.send_error(500, str(e))
+
+
 def setup_route_handlers(web_app):
     """Register all API route handlers."""
     host_pattern = ".*$"
@@ -244,6 +401,8 @@ def setup_route_handlers(web_app):
         (url_path_join(base_url, route_prefix, "discovery"), DiscoveryHandler),
         (url_path_join(base_url, route_prefix, "import"), ImportHandler),
         (url_path_join(base_url, route_prefix, "export"), ExportHandler),
+        (url_path_join(base_url, route_prefix, "wwc-assessment"), WWCAssessmentHandler),
+        (url_path_join(base_url, route_prefix, "meta-analysis"), MetaAnalysisHandler),
     ]
 
     web_app.add_handlers(host_pattern, handlers)
