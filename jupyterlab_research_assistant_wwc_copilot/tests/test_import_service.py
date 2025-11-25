@@ -1,5 +1,6 @@
 """Tests for import service."""
 
+from typing import Optional
 import pytest
 from unittest.mock import Mock, patch, MagicMock
 from pathlib import Path

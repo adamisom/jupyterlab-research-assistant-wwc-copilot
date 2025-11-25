@@ -1,5 +1,6 @@
 """Tests for API route handlers."""
 
+from typing import Optional
 import json
 
 

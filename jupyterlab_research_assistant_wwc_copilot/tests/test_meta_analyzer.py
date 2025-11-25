@@ -1,5 +1,6 @@
 """Tests for Meta-Analysis Engine."""
 
+from typing import Optional
 import pytest
 import numpy as np
 from jupyterlab_research_assistant_wwc_copilot.services.meta_analyzer import MetaAnalyzer

@@ -1,5 +1,6 @@
 """Tests for database manager."""
 
+from typing import Optional
 import pytest
 import os
 from jupyterlab_research_assistant_wwc_copilot.services.db_manager import (

@@ -1,5 +1,6 @@
 """Integration tests for full workflow."""
 
+from typing import Optional
 import pytest
 import os
 from unittest.mock import Mock, patch

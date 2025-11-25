@@ -1,5 +1,6 @@
 """Tests for WWC and Meta-Analysis API route handlers."""
 
+from typing import Optional
 import json
 import pytest
 

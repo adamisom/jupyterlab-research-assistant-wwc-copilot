@@ -1,5 +1,6 @@
 """Tests for Stage 2 enhancement API route handlers."""
 
+from typing import Optional
 import json
 import pytest
 

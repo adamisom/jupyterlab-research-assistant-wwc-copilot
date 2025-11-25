@@ -1,5 +1,6 @@
 """Tests for Semantic Scholar API paper transformation."""
 
+from typing import Optional
 import pytest
 from jupyterlab_research_assistant_wwc_copilot.services.semantic_scholar import (
     SemanticScholarAPI

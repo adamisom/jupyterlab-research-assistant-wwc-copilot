@@ -1,5 +1,6 @@
 """Tests for Forest Plot Visualizer."""
 
+from typing import Optional
 import pytest
 import base64
 from jupyterlab_research_assistant_wwc_copilot.services.visualizer import Visualizer

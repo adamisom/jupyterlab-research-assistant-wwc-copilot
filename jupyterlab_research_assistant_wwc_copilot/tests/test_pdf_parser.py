@@ -1,5 +1,6 @@
 """Tests for PDF parser."""
 
+from typing import Optional
 import pytest
 from jupyterlab_research_assistant_wwc_copilot.services.pdf_parser import PDFParser
 
