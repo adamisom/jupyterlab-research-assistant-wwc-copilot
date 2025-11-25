@@ -1,5 +1,8 @@
 import React from 'react';
-import { IConflictDetectionResult, IConflictDetectionWithFindingsResult } from '../api';
+import {
+  IConflictDetectionResult,
+  IConflictDetectionWithFindingsResult
+} from '../api';
 import { formatPercent } from '../utils/format';
 
 interface ConflictViewProps {
@@ -7,7 +10,10 @@ interface ConflictViewProps {
 }
 
 export const ConflictView: React.FC<ConflictViewProps> = ({ result }) => {
-  const hasFindings = 'findings' in result && result.findings && Object.keys(result.findings).length > 0;
+  const hasFindings =
+    'findings' in result &&
+    result.findings &&
+    Object.keys(result.findings).length > 0;
 
   return (
     <div className="jp-jupyterlab-research-assistant-wwc-copilot-conflicts">
