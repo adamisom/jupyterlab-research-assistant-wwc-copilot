@@ -94,3 +94,50 @@ class TestVisualizer:
         assert isinstance(image_base64, str)
         assert len(image_base64) > 0
 
+    def test_create_funnel_plot_returns_base64(self):
+        """Test that funnel plot returns a valid base64 string."""
+        visualizer = Visualizer()
+        effect_sizes = [0.5, 0.3, 0.7, 0.4, 0.6]
+        std_errors = [0.15, 0.12, 0.18, 0.14, 0.16]
+        labels = ["Study A", "Study B", "Study C", "Study D", "Study E"]
+
+        image_base64 = visualizer.create_funnel_plot(effect_sizes, std_errors, labels)
+
+        assert isinstance(image_base64, str)
+        assert len(image_base64) > 0
+
+        # Verify it's valid base64
+        try:
+            decoded = base64.b64decode(image_base64)
+            assert len(decoded) > 0
+            # Verify it's a PNG (starts with PNG signature)
+            assert decoded[:8] == b"\x89PNG\r\n\x1a\n"
+        except Exception:
+            pytest.fail("Invalid base64 encoding")
+
+    def test_create_funnel_plot_with_custom_title(self):
+        """Test funnel plot with custom title."""
+        visualizer = Visualizer()
+        effect_sizes = [0.5, 0.3]
+        std_errors = [0.15, 0.12]
+        labels = ["Study A", "Study B"]
+
+        image_base64 = visualizer.create_funnel_plot(
+            effect_sizes, std_errors, labels, title="Custom Funnel Plot"
+        )
+
+        assert isinstance(image_base64, str)
+        assert len(image_base64) > 0
+
+    def test_create_funnel_plot_with_multiple_studies(self):
+        """Test funnel plot with multiple studies."""
+        visualizer = Visualizer()
+        effect_sizes = [0.5 + i * 0.1 for i in range(10)]
+        std_errors = [0.15 + i * 0.01 for i in range(10)]
+        labels = [f"Study {i}" for i in range(10)]
+
+        image_base64 = visualizer.create_funnel_plot(effect_sizes, std_errors, labels)
+
+        assert isinstance(image_base64, str)
+        assert len(image_base64) > 0
+
