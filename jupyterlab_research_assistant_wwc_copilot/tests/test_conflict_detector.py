@@ -68,3 +68,56 @@ class TestConflictDetector:
 
         assert contradictions == []
 
+    def test_extract_key_findings_with_ai_extractor(self):
+        """Test extraction with AI extractor."""
+        # Mock AI extractor
+        class MockAIExtractor:
+            def extract_metadata(self, text, schema):
+                return {
+                    "key_findings": [
+                        "The intervention showed significant positive effects.",
+                        "Results demonstrate improved learning outcomes."
+                    ]
+                }
+
+        detector = ConflictDetector(ai_extractor=MockAIExtractor())
+        text = "Some paper text here."
+
+        findings = detector.extract_key_findings(text, max_findings=5, use_ai=True)
+
+        assert len(findings) == 2
+        assert "significant" in findings[0].lower() or "positive" in findings[0].lower()
+
+    def test_extract_key_findings_ai_fallback(self):
+        """Test that extraction falls back to keywords if AI fails."""
+        # Mock AI extractor that raises exception
+        class FailingAIExtractor:
+            def extract_metadata(self, text, schema):
+                raise Exception("AI extraction failed")
+
+        detector = ConflictDetector(ai_extractor=FailingAIExtractor())
+        text = "The results show a significant effect. We found that it worked."
+
+        findings = detector.extract_key_findings(text, max_findings=5, use_ai=True)
+
+        # Should fall back to keyword extraction
+        assert len(findings) > 0
+        assert any("significant" in f.lower() or "found" in f.lower() for f in findings)
+
+    def test_extract_key_findings_without_ai_when_disabled(self):
+        """Test that AI is not used when use_ai=False."""
+        # Mock AI extractor
+        class MockAIExtractor:
+            def extract_metadata(self, text, schema):
+                return {"key_findings": ["AI finding"]}
+
+        detector = ConflictDetector(ai_extractor=MockAIExtractor())
+        text = "The results show a significant effect."
+
+        findings = detector.extract_key_findings(text, max_findings=5, use_ai=False)
+
+        # Should use keyword extraction, not AI
+        assert len(findings) > 0
+        assert any("significant" in f.lower() for f in findings)
+        assert "AI finding" not in findings
+

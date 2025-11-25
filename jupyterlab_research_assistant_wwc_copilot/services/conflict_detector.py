@@ -22,15 +22,21 @@ class ConflictDetector:
     to identify contradictory findings across papers.
     """
 
-    def __init__(self, model_name: str = "cross-encoder/nli-deberta-v3-base"):
+    def __init__(
+        self,
+        model_name: str = "cross-encoder/nli-deberta-v3-base",
+        ai_extractor=None
+    ):
         """
         Initialize NLI pipeline.
 
         Args:
             model_name: Hugging Face model identifier for NLI model
+            ai_extractor: Optional AI extractor service for finding extraction
         """
         self.model_name = model_name
         self.nli_pipeline = None
+        self.ai_extractor = ai_extractor
 
         if TRANSFORMERS_AVAILABLE:
             try:
@@ -102,15 +108,19 @@ class ConflictDetector:
 
         return contradictions
 
-    def extract_key_findings(self, paper_text: str, max_findings: int = 5) -> List[str]:
+    def extract_key_findings(
+        self,
+        paper_text: str,
+        max_findings: int = 5,
+        use_ai: bool = True
+    ) -> List[str]:
         """
-        Extract key findings from paper text (simple keyword-based approach).
-
-        This is a placeholder. In production, use AI extraction or structured data.
+        Extract key findings from paper text using AI extraction.
 
         Args:
             paper_text: Full text of the paper
             max_findings: Maximum number of findings to extract
+            use_ai: Whether to use AI extraction (if available)
 
         Returns:
             List of finding statements
@@ -118,16 +128,36 @@ class ConflictDetector:
         if not paper_text:
             return []
 
-        # Simple keyword-based extraction (placeholder)
-        # In production, use AI extraction or structured data from database
-        findings = []
+        # Use AI extraction if available
+        if use_ai and self.ai_extractor:
+            schema = {
+                "type": "object",
+                "properties": {
+                    "key_findings": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                        "description": "List of key findings or conclusions from the study"
+                    }
+                },
+                "required": ["key_findings"]
+            }
 
-        # Look for common finding patterns
-        keywords = ["significant", "found that", "results show", "conclusion"]
+            try:
+                result = self.ai_extractor.extract_metadata(paper_text, schema)
+                findings = result.get("key_findings", [])
+                return findings[:max_findings]
+            except Exception as e:
+                logger.warning(
+                    f"AI extraction failed, falling back to keyword method: {str(e)}"
+                )
+
+        # Fallback to keyword-based extraction
+        findings = []
+        keywords = ["significant", "found that", "results show", "conclusion", "demonstrated"]
         sentences = paper_text.split(".")
 
         for sentence in sentences:
-            if any(kw in sentence.lower() for kw in keywords):
+            if any(kw in sentence.lower() for kw in keywords) and len(sentence.strip()) > 20:
                 findings.append(sentence.strip())
                 if len(findings) >= max_findings:
                     break
