@@ -1,13 +1,12 @@
 """Service for importing PDF files and extracting metadata."""
 
-import json
 import logging
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Optional
 
-from .pdf_parser import PDFParser
 from .ai_extractor import AIExtractor
 from .db_manager import DatabaseManager
+from .pdf_parser import PDFParser
 
 logger = logging.getLogger(__name__)
 
@@ -34,8 +33,8 @@ class ImportService:
         self,
         file_content: bytes,
         filename: str,
-        ai_config: Optional[Dict] = None
-    ) -> Dict:
+        ai_config: Optional[dict] = None
+    ) -> dict:
         """
         Import a PDF file and extract metadata.
 
@@ -55,7 +54,7 @@ class ImportService:
         upload_dir.mkdir(parents=True, exist_ok=True)
 
         file_path = upload_dir / filename
-        with open(file_path, "wb") as f:
+        with file_path.open("wb") as f:
             f.write(file_content)
 
         # Extract text and metadata from PDF
@@ -97,7 +96,7 @@ class ImportService:
             except Exception as e:
                 # Log but don't fail the import if AI extraction fails
                 logger.warning(
-                    f"AI extraction failed: {str(e)}, continuing without AI metadata"
+                    f"AI extraction failed: {e!s}, continuing without AI metadata"
                 )
 
         # Save to database
@@ -105,5 +104,6 @@ class ImportService:
             paper = db.add_paper(paper_data)
 
         return paper
+
 
 

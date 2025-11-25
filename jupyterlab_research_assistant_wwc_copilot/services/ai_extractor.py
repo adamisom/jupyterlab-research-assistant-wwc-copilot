@@ -3,7 +3,8 @@
 import json
 import logging
 import re
-from typing import Dict, Optional, Any
+from typing import Any, Optional
+
 import requests
 
 from .extraction_schema import LEARNING_SCIENCE_EXTRACTION_SCHEMA
@@ -29,21 +30,21 @@ class AIExtractor:
             if not api_key:
                 raise ValueError(f"API key required for {provider}")
             try:
-                from openai import OpenAI
+                from openai import OpenAI  # noqa: PLC0415
                 self.client = OpenAI(
                     api_key=api_key,
                     base_url="https://api.anthropic.com/v1" if provider == "claude" else None
                 )
-            except ImportError:
+            except ImportError as e:
                 raise ImportError(
                     "openai package required for Claude/OpenAI. Install with: pip install openai"
-                )
+                ) from e
         else:
             self.client = None
 
     def extract_metadata(
-        self, text: str, schema: Dict = None
-    ) -> Dict[str, Any]:
+        self, text: str, schema: Optional[dict] = None
+    ) -> dict[str, Any]:
         """
         Extract metadata from text using AI.
 
@@ -77,11 +78,11 @@ Return only valid JSON, no additional text."""
                 return self._extract_with_ollama(prompt)
             else:
                 return self._extract_with_openai(prompt)
-        except Exception as e:
-            logger.error(f"AI extraction failed: {str(e)}")
+        except Exception:
+            logger.exception("AI extraction failed")
             return {}
 
-    def _extract_with_ollama(self, prompt: str) -> Dict[str, Any]:
+    def _extract_with_ollama(self, prompt: str) -> dict[str, Any]:
         """Extract using Ollama API."""
         response = requests.post(
             f"{self.ollama_url}/api/generate",
@@ -110,7 +111,7 @@ Return only valid JSON, no additional text."""
                 return json.loads(json_match.group())
             return {}
 
-    def _extract_with_openai(self, prompt: str) -> Dict[str, Any]:
+    def _extract_with_openai(self, prompt: str) -> dict[str, Any]:
         """Extract using OpenAI/Anthropic API."""
         response = self.client.chat.completions.create(
             model=self.model,
@@ -119,5 +120,6 @@ Return only valid JSON, no additional text."""
         )
         content = response.choices[0].message.content
         return json.loads(content)
+
 
 

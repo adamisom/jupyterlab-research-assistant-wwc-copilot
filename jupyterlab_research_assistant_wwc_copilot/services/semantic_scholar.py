@@ -1,8 +1,9 @@
 """Semantic Scholar API client for paper discovery."""
 
-import requests
-from typing import Dict, Optional
 import time
+from typing import Optional
+
+import requests
 
 
 class SemanticScholarAPI:
@@ -31,7 +32,7 @@ class SemanticScholarAPI:
             time.sleep(self.min_request_interval - time_since_last)
         self.last_request_time = time.time()
 
-    def _transform_paper(self, paper: Dict, include_references: bool = False) -> Dict:
+    def _transform_paper(self, paper: dict, include_references: bool = False) -> dict:
         """
         Transform Semantic Scholar paper format to our internal format.
 
@@ -66,7 +67,7 @@ class SemanticScholarAPI:
         year: Optional[str] = None,
         limit: int = 20,
         offset: int = 0
-    ) -> Dict:
+    ) -> dict:
         """
         Search for papers using Semantic Scholar API.
 
@@ -117,9 +118,9 @@ class SemanticScholarAPI:
                 "total": data.get("total", len(papers))
             }
         except requests.exceptions.RequestException as e:
-            raise Exception(f"Semantic Scholar API error: {str(e)}") from e
+            raise RuntimeError(f"Semantic Scholar API error: {e!s}") from e
 
-    def get_paper_details(self, paper_id: str) -> Optional[Dict]:
+    def get_paper_details(self, paper_id: str) -> Optional[dict]:
         """
         Fetch detailed information for a single paper by Semantic Scholar ID.
 
@@ -154,5 +155,5 @@ class SemanticScholarAPI:
 
             return self._transform_paper(paper, include_references=True)
         except requests.exceptions.RequestException as e:
-            raise Exception(f"Semantic Scholar API error: {str(e)}") from e
+            raise RuntimeError(f"Semantic Scholar API error: {e!s}") from e
 

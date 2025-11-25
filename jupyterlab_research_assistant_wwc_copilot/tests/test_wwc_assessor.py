@@ -1,12 +1,9 @@
 """Tests for WWC Quality Assessment Engine."""
 
-from typing import Optional
-import pytest
 from jupyterlab_research_assistant_wwc_copilot.services.wwc_assessor import (
+    AttritionBoundary,
     WWCQualityAssessor,
     WWCRating,
-    AttritionBoundary,
-    WWCAssessment,
 )
 
 

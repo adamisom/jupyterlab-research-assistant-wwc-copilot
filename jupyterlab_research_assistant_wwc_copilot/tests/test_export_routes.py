@@ -1,8 +1,6 @@
 """Tests for Export API route handlers."""
 
-from typing import Optional
 import json
-import pytest
 
 
 async def test_meta_analysis_export_insufficient_papers(jp_fetch):

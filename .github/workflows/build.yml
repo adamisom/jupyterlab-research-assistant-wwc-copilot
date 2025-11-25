@@ -29,6 +29,8 @@ jobs:
         set -eux
         jlpm
         jlpm run lint:check
+        python -m pip install -e ".[dev]"
+        jlpm run lint:python:check
 
     - name: Test the extension
       run: |

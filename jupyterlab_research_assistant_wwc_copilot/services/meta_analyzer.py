@@ -1,9 +1,9 @@
 """Meta-analysis engine using statsmodels for random-effects models."""
 
+import logging
+
 import numpy as np
 import statsmodels.stats.meta_analysis as meta
-from typing import List, Dict, Optional
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -16,7 +16,7 @@ class MetaAnalyzer:
     between-study variance (tau-squared).
     """
 
-    def perform_random_effects_meta_analysis(self, studies: List[Dict]) -> Dict:
+    def perform_random_effects_meta_analysis(self, studies: list[dict]) -> dict:
         """
         Perform random-effects meta-analysis.
 
@@ -63,10 +63,7 @@ class MetaAnalyzer:
             q_statistic = result.q
             i_squared = result.i2
             # I² can be negative (set to 0 if negative)
-            if i_squared < 0:
-                i_squared = 0.0
-            else:
-                i_squared = float(i_squared)
+            i_squared = 0.0 if i_squared < 0 else float(i_squared)
 
             # Calculate study weights (inverse variance weights)
             weights = 1.0 / (std_errors**2 + result.tau2)
@@ -95,7 +92,7 @@ class MetaAnalyzer:
 
             # Calculate p-value for pooled effect (two-tailed test)
             # Using t-distribution with df = n_studies - 1
-            from scipy import stats
+            from scipy import stats  # noqa: PLC0415
 
             df = len(studies) - 1
             t_stat = pooled_effect / result.sd_eff_w_re
@@ -114,8 +111,8 @@ class MetaAnalyzer:
                 "studies": study_results,
             }
         except Exception as e:
-            logger.error(f"Meta-analysis failed: {str(e)}")
-            raise Exception(f"Meta-analysis computation error: {str(e)}")
+            logger.exception("Meta-analysis failed")
+            raise RuntimeError(f"Meta-analysis computation error: {e!s}") from e
 
     def interpret_heterogeneity(self, i_squared: float) -> str:
         """
@@ -138,9 +135,9 @@ class MetaAnalyzer:
 
     def perform_subgroup_meta_analysis(
         self,
-        studies: List[Dict],
+        studies: list[dict],
         subgroup_variable: str
-    ) -> Dict:
+    ) -> dict:
         """
         Perform meta-analysis for each subgroup.
 
@@ -176,7 +173,7 @@ class MetaAnalyzer:
                     subgroup_results[subgroup_name] = result
                 except Exception as e:
                     logger.warning(
-                        f"Meta-analysis failed for subgroup '{subgroup_name}': {str(e)}"
+                        f"Meta-analysis failed for subgroup '{subgroup_name}': {e!s}"
                     )
                     continue
 
@@ -198,9 +195,9 @@ class MetaAnalyzer:
 
     def _calculate_subgroup_comparison(
         self,
-        subgroup_results: Dict[str, Dict],
-        overall_result: Dict
-    ) -> Dict:
+        subgroup_results: dict[str, dict],
+        overall_result: dict
+    ) -> dict:
         """
         Calculate Q-between statistic to test for differences between subgroups.
 
@@ -218,7 +215,7 @@ class MetaAnalyzer:
                 - p_value: P-value for test of subgroup differences
                 - interpretation: String interpretation
         """
-        from scipy import stats
+        from scipy import stats  # noqa: PLC0415
 
         if len(subgroup_results) < 2:
             return {
@@ -236,7 +233,7 @@ class MetaAnalyzer:
         for subgroup_result in subgroup_results.values():
             subgroup_effect = subgroup_result["pooled_effect"]
             # Use the standard error of the pooled effect to calculate weight
-            # Weight = 1 / SE^2
+            # Weight = 1 / SE^2 (formula comment)
             subgroup_se = (subgroup_result["ci_upper"] - subgroup_result["ci_lower"]) / (2 * 1.96)
             if subgroup_se > 0:
                 weight = 1.0 / (subgroup_se ** 2)
@@ -248,7 +245,7 @@ class MetaAnalyzer:
         # P-value from chi-square distribution
         if df > 0 and q_between > 0:
             p_value = float(1 - stats.chi2.cdf(q_between, df))
-            
+
             if p_value < 0.05:
                 interpretation = (
                     f"Significant differences between subgroups (Q-between = {q_between:.3f}, "
@@ -274,7 +271,7 @@ class MetaAnalyzer:
         self,
         effect_sizes: np.ndarray,
         std_errors: np.ndarray
-    ) -> Dict:
+    ) -> dict:
         """
         Perform Egger's test for publication bias.
 
@@ -289,7 +286,7 @@ class MetaAnalyzer:
                 - intercept_pvalue: P-value for test of intercept = 0
                 - interpretation: String interpretation
         """
-        from scipy import stats, linalg
+        from scipy import linalg, stats  # noqa: PLC0415
 
         if len(effect_sizes) < 3:
             return {
@@ -306,18 +303,18 @@ class MetaAnalyzer:
         weights = 1.0 / (std_errors ** 2)
 
         # Design matrix: [1, precision]
-        X = np.column_stack([np.ones(len(effect_sizes)), precision])
+        X = np.column_stack([np.ones(len(effect_sizes)), precision])  # noqa: N806
 
         try:
             # Weighted least squares: (X'WX)^(-1) X'Wy
-            XW = X * weights[:, np.newaxis]
-            XWX = XW.T @ X
-            XWy = XW.T @ effect_sizes
+            XW = X * weights[:, np.newaxis]  # noqa: N806
+            XWX = XW.T @ X  # noqa: N806
+            XWy = XW.T @ effect_sizes  # noqa: N806
 
             # Check matrix condition number to avoid ill-conditioned matrices
             cond_num = np.linalg.cond(XWX)
             if cond_num > 1e12:
-                raise ValueError(f"Matrix is ill-conditioned (condition number: {cond_num:.2e})")
+                raise ValueError(f"Matrix is ill-conditioned (condition number: {cond_num:.2e})")  # noqa: TRY301
 
             # Solve for beta
             beta = linalg.solve(XWX, XWy)
@@ -331,11 +328,11 @@ class MetaAnalyzer:
 
             intercept = beta[0]
             var_intercept = var_beta[0, 0]
-            
+
             # Check for negative or zero variance before sqrt
             if var_intercept <= 0:
-                raise ValueError(f"Invalid variance for intercept: {var_intercept}")
-            
+                raise ValueError(f"Invalid variance for intercept: {var_intercept}")  # noqa: TRY301
+
             intercept_se = np.sqrt(var_intercept)
             intercept_t = intercept / intercept_se
 
@@ -355,18 +352,18 @@ class MetaAnalyzer:
                 "interpretation": interpretation
             }
         except Exception as e:
-            logger.error(f"Egger's test failed: {str(e)}")
+            logger.exception("Egger's test failed")
             return {
                 "intercept": None,
                 "intercept_se": None,
                 "intercept_pvalue": None,
-                "interpretation": f"Egger's test failed: {str(e)}"
+                "interpretation": f"Egger's test failed: {e!s}"
             }
 
     def perform_sensitivity_analysis(
         self,
-        studies: List[Dict]
-    ) -> Dict:
+        studies: list[dict]
+    ) -> dict:
         """
         Perform sensitivity analysis (leave-one-out and influence diagnostics).
 
@@ -405,7 +402,7 @@ class MetaAnalyzer:
                     })
                 except Exception as e:
                     logger.warning(
-                        f"Leave-one-out analysis failed for study {i+1}: {str(e)}"
+                        f"Leave-one-out analysis failed for study {i+1}: {e!s}"
                     )
                     continue
 

@@ -1,9 +1,9 @@
 """PDF text and metadata extraction using PyMuPDF."""
 
-import fitz  # PyMuPDF
-from typing import Dict
-from pathlib import Path
 import logging
+from pathlib import Path
+
+import fitz  # PyMuPDF
 
 logger = logging.getLogger(__name__)
 
@@ -14,7 +14,7 @@ class PDFParser:
     MAX_PAGES = 200  # Safety limit for very large PDFs
     MAX_TEXT_LENGTH = 500000  # ~500KB of text
 
-    def extract_text_and_metadata(self, pdf_path: str) -> Dict:
+    def extract_text_and_metadata(self, pdf_path: str) -> dict:
         """
         Extract full text and metadata from a PDF file.
 
@@ -66,8 +66,8 @@ class PDFParser:
                 "total_pages": total_pages
             }
         except Exception as e:
-            logger.error(f"Error parsing PDF {pdf_path}: {str(e)}")
-            raise Exception(f"Failed to parse PDF: {str(e)}") from e
+            logger.exception(f"Error parsing PDF {pdf_path}")
+            raise RuntimeError(f"Failed to parse PDF: {e!s}") from e
 
     def extract_text_chunk(self, pdf_path: str, max_chars: int = 16000) -> str:
         """
@@ -83,5 +83,6 @@ class PDFParser:
         result = self.extract_text_and_metadata(pdf_path)
         text = result["full_text"]
         return text[:max_chars] if len(text) > max_chars else text
+
 
 

@@ -1,14 +1,14 @@
 """Tests for import service."""
 
-from typing import Optional
+from unittest.mock import MagicMock, Mock, patch
+
 import pytest
-from unittest.mock import Mock, patch, MagicMock
-from pathlib import Path
+
+from jupyterlab_research_assistant_wwc_copilot.services.ai_extractor import AIExtractor
 from jupyterlab_research_assistant_wwc_copilot.services.import_service import (
-    ImportService
+    ImportService,
 )
 from jupyterlab_research_assistant_wwc_copilot.services.pdf_parser import PDFParser
-from jupyterlab_research_assistant_wwc_copilot.services.ai_extractor import AIExtractor
 
 
 @pytest.fixture
@@ -28,10 +28,10 @@ def mock_pdf_parser():
 def temp_db(tmp_path, monkeypatch):
     """Create a temporary database for testing."""
     import os
+
     from jupyterlab_research_assistant_wwc_copilot.database.models import (
-        create_db_engine,
         Base,
-        get_db_path
+        create_db_engine,
     )
 
     test_db_path = tmp_path / "test_research_library.db"
@@ -126,7 +126,6 @@ def test_import_pdf_with_ai_extraction(mock_path_class, mock_pdf_parser, temp_db
 @patch("jupyterlab_research_assistant_wwc_copilot.services.import_service.Path")
 def test_import_pdf_ai_extraction_failure_continues(mock_path_class, mock_pdf_parser, temp_db):
     """Test that AI extraction failure doesn't fail the import."""
-    import logging
 
     mock_upload_dir = MagicMock()
     mock_file_path = MagicMock()

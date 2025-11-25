@@ -1,6 +1,5 @@
 """Conflict detection using Natural Language Inference (NLI) models."""
 
-from typing import List, Dict, Optional
 import logging
 
 logger = logging.getLogger(__name__)
@@ -46,18 +45,18 @@ class ConflictDetector:
                     device=-1,  # Use CPU (-1), set to 0 for GPU if available
                 )
                 logger.info(f"Loaded NLI model: {model_name}")
-            except Exception as e:
-                logger.error(f"Failed to load NLI model: {str(e)}")
+            except Exception:
+                logger.exception("Failed to load NLI model")
                 self.nli_pipeline = None
         else:
             logger.warning("transformers not available. Conflict detection disabled.")
 
     def find_contradictions(
         self,
-        findings1: List[str],
-        findings2: List[str],
+        findings1: list[str],
+        findings2: list[str],
         confidence_threshold: float = 0.8,
-    ) -> List[Dict]:
+    ) -> list[dict]:
         """
         Compare two lists of findings and identify contradictions.
 
@@ -102,8 +101,8 @@ class ConflictDetector:
                                 "label": label,
                             }
                         )
-                except Exception as e:
-                    logger.error(f"Error processing findings: {str(e)}")
+                except Exception:
+                    logger.exception("Error processing findings")
                     continue
 
         return contradictions
@@ -113,7 +112,7 @@ class ConflictDetector:
         paper_text: str,
         max_findings: int = 5,
         use_ai: bool = True
-    ) -> List[str]:
+    ) -> list[str]:
         """
         Extract key findings from paper text using AI extraction.
 
@@ -148,7 +147,7 @@ class ConflictDetector:
                 return findings[:max_findings]
             except Exception as e:
                 logger.warning(
-                    f"AI extraction failed, falling back to keyword method: {str(e)}"
+                    f"AI extraction failed, falling back to keyword method: {e!s}"
                 )
 
         # Fallback to keyword-based extraction

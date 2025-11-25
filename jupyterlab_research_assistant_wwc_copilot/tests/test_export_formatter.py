@@ -1,9 +1,7 @@
 """Tests for export formatter service."""
 
-from typing import Optional
-import pytest
 from jupyterlab_research_assistant_wwc_copilot.services.export_formatter import (
-    ExportFormatter
+    ExportFormatter,
 )
 
 

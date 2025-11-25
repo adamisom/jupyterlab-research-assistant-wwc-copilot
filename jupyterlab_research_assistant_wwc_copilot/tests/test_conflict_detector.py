@@ -1,7 +1,5 @@
 """Tests for Conflict Detection Engine."""
 
-from typing import Optional
-import pytest
 from jupyterlab_research_assistant_wwc_copilot.services.conflict_detector import (
     ConflictDetector,
 )

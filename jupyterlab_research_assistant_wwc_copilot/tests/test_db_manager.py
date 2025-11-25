@@ -1,14 +1,15 @@
 """Tests for database manager."""
 
-from typing import Optional
-import pytest
 import os
-from jupyterlab_research_assistant_wwc_copilot.services.db_manager import (
-    DatabaseManager
-)
+
+import pytest
+
 from jupyterlab_research_assistant_wwc_copilot.database.models import (
+    Base,
     create_db_engine,
-    Base
+)
+from jupyterlab_research_assistant_wwc_copilot.services.db_manager import (
+    DatabaseManager,
 )
 
 
@@ -20,19 +21,19 @@ def temp_db(tmp_path, monkeypatch):
 
     def mock_get_db_path():
         return test_db_path
-    
+
     monkeypatch.setattr(
         "jupyterlab_research_assistant_wwc_copilot.database.models.get_db_path",
         mock_get_db_path
     )
-    
+
     # Create the database
     engine = create_db_engine()
     Base.metadata.create_all(engine)
     engine.dispose()
-    
+
     yield test_db_path
-    
+
     # Cleanup
     if test_db_path.exists():
         os.remove(test_db_path)

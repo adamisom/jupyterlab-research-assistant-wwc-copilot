@@ -1,8 +1,9 @@
 """SQLAlchemy models for the research library database."""
 
-from sqlalchemy import create_engine, Column, Integer, String, Text, ForeignKey, JSON
-from sqlalchemy.orm import declarative_base, sessionmaker, relationship
 from pathlib import Path
+
+from sqlalchemy import JSON, Column, ForeignKey, Integer, String, Text, create_engine
+from sqlalchemy.orm import declarative_base, relationship, sessionmaker
 
 Base = declarative_base()
 
@@ -84,6 +85,6 @@ def create_db_engine():
 def get_db_session():
     """Get a database session."""
     engine = create_db_engine()
-    Session = sessionmaker(bind=engine)
-    return Session()
+    session_factory = sessionmaker(bind=engine)
+    return session_factory()
 

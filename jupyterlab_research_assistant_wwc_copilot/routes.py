@@ -2,23 +2,22 @@
 
 import json
 import logging
-from pathlib import Path
-from typing import Dict, Optional
+from typing import Optional
+
 import numpy as np
+import tornado
 from jupyter_server.base.handlers import APIHandler
 from jupyter_server.utils import url_path_join
-import tornado
 
-from .services.semantic_scholar import SemanticScholarAPI
-from .services.pdf_parser import PDFParser
+from .services.conflict_detector import ConflictDetector
 from .services.db_manager import DatabaseManager
-from .services.ai_extractor import AIExtractor
 from .services.export_formatter import ExportFormatter
 from .services.import_service import ImportService
-from .services.wwc_assessor import WWCQualityAssessor
 from .services.meta_analyzer import MetaAnalyzer
+from .services.pdf_parser import PDFParser
+from .services.semantic_scholar import SemanticScholarAPI
 from .services.visualizer import Visualizer
-from .services.conflict_detector import ConflictDetector
+from .services.wwc_assessor import WWCQualityAssessor
 
 logger = logging.getLogger(__name__)
 
@@ -31,23 +30,23 @@ class BaseAPIHandler(APIHandler):
         self.set_status(status_code)
         self.finish(json.dumps({"status": "success", "data": data}))
 
-    def send_error(self, status_code=500, message: str = None, **kwargs):
+    def send_error(self, status_code=500, message: Optional[str] = None, **kwargs):
         """
         Send an error response.
-        
+
         Compatible with Tornado's send_error signature which may pass exc_info.
         """
         if message is None:
             # Extract message from exception if available
             if "exc_info" in kwargs:
-                exc_type, exc_value, _ = kwargs["exc_info"]
+                _exc_type, exc_value, _ = kwargs["exc_info"]
                 message = str(exc_value)
             else:
                 message = "An error occurred"
-        
+
         self.set_status(status_code)
         self.finish(json.dumps({"status": "error", "message": message}))
-    
+
     def send_error_legacy(self, message: str, status_code=500):
         """
         Legacy send_error method for backward compatibility.
@@ -171,7 +170,7 @@ class ImportHandler(BaseAPIHandler):
 
         self.send_success(paper, 201)
 
-    def _parse_ai_config(self) -> Optional[Dict]:
+    def _parse_ai_config(self) -> Optional[dict]:
         """Parse AI config from form data."""
         if "aiConfig" not in self.request.files:
             return None
@@ -186,7 +185,7 @@ class ImportHandler(BaseAPIHandler):
         except (json.JSONDecodeError, KeyError, IndexError, TypeError):
             return None
 
-    def _get_ai_config(self) -> Optional[Dict]:
+    def _get_ai_config(self) -> Optional[dict]:
         """Get AI extraction configuration from settings."""
         # Try to get settings from JupyterLab settings registry
         # This is a simplified version - in production, you'd read from settings registry
@@ -348,18 +347,17 @@ class MetaAnalysisHandler(BaseAPIHandler):
                                     "std_error": outcome_data.get("se", 0.1),
                                 }
                             )
-                    else:
-                        # Use first available outcome
-                        if effect_sizes:
-                            first_outcome = list(effect_sizes.values())[0]
-                            studies.append(
-                                {
-                                    "paper_id": paper["id"],
-                                    "study_label": paper["title"],
-                                    "effect_size": first_outcome.get("d", 0.0),
-                                    "std_error": first_outcome.get("se", 0.1),
-                                }
-                            )
+                    # Use first available outcome
+                    elif effect_sizes:
+                        first_outcome = next(iter(effect_sizes.values()))
+                        studies.append(
+                            {
+                                "paper_id": paper["id"],
+                                "study_label": paper["title"],
+                                "effect_size": first_outcome.get("d", 0.0),
+                                "std_error": first_outcome.get("se", 0.1),
+                            }
+                        )
 
                 if len(studies) < 2:
                     self.send_error(400, "Insufficient studies with effect size data")
@@ -504,17 +502,16 @@ class MetaAnalysisExportHandler(BaseAPIHandler):
                                     "std_error": outcome_data.get("se", 0.1),
                                 }
                             )
-                    else:
-                        if effect_sizes:
-                            first_outcome = list(effect_sizes.values())[0]
-                            studies.append(
-                                {
-                                    "paper_id": paper["id"],
-                                    "study_label": paper["title"],
-                                    "effect_size": first_outcome.get("d", 0.0),
-                                    "std_error": first_outcome.get("se", 0.1),
-                                }
-                            )
+                    elif effect_sizes:
+                        first_outcome = next(iter(effect_sizes.values()))
+                        studies.append(
+                            {
+                                "paper_id": paper["id"],
+                                "study_label": paper["title"],
+                                "effect_size": first_outcome.get("d", 0.0),
+                                "std_error": first_outcome.get("se", 0.1),
+                            }
+                        )
 
                 if len(studies) < 2:
                     self.send_error(400, "Insufficient studies with effect size data")
@@ -586,7 +583,7 @@ class SynthesisExportHandler(BaseAPIHandler):
                             study_metadata = paper.get("study_metadata", {})
                             effect_sizes = study_metadata.get("effect_sizes", {})
                             if effect_sizes:
-                                first_outcome = list(effect_sizes.values())[0]
+                                first_outcome = next(iter(effect_sizes.values()))
                                 studies.append(
                                     {
                                         "paper_id": paper["id"],
@@ -614,7 +611,7 @@ class SynthesisExportHandler(BaseAPIHandler):
                                 analyzer.interpret_heterogeneity(meta_analysis_result["i_squared"])
                             )
                     except Exception as e:
-                        logger.warning(f"Meta-analysis failed during export: {str(e)}")
+                        logger.warning(f"Meta-analysis failed during export: {e!s}")
 
                 # Perform conflict detection if requested
                 if include_conflicts:
@@ -652,7 +649,7 @@ class SynthesisExportHandler(BaseAPIHandler):
                             "n_contradictions": len(all_contradictions),
                         }
                     except Exception as e:
-                        logger.warning(f"Conflict detection failed during export: {str(e)}")
+                        logger.warning(f"Conflict detection failed during export: {e!s}")
 
                 # Generate Markdown
                 formatter = ExportFormatter()
@@ -740,7 +737,7 @@ class SubgroupAnalysisHandler(BaseAPIHandler):
                             })
                     elif effect_sizes:
                         # Use first available outcome if no outcome_name specified
-                        first_outcome = list(effect_sizes.values())[0]
+                        first_outcome = next(iter(effect_sizes.values()))
                         if first_outcome and subgroup_value:
                             studies.append({
                                 "paper_id": paper["id"],
@@ -805,7 +802,7 @@ class BiasAssessmentHandler(BaseAPIHandler):
                             })
                     elif effect_sizes:
                         # Use first available outcome
-                        first_outcome = list(effect_sizes.values())[0]
+                        first_outcome = next(iter(effect_sizes.values()))
                         if first_outcome:
                             studies.append({
                                 "paper_id": paper["id"],
@@ -887,7 +884,7 @@ class SensitivityAnalysisHandler(BaseAPIHandler):
                                 "std_error": outcome_data.get("se", 0.1)
                             })
                     elif effect_sizes:
-                        first_outcome = list(effect_sizes.values())[0]
+                        first_outcome = next(iter(effect_sizes.values()))
                         if first_outcome:
                             studies.append({
                                 "paper_id": paper["id"],

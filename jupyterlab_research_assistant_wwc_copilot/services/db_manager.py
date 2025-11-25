@@ -1,12 +1,14 @@
 """Database manager for CRUD operations on papers."""
 
+from typing import Optional
+
 from sqlalchemy.orm import Session
-from typing import List, Optional, Dict
+
 from ..database.models import (
+    LearningScienceMetadata,
     Paper,
     StudyMetadata,
-    LearningScienceMetadata,
-    get_db_session
+    get_db_session,
 )
 
 
@@ -28,17 +30,17 @@ class DatabaseManager:
                 self.session.rollback()
             self.session.close()
 
-    def get_all_papers(self) -> List[Dict]:
+    def get_all_papers(self) -> list[dict]:
         """Get all papers from database."""
         papers = self.session.query(Paper).all()
         return [self._paper_to_dict(p) for p in papers]
 
-    def get_paper_by_id(self, paper_id: int) -> Optional[Dict]:
+    def get_paper_by_id(self, paper_id: int) -> Optional[dict]:
         """Get a single paper by ID."""
         paper = self.session.query(Paper).filter_by(id=paper_id).first()
         return self._paper_to_dict(paper) if paper else None
 
-    def add_paper(self, data: Dict) -> Dict:
+    def add_paper(self, data: dict) -> dict:
         """Add a new paper to the database."""
         paper = Paper(
             title=data.get("title", ""),
@@ -55,7 +57,7 @@ class DatabaseManager:
         self.session.flush()  # Get the ID
 
         # Add study metadata if provided
-        if "study_metadata" in data and data["study_metadata"]:
+        if data.get("study_metadata"):
             study_meta = StudyMetadata(
                 paper_id=paper.id,
                 methodology=data["study_metadata"].get("methodology"),
@@ -66,7 +68,7 @@ class DatabaseManager:
             self.session.add(study_meta)
 
         # Add learning science metadata if provided
-        if "learning_science_metadata" in data and data["learning_science_metadata"]:
+        if data.get("learning_science_metadata"):
             ls_meta = LearningScienceMetadata(
                 paper_id=paper.id,
                 learning_domain=data["learning_science_metadata"].get("learning_domain"),
@@ -78,7 +80,7 @@ class DatabaseManager:
         self.session.flush()
         return self._paper_to_dict(paper)
 
-    def search_papers(self, query: str) -> List[Dict]:
+    def search_papers(self, query: str) -> list[dict]:
         """Search papers by title, abstract, or authors."""
         papers = self.session.query(Paper).filter(
             (Paper.title.contains(query)) |
@@ -87,7 +89,7 @@ class DatabaseManager:
         ).all()
         return [self._paper_to_dict(p) for p in papers]
 
-    def _paper_to_dict(self, paper: Paper) -> Dict:
+    def _paper_to_dict(self, paper: Paper) -> dict:
         """Convert Paper model to dictionary."""
         result = {
             "id": paper.id,

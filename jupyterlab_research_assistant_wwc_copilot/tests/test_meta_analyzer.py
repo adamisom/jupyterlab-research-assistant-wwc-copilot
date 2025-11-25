@@ -1,9 +1,11 @@
 """Tests for Meta-Analysis Engine."""
 
-from typing import Optional
-import pytest
 import numpy as np
-from jupyterlab_research_assistant_wwc_copilot.services.meta_analyzer import MetaAnalyzer
+import pytest
+
+from jupyterlab_research_assistant_wwc_copilot.services.meta_analyzer import (
+    MetaAnalyzer,
+)
 
 
 class TestMetaAnalyzer:
@@ -173,7 +175,7 @@ class TestMetaAnalyzer:
         assert "young" in result["subgroups"]
         assert "old" in result["subgroups"]
         assert result["overall"]["n_studies"] == 4
-        
+
         # Check subgroup comparison structure
         comparison = result["subgroup_comparison"]
         assert "q_between" in comparison
@@ -257,7 +259,7 @@ class TestMetaAnalyzer:
     def test_sensitivity_analysis_basic(self):
         """Test basic sensitivity analysis."""
         import warnings
-        
+
         analyzer = MetaAnalyzer()
         studies = [
             {"effect_size": 0.5, "std_error": 0.15, "study_label": "Study A", "paper_id": 1},

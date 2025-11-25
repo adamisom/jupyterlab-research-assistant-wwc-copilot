@@ -1,9 +1,9 @@
 """WWC Quality Assessment Engine implementing WWC Handbook v5.0 standards."""
 
-from dataclasses import dataclass, field
-from typing import Optional, Dict, List
-from enum import Enum
 import logging
+from dataclasses import dataclass, field
+from enum import Enum
+from typing import ClassVar, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -42,7 +42,7 @@ class WWCAssessment:
 
     # --- Final Rating ---
     final_rating: WWCRating = WWCRating.DOES_NOT_MEET
-    rating_justification: List[str] = field(default_factory=list)
+    rating_justification: list[str] = field(default_factory=list)
 
     # --- Additional metadata ---
     paper_id: Optional[int] = None
@@ -61,8 +61,8 @@ class WWCQualityAssessor:
     """
 
     # Attrition boundaries from WWC Handbook Appendix C
-    # Format: {overall_attrition_threshold: max_differential_attrition}
-    ATTRITION_BOUNDARIES = {
+    # Dictionary format: {overall_attrition_threshold: max_differential_attrition}
+    ATTRITION_BOUNDARIES: ClassVar[dict] = {
         "cautious": {
             0.10: 0.05,  # ≤10% overall → ≤5% differential
             0.20: 0.03,  # ≤20% overall → ≤3% differential
@@ -78,7 +78,7 @@ class WWCQualityAssessor:
     }
 
     # Baseline equivalence thresholds (Cohen's d)
-    BASELINE_EQUIVALENCE_THRESHOLDS = {
+    BASELINE_EQUIVALENCE_THRESHOLDS: ClassVar[dict] = {
         "equivalent": 0.05,  # ≤0.05 SD: equivalent, no adjustment required
         "adjustable": 0.25,  # >0.05 and ≤0.25 SD: adjustment required
         "not_equivalent": 0.25,  # >0.25 SD: does not meet standards
@@ -119,7 +119,7 @@ class WWCQualityAssessor:
         control_mean: float,
         treatment_sd: float,
         control_sd: float,
-    ) -> Dict:
+    ) -> dict:
         """
         Calculate baseline equivalence effect size (Cohen's d).
 
@@ -161,7 +161,7 @@ class WWCQualityAssessor:
 
         return {"effect_size": d, "status": status, "message": message}
 
-    def assess(self, extracted_data: Dict, user_judgments: Dict) -> WWCAssessment:
+    def assess(self, extracted_data: dict, user_judgments: dict) -> WWCAssessment:
         """
         Perform complete WWC assessment for a study.
 
@@ -319,7 +319,7 @@ class WWCQualityAssessor:
 
         return assessment
 
-    def assessment_to_dict(self, assessment: WWCAssessment) -> Dict:
+    def assessment_to_dict(self, assessment: WWCAssessment) -> dict:
         """Convert WWCAssessment to dictionary for JSON serialization."""
         return {
             "paper_id": assessment.paper_id,
@@ -336,5 +336,6 @@ class WWCQualityAssessor:
             "final_rating": assessment.final_rating.value,
             "rating_justification": assessment.rating_justification,
         }
+
 
 

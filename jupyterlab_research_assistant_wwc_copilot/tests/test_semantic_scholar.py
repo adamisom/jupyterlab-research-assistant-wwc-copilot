@@ -1,10 +1,11 @@
 """Tests for Semantic Scholar API client."""
 
-from typing import Optional
-import pytest
 from unittest.mock import Mock, patch
+
+import pytest
+
 from jupyterlab_research_assistant_wwc_copilot.services.semantic_scholar import (
-    SemanticScholarAPI
+    SemanticScholarAPI,
 )
 
 

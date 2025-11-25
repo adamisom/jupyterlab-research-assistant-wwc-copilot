@@ -2,14 +2,14 @@
 
 import csv
 import io
-from typing import List, Dict, Optional
+from typing import Optional
 
 
 class ExportFormatter:
     """Format papers for export in various formats."""
 
     @staticmethod
-    def to_json(papers: List[Dict]) -> str:
+    def to_json(papers: list[dict]) -> str:
         """
         Format papers as JSON.
 
@@ -19,11 +19,11 @@ class ExportFormatter:
         Returns:
             JSON string
         """
-        import json
+        import json  # noqa: PLC0415
         return json.dumps(papers, indent=2)
 
     @staticmethod
-    def to_csv(papers: List[Dict]) -> str:
+    def to_csv(papers: list[dict]) -> str:
         """
         Format papers as CSV.
 
@@ -62,7 +62,7 @@ class ExportFormatter:
         return output.getvalue()
 
     @staticmethod
-    def to_bibtex(papers: List[Dict]) -> str:
+    def to_bibtex(papers: list[dict]) -> str:
         """
         Format papers as BibTeX.
 
@@ -112,7 +112,7 @@ class ExportFormatter:
         return "\n".join(entries)
 
     @staticmethod
-    def export_meta_analysis_csv(meta_analysis_result: Dict, studies: List[Dict]) -> str:
+    def export_meta_analysis_csv(meta_analysis_result: dict, studies: list[dict]) -> str:
         """
         Export meta-analysis results as CSV.
 
@@ -177,12 +177,12 @@ class ExportFormatter:
 
     @staticmethod
     def export_synthesis_markdown(
-        meta_analysis_result: Optional[Dict],
-        conflict_result: Optional[Dict],
-        papers: List[Dict],
+        meta_analysis_result: Optional[dict],
+        conflict_result: Optional[dict],
+        papers: list[dict],
         include_meta_analysis: bool = True,
         include_conflicts: bool = True,
-        include_wwc_assessments: bool = False,
+        _include_wwc_assessments: bool = False,
     ) -> str:
         """
         Export synthesis report as Markdown.
@@ -193,16 +193,16 @@ class ExportFormatter:
             papers: List of paper dictionaries
             include_meta_analysis: Whether to include meta-analysis section
             include_conflicts: Whether to include conflict detection section
-            include_wwc_assessments: Whether to include WWC assessments (not implemented yet)
+            _include_wwc_assessments: Whether to include WWC assessments (not implemented yet)
 
         Returns:
             Markdown string
         """
-        from datetime import datetime
+        from datetime import datetime, timezone  # noqa: PLC0415
 
         lines = []
         lines.append("# Synthesis Report")
-        lines.append(f"**Generated:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        lines.append(f"**Generated:** {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')}")
         lines.append(f"**Number of Studies:** {len(papers)}")
         lines.append("")
 

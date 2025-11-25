@@ -1,8 +1,6 @@
 """Tests for Stage 2 enhancement API route handlers."""
 
-from typing import Optional
 import json
-import pytest
 
 
 async def test_subgroup_analysis_missing_variable(jp_fetch):
@@ -168,7 +166,7 @@ async def test_subgroup_analysis_with_papers(jp_fetch):
 async def test_bias_assessment_with_papers(jp_fetch):
     """Test bias assessment with valid papers."""
     import warnings
-    
+
     # Add papers with effect sizes
     papers = []
     for i in range(3):

@@ -7,7 +7,7 @@ except ImportError:
     import warnings
     warnings.warn(
         "Importing 'jupyterlab_research_assistant_wwc_copilot' "
-        "outside a proper installation."
+        "outside a proper installation.", stacklevel=2
     )
     __version__ = "dev"
 from .routes import setup_route_handlers

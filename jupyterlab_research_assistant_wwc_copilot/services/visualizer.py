@@ -3,12 +3,12 @@
 import matplotlib
 
 matplotlib.use("Agg")  # Non-interactive backend for server
+import base64
+import io
+import logging
+
 import matplotlib.pyplot as plt
 import numpy as np
-from typing import List, Dict, Optional
-import io
-import base64
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -18,7 +18,7 @@ class Visualizer:
 
     def create_forest_plot(
         self,
-        studies: List[Dict],
+        studies: list[dict],
         pooled_effect: float,
         ci_lower: float,
         ci_upper: float,
@@ -97,7 +97,7 @@ class Visualizer:
             f"d = {pooled_effect:.3f} [{ci_lower:.3f}, {ci_upper:.3f}]",
             va="center",
             fontsize=9,
-            bbox=dict(boxstyle="round", facecolor="wheat", alpha=0.5),
+            bbox={"boxstyle": "round", "facecolor": "wheat", "alpha": 0.5},
         )
 
         plt.tight_layout()
@@ -115,9 +115,9 @@ class Visualizer:
 
     def create_funnel_plot(
         self,
-        effect_sizes: List[float],
-        std_errors: List[float],
-        labels: List[str],
+        effect_sizes: list[float],
+        std_errors: list[float],
+        labels: list[str],
         title: str = "Funnel Plot",
         figsize: tuple = (8, 8),
         dpi: int = 100
@@ -144,7 +144,7 @@ class Visualizer:
         ax.scatter(effect_sizes, precision, alpha=0.6, s=50, color='steelblue')
 
         # Add labels for outliers
-        for i, (es, prec, label) in enumerate(zip(effect_sizes, precision, labels)):
+        for _i, (es, prec, label) in enumerate(zip(effect_sizes, precision, labels)):
             # Label studies with extreme values
             if abs(es) > 2 or prec > max(precision) * 0.8:
                 ax.annotate(

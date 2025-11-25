@@ -1,6 +1,5 @@
 """Tests for API route handlers."""
 
-from typing import Optional
 import json
 
 
@@ -154,8 +153,9 @@ async def test_discovery_with_query(jp_fetch):
 
 async def test_import_no_file(jp_fetch):
     """Test import endpoint without file."""
-    from tornado.httpclient import HTTPClientError
     from urllib.parse import urlencode
+
+    from tornado.httpclient import HTTPClientError
     try:
         body = urlencode({})
         response = await jp_fetch(
