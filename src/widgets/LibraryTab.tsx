@@ -4,7 +4,8 @@ import {
   getLibrary,
   searchLibrary,
   importPDF,
-  exportLibrary
+  exportLibrary,
+  deletePapers
 } from '../api';
 import { PaperCard } from './PaperCard';
 import { showError, showSuccess } from '../utils/notifications';
@@ -128,6 +129,40 @@ export const LibraryTab: React.FC = () => {
     }
   };
 
+  const handleSelectAll = () => {
+    if (selectedPapers.size === papers.length) {
+      // Deselect all
+      setSelectedPapers(new Set());
+    } else {
+      // Select all
+      setSelectedPapers(new Set(papers.filter(p => p.id !== undefined).map(p => p.id!)));
+    }
+  };
+
+  const handleDelete = async () => {
+    if (selectedPapers.size === 0) {
+      return;
+    }
+
+    const paperIds = Array.from(selectedPapers);
+    
+    try {
+      const result = await deletePapers(paperIds);
+      showSuccess('Papers Deleted', `Successfully deleted ${result.deleted_count} paper(s)`);
+      
+      // Refresh library to remove deleted papers
+      await loadLibrary();
+      // Clear selections
+      setSelectedPapers(new Set());
+    } catch (err) {
+      showError(
+        'Delete Failed',
+        err instanceof Error ? err.message : 'Unknown error occurred',
+        err instanceof Error ? err : undefined
+      );
+    }
+  };
+
   if (selectedPaper) {
     return (
       <DetailView
@@ -195,15 +230,32 @@ export const LibraryTab: React.FC = () => {
 
       <ErrorDisplay error={error} />
 
-      {/* Synthesis button - show when 2+ papers selected */}
-      {selectedPapers.size >= 2 && (
-        <div className="jp-WWCExtension-synthesis-button-container">
+      {/* Action buttons - show when papers exist */}
+      {papers.length > 0 && (
+        <div className="jp-WWCExtension-library-actions" style={{ margin: '10px 0', display: 'flex', gap: '10px', alignItems: 'center' }}>
           <button
-            onClick={handleOpenSynthesis}
-            className="jp-WWCExtension-button jp-WWCExtension-synthesis-button"
+            onClick={handleSelectAll}
+            className="jp-WWCExtension-button"
           >
-            Synthesize {selectedPapers.size} Studies
+            {selectedPapers.size === papers.length ? 'Deselect All' : 'Select All'}
           </button>
+          {selectedPapers.size > 0 && (
+            <button
+              onClick={handleDelete}
+              className="jp-WWCExtension-button jp-mod-warn"
+            >
+              Delete {selectedPapers.size} from Library
+            </button>
+          )}
+          {selectedPapers.size >= 2 && (
+            <button
+              onClick={handleOpenSynthesis}
+              className="jp-WWCExtension-button jp-WWCExtension-synthesis-button"
+              style={{ marginLeft: 'auto' }}
+            >
+              Synthesize {selectedPapers.size} Studies
+            </button>
+          )}
         </div>
       )}
 
