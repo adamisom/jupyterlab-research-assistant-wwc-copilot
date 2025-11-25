@@ -97,6 +97,23 @@ class LibraryHandler(BaseAPIHandler):
             paper = db.add_paper(data)
             self.send_success(paper, 201)
 
+    @tornado.web.authenticated
+    def delete(self):
+        """Delete papers from the library by IDs."""
+        data = self.get_json_body()
+        if not data or not isinstance(data, dict):
+            self.send_error(400, "No data provided")
+            return
+
+        paper_ids = data.get("paper_ids", [])
+        if not paper_ids or not isinstance(paper_ids, list):
+            self.send_error(400, "paper_ids array required")
+            return
+
+        with DatabaseManager() as db:
+            deleted_count = db.delete_papers(paper_ids)
+            self.send_success({"deleted_count": deleted_count})
+
 
 class SearchHandler(BaseAPIHandler):
     """Handler for searching the library."""

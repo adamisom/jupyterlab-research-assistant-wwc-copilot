@@ -111,6 +111,17 @@ class DatabaseManager:
         )
         return [self._paper_to_dict(p) for p in papers]
 
+    def delete_papers(self, paper_ids: list[int]) -> int:
+        """Delete multiple papers by their IDs. Returns number of deleted papers."""
+        if not paper_ids:
+            return 0
+        
+        papers = self.session.query(Paper).filter(Paper.id.in_(paper_ids)).all()
+        count = len(papers)
+        for paper in papers:
+            self.session.delete(paper)
+        return count
+
     def _paper_to_dict(self, paper: Paper) -> dict:
         """Convert Paper model to dictionary."""
         # Normalize authors to list of strings (handle both old and new formats)
