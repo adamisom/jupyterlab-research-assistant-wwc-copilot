@@ -11,6 +11,69 @@
 
 ---
 
+## Work Distribution Summary
+
+### For Agent 1 (Backend)
+
+**Primary Responsibilities**:
+- Implement backend service methods for statistical calculations
+- Create API endpoints (route handlers)
+- Extend existing services (meta_analyzer, visualizer, conflict_detector)
+- Database operations (if needed for storage features)
+
+**Files to Modify/Create**:
+- `jupyterlab_research_assistant_wwc_copilot/services/meta_analyzer.py` - Add subgroup analysis, Egger's test, sensitivity analysis methods
+- `jupyterlab_research_assistant_wwc_copilot/services/visualizer.py` - Add funnel plot generation
+- `jupyterlab_research_assistant_wwc_copilot/services/conflict_detector.py` - Enhance finding extraction with AI
+- `jupyterlab_research_assistant_wwc_copilot/routes.py` - Add API handlers for all enhancements
+- `jupyterlab_research_assistant_wwc_copilot/services/export_formatter.py` - (Already completed)
+
+**Enhancements Requiring Backend Work**:
+1. ✅ **Enhanced WWC UI** - Optional assessment storage endpoint (or use frontend localStorage)
+2. ✅ **Subgroup Analysis** - Service method + API endpoint
+3. ✅ **Publication Bias Assessment** - Egger's test + funnel plot + API endpoint
+4. ✅ **Advanced Conflict Detection** - AI extraction integration
+5. ✅ **Sensitivity Analysis** - Service method + API endpoint
+
+**Dependencies to Add** (if not already present):
+- `scipy` - For statistical tests (Egger's test)
+- `numpy` - For array operations (already used)
+
+---
+
+### For Agent 2 (Frontend)
+
+**Primary Responsibilities**:
+- Create/update React components for new UI features
+- Add API client functions to call backend endpoints
+- Implement UI interactions and state management
+- Add CSS styling for new components
+- Integrate new features into existing widgets
+
+**Files to Modify/Create**:
+- `src/api.ts` - Add API client functions for all enhancements
+- `src/widgets/WWCCoPilot.tsx` - Refactor to multi-step wizard (Enhanced WWC UI)
+- `src/widgets/SynthesisWorkbench.tsx` - Add buttons/controls for new analyses
+- `src/widgets/SubgroupAnalysisView.tsx` - NEW component
+- `src/widgets/BiasAssessmentView.tsx` - NEW component
+- `src/widgets/SensitivityAnalysisView.tsx` - NEW component
+- `src/widgets/ConflictView.tsx` - Add findings preview (Advanced Conflict Detection)
+- `style/index.css` - Add styles for wizard, new views, etc.
+
+**Enhancements Requiring Frontend Work**:
+1. ✅ **Enhanced WWC UI** - Multi-step wizard component, progress indicators, save/load UI
+2. ✅ **Subgroup Analysis** - Subgroup selector, results display component
+3. ✅ **Publication Bias Assessment** - Bias assessment button, results display
+4. ✅ **Advanced Conflict Detection** - Findings preview UI (backend does AI extraction)
+5. ✅ **Sensitivity Analysis** - Sensitivity analysis button, results display
+
+**Integration Points**:
+- All new features integrate into `SynthesisWorkbench` widget
+- Enhanced WWC UI replaces existing `WWCCoPilot` component
+- New analysis views can be added as tabs or sections in Synthesis Workbench
+
+---
+
 ## Table of Contents
 
 1. [Enhanced WWC UI](#enhanced-wwc-ui)
