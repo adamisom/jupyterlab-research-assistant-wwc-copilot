@@ -42,9 +42,23 @@ class DatabaseManager:
 
     def add_paper(self, data: dict) -> dict:
         """Add a new paper to the database."""
+        # Normalize authors to list of strings
+        authors = data.get("authors", [])
+        if authors:
+            normalized_authors = []
+            for author in authors:
+                if isinstance(author, str):
+                    normalized_authors.append(author)
+                elif isinstance(author, dict) and "name" in author:
+                    normalized_authors.append(author["name"])
+                else:
+                    # Fallback: try to convert to string
+                    normalized_authors.append(str(author))
+            authors = normalized_authors
+
         paper = Paper(
             title=data.get("title", ""),
-            authors=data.get("authors", []),
+            authors=authors,  # Always strings now
             year=data.get("year"),
             doi=data.get("doi"),
             s2_id=data.get("s2_id"),
@@ -99,10 +113,24 @@ class DatabaseManager:
 
     def _paper_to_dict(self, paper: Paper) -> dict:
         """Convert Paper model to dictionary."""
+        # Normalize authors to list of strings (handle both old and new formats)
+        authors = paper.authors or []
+        if authors:
+            normalized_authors = []
+            for author in authors:
+                if isinstance(author, str):
+                    normalized_authors.append(author)
+                elif isinstance(author, dict) and "name" in author:
+                    normalized_authors.append(author["name"])
+                else:
+                    # Fallback: try to convert to string
+                    normalized_authors.append(str(author))
+            authors = normalized_authors
+
         result = {
             "id": paper.id,
             "title": paper.title,
-            "authors": paper.authors,
+            "authors": authors,  # Always strings now
             "year": paper.year,
             "doi": paper.doi,
             "s2_id": paper.s2_id,

@@ -33,7 +33,18 @@ export const DetailView: React.FC<DetailViewProps> = ({ paper, onClose }) => {
         <h2>{paper.title}</h2>
         <div className="jp-jupyterlab-research-assistant-wwc-copilot-detail-meta">
           {paper.authors && paper.authors.length > 0 && (
-            <div>Authors: {paper.authors.join(', ')}</div>
+            <div>
+              Authors:{' '}
+              {paper.authors
+                .map(author => {
+                  if (typeof author === 'string') {
+                    return author;
+                  }
+                  // Handle case where author might be an object (for backwards compatibility)
+                  return (author as any)?.name || 'Unknown';
+                })
+                .join(', ')}
+            </div>
           )}
           {paper.year && <div>Year: {paper.year}</div>}
           {paper.doi && <div>DOI: {paper.doi}</div>}
