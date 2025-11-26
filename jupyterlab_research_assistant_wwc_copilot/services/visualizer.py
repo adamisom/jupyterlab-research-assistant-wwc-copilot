@@ -6,6 +6,7 @@ matplotlib.use("Agg")  # Non-interactive backend for server
 import base64
 import io
 import logging
+from typing import Optional
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -23,7 +24,7 @@ class Visualizer:
         ci_lower: float,
         ci_upper: float,
         title: str = "Forest Plot of Study Effect Sizes",
-        figsize: tuple = None,
+        figsize: Optional[tuple] = None,
         dpi: int = 100,
     ) -> str:
         """
@@ -71,8 +72,9 @@ class Visualizer:
         # Find the minimum x value for proper label positioning
         all_effects = [s["effect_size"] for s in studies] + [pooled_effect]
         all_cis_low = [s["ci_lower"] for s in studies] + [ci_lower]
-        x_min = min(min(all_cis_low), min(all_effects)) - 0.5
-        x_max = max(max([s["ci_upper"] for s in studies]), ci_upper) + 0.5
+        all_cis_high = [s["ci_upper"] for s in studies] + [ci_upper]
+        x_min = min(*all_cis_low, *all_effects) - 0.5
+        x_max = max(*all_cis_high, ci_upper) + 0.5
 
         # Plot individual studies
         for i, study in enumerate(studies):

@@ -165,17 +165,18 @@ class ConflictDetector:
         ]
         sentences = paper_text.split(".")
 
-        for sentence in sentences:
-            sentence = sentence.strip()
+        for sentence_raw in sentences:
+            sentence = sentence_raw.strip()
             # More lenient: accept sentences with keywords OR substantial sentences
             if len(sentence) > 20:
-                if any(kw in sentence.lower() for kw in keywords):
+                has_keyword = any(kw in sentence.lower() for kw in keywords)
+                is_substantial = (
+                    len(sentence) > 50
+                    and len(findings) < max_findings
+                    and len(paper_text) > 500  # Only for full_text, not short abstracts
+                )
+                if has_keyword or is_substantial:
                     findings.append(sentence)
-                elif len(sentence) > 50 and len(findings) < max_findings:
-                    # For longer text (full_text), include substantial sentences even without keywords
-                    # This helps when abstracts are detailed but don't use our keywords
-                    if len(paper_text) > 500:  # Only for full_text, not short abstracts
-                        findings.append(sentence)
                 if len(findings) >= max_findings:
                     break
 

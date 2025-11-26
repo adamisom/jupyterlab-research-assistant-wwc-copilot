@@ -99,7 +99,8 @@ def _migrate_database(engine):
             with engine.connect() as conn:
                 conn.execute(
                     text(
-                        "ALTER TABLE learning_science_metadata ADD COLUMN age_group VARCHAR(50)"
+                        "ALTER TABLE learning_science_metadata "
+                        "ADD COLUMN age_group VARCHAR(50)"
                     )
                 )
                 conn.commit()

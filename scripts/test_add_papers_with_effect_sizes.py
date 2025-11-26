@@ -14,7 +14,6 @@ Usage:
 Or run in a Jupyter notebook cell.
 """
 
-import json
 import sys
 from pathlib import Path
 
@@ -33,7 +32,10 @@ def add_test_papers():
             "title": "Effectiveness of Spaced Repetition on Math Achievement",
             "authors": ["Smith, J.", "Doe, A."],
             "year": 2023,
-            "abstract": "This study examined the effect of spaced repetition on math achievement.",
+            "abstract": (
+                "This study examined the effect of spaced repetition "
+                "on math achievement."
+            ),
             "study_metadata": {
                 "methodology": "RCT",
                 "sample_size_baseline": 100,
@@ -101,7 +103,9 @@ def add_test_papers():
             "title": "Multimedia Learning in History Education",
             "authors": ["Wilson, T.", "Anderson, P."],
             "year": 2022,
-            "abstract": "Experimental study comparing multimedia vs. traditional instruction.",
+            "abstract": (
+                "Experimental study comparing multimedia vs. traditional instruction."
+            ),
             "study_metadata": {
                 "methodology": "RCT",
                 "sample_size_baseline": 120,
@@ -147,20 +151,21 @@ def add_test_papers():
         for paper_data in papers_data:
             paper = db.add_paper(paper_data)
             added_papers.append(paper)
-            print(f"✓ Added: {paper['title']} (ID: {paper['id']})")
+            print(f"✓ Added: {paper['title']} (ID: {paper['id']})")  # noqa: T201
 
-    print(f"\n✓ Successfully added {len(added_papers)} papers with effect sizes")
-    print("\nYou can now test:")
-    print("  - Meta-analysis (2+ papers)")
-    print("  - Bias assessment (3+ papers)")
-    print("  - Sensitivity analysis (3+ papers)")
-    print("  - Subgroup analysis (2+ papers with subgroup metadata)")
-    print("  - WWC Assessment (papers have sample sizes and attrition data)")
-    print("\nNote: For WWC assessment to pass, you need to:")
-    print("  1. Set 'Randomization Documented' = true")
-    print("  2. Choose an attrition boundary (cautious or optimistic)")
-    print(
-        "  - Papers 1-5 have low attrition rates that should pass with 'optimistic' boundary"
+    print(f"\n✓ Successfully added {len(added_papers)} papers with effect sizes")  # noqa: T201
+    print("\nYou can now test:")  # noqa: T201
+    print("  - Meta-analysis (2+ papers)")  # noqa: T201
+    print("  - Bias assessment (3+ papers)")  # noqa: T201
+    print("  - Sensitivity analysis (3+ papers)")  # noqa: T201
+    print("  - Subgroup analysis (2+ papers with subgroup metadata)")  # noqa: T201
+    print("  - WWC Assessment (papers have sample sizes and attrition data)")  # noqa: T201
+    print("\nNote: For WWC assessment to pass, you need to:")  # noqa: T201
+    print("  1. Set 'Randomization Documented' = true")  # noqa: T201
+    print("  2. Choose an attrition boundary (cautious or optimistic)")  # noqa: T201
+    print(  # noqa: T201
+        "  - Papers 1-5 have low attrition rates that should pass with "
+        "'optimistic' boundary"
     )
 
     return added_papers
