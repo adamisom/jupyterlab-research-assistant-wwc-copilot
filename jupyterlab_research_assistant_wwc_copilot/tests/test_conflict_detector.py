@@ -45,8 +45,9 @@ class TestConflictDetector:
     def test_find_contradictions_without_transformers(self):
         """Test that find_contradictions returns empty list when transformers unavailable."""
         detector = ConflictDetector()
-        # Force nli_pipeline to None (simulating transformers not available)
-        detector.nli_pipeline = None
+        # Force tokenizer and model to None (simulating transformers not available)
+        detector.tokenizer = None
+        detector.model = None
 
         contradictions = detector.find_contradictions(
             ["Finding 1"], ["Finding 2"], confidence_threshold=0.8
@@ -57,7 +58,8 @@ class TestConflictDetector:
     def test_find_contradictions_empty_findings(self):
         """Test find_contradictions with empty findings lists."""
         detector = ConflictDetector()
-        detector.nli_pipeline = None  # Simulate transformers unavailable
+        detector.tokenizer = None  # Simulate transformers unavailable
+        detector.model = None
 
         contradictions = detector.find_contradictions([], ["Finding 2"])
 
