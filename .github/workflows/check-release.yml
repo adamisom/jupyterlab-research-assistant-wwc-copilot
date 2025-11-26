@@ -16,8 +16,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
+          ref: ${{ github.ref }}
           fetch-depth: 0
           fetch-tags: true
+      - name: Setup Git References
+        run: |
+          git fetch origin --tags
+          # Create a local branch from the tag so releaser can reference it
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          git checkout -b "release-$TAG_NAME" "$TAG_NAME" || true
+          git tag -l
       - name: Base Setup
         uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
       - name: Check Release
