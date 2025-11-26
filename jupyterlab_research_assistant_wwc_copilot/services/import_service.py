@@ -121,7 +121,11 @@ class ImportService:
                         f"Found existing paper with full PDF (same title/authors/year): {title}. "
                         f"Not uploading duplicate PDF for paper ID {existing_paper['id']}."
                     )
-                    return {"paper": existing_paper, "is_duplicate": True, "already_has_pdf": True}
+                    return {
+                        "paper": existing_paper,
+                        "is_duplicate": True,
+                        "already_has_pdf": True,
+                    }
                 else:
                     # Paper is metadata-only - update it with PDF data
                     logger.info(
@@ -142,7 +146,11 @@ class ImportService:
                         merged_data.pop("learning_science_metadata", None)
 
                     paper = db.update_paper(existing_paper["id"], merged_data)
-                    return {"paper": paper, "is_duplicate": True, "already_has_pdf": False}
+                    return {
+                        "paper": paper,
+                        "is_duplicate": True,
+                        "already_has_pdf": False,
+                    }
             else:
                 # Add new paper
                 paper = db.add_paper(paper_data)

@@ -284,11 +284,22 @@ export const LibraryTab: React.FC = () => {
           {isUploading ? 'Uploading...' : 'Upload PDF'}
         </label>
         {(() => {
-          // Count selected papers with full PDFs
-          const selectedWithPDFs = papers.filter(
-            p => p.id !== undefined && selectedPapers.has(p.id) && hasFullPDF(p)
+          // Get all selected papers
+          const selectedPaperObjects = papers.filter(
+            p => p.id !== undefined && selectedPapers.has(p.id)
           );
-          return selectedWithPDFs.length >= 2 ? (
+          // Count selected papers with full PDFs
+          const selectedWithPDFs = selectedPaperObjects.filter(p =>
+            hasFullPDF(p)
+          );
+          // Check if any metadata-only papers are selected
+          const selectedMetadataOnly = selectedPaperObjects.filter(
+            p => !hasFullPDF(p)
+          );
+
+          // Show button only if: 2+ full-PDF papers selected AND no metadata-only papers selected
+          return selectedWithPDFs.length >= 2 &&
+            selectedMetadataOnly.length === 0 ? (
             <button
               onClick={handleOpenSynthesis}
               className="jp-WWCExtension-button jp-WWCExtension-synthesis-button"
