@@ -451,7 +451,7 @@ class ConflictDetectionHandler(BaseAPIHandler):
 
                 # Extract findings and detect conflicts
                 detector = ConflictDetector()
-                
+
                 # Check if NLI pipeline is available
                 if detector.nli_pipeline is None:
                     logger.warning(
@@ -510,13 +510,13 @@ class ConflictDetectionHandler(BaseAPIHandler):
                     "n_contradictions": len(all_contradictions),
                     "status": "success",
                 }
-                
+
                 if findings_extracted == 0:
                     result["message"] = (
                         "No findings could be extracted from the papers. "
                         "Papers may need full text or more detailed abstracts."
                     )
-                
+
                 self.send_success(result)
         except Exception as e:
             logger.exception("Conflict detection failed")
@@ -826,7 +826,16 @@ class SubgroupAnalysisHandler(BaseAPIHandler):
                             )
 
                 if len(studies) < 2:
-                    self.send_error(400, "Insufficient studies with subgroup data")
+                    self.send_error(
+                        400,
+                        (
+                            f"Insufficient studies with subgroup data. "
+                            f"Found {len(studies)} study(ies) with both effect sizes and "
+                            f"'{subgroup_variable}' metadata. "
+                            f"Subgroup analysis requires at least 2 studies. "
+                            f"Papers may need AI extraction to populate subgroup metadata."
+                        ),
+                    )
                     return
 
                 # Perform subgroup analysis
@@ -896,7 +905,16 @@ class BiasAssessmentHandler(BaseAPIHandler):
                             )
 
                 if len(studies) < 3:
-                    self.send_error(400, "Insufficient studies with effect size data")
+                    self.send_error(
+                        400,
+                        (
+                            f"Insufficient studies with effect size data. "
+                            f"Found {len(studies)} study(ies) with effect sizes. "
+                            f"Bias assessment requires at least 3 studies. "
+                            f"Papers need effect sizes in study_metadata.effect_sizes. "
+                            f"Upload PDFs with AI extraction enabled, or add papers via API with effect size data."
+                        ),
+                    )
                     return
 
                 # Extract arrays
@@ -982,7 +1000,16 @@ class SensitivityAnalysisHandler(BaseAPIHandler):
                             )
 
                 if len(studies) < 3:
-                    self.send_error(400, "Insufficient studies with effect size data")
+                    self.send_error(
+                        400,
+                        (
+                            f"Insufficient studies with effect size data. "
+                            f"Found {len(studies)} study(ies) with effect sizes. "
+                            f"Sensitivity analysis requires at least 3 studies. "
+                            f"Papers need effect sizes in study_metadata.effect_sizes. "
+                            f"Upload PDFs with AI extraction enabled, or add papers via API with effect size data."
+                        ),
+                    )
                     return
 
                 analyzer = MetaAnalyzer()

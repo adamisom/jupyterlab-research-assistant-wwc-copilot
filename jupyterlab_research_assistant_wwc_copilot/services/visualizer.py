@@ -23,7 +23,7 @@ class Visualizer:
         ci_lower: float,
         ci_upper: float,
         title: str = "Forest Plot of Study Effect Sizes",
-        figsize: tuple = (10, 8),
+        figsize: tuple = None,
         dpi: int = 100,
     ) -> str:
         """
@@ -39,16 +39,40 @@ class Visualizer:
             ci_lower: Lower CI bound for pooled effect
             ci_upper: Upper CI bound for pooled effect
             title: Plot title
-            figsize: Figure size (width, height) in inches
+            figsize: Figure size (width, height) in inches (auto-calculated if None)
             dpi: Resolution in dots per inch
 
         Returns:
             Base64-encoded PNG image string
         """
+        n_studies = len(studies)
+
+        # Calculate dynamic figure size based on number of studies
+        if figsize is None:
+            height = max(6, (n_studies + 1) * 0.8)  # 0.8 inches per study
+            width = 12  # Wider to accommodate labels
+            figsize = (width, height)
+
+        # Create figure with more space for labels
         fig, ax = plt.subplots(figsize=figsize, dpi=dpi)
 
-        n_studies = len(studies)
+        # Adjust margins to prevent label overlap
+        plt.subplots_adjust(left=0.25, right=0.95, top=0.95, bottom=0.1)
+
         y_positions = np.arange(n_studies + 1)  # +1 for pooled effect row
+
+        # Helper function to truncate long labels
+        def truncate_label(label: str, max_length: int = 50) -> str:
+            """Truncate label and add ellipsis if too long."""
+            if len(label) <= max_length:
+                return label
+            return label[: max_length - 3] + "..."
+
+        # Find the minimum x value for proper label positioning
+        all_effects = [s["effect_size"] for s in studies] + [pooled_effect]
+        all_cis_low = [s["ci_lower"] for s in studies] + [ci_lower]
+        x_min = min(min(all_cis_low), min(all_effects)) - 0.5
+        x_max = max(max([s["ci_upper"] for s in studies]), ci_upper) + 0.5
 
         # Plot individual studies
         for i, study in enumerate(studies):
@@ -63,9 +87,18 @@ class Visualizer:
             # Plot confidence interval
             ax.plot([ci_low, ci_high], [y_pos, y_pos], "b-", linewidth=2)
 
-            # Add study label
+            # Add study label on the left (truncated)
             label = study.get("study_label", f"Study {i + 1}")
-            ax.text(-0.5, y_pos, label, va="center", ha="right", fontsize=9)
+            truncated_label = truncate_label(label, max_length=60)
+            ax.text(
+                x_min,
+                y_pos,
+                truncated_label,
+                va="center",
+                ha="right",
+                fontsize=9,
+                wrap=True,
+            )
 
         # Plot pooled effect (diamond shape)
         pooled_y = y_positions[-1]
@@ -89,22 +122,30 @@ class Visualizer:
         ax.set_xlabel("Effect Size (Cohen's d)", fontsize=11)
         ax.set_ylabel("Study", fontsize=11)
         ax.set_title(title, fontsize=12, fontweight="bold")
-        ax.set_yticks(y_positions)
-        ax.set_yticklabels(
-            [s.get("study_label", f"Study {i + 1}") for i, s in enumerate(studies)]
-            + ["Pooled Effect"]
-        )
-        ax.grid(True, alpha=0.3, axis="x")
-        ax.legend(loc="best")
 
-        # Add text annotation for pooled effect
+        # Set y-axis ticks with truncated labels
+        y_labels = [
+            truncate_label(s.get("study_label", f"Study {i + 1}"), max_length=40)
+            for i, s in enumerate(studies)
+        ] + ["Pooled Effect"]
+        ax.set_yticks(y_positions)
+        ax.set_yticklabels(y_labels, fontsize=9)
+
+        # Set x-axis limits with padding
+        ax.set_xlim(x_min, x_max)
+
+        ax.grid(True, alpha=0.3, axis="x")
+        ax.legend(loc="upper right", fontsize=9)
+
+        # Add text annotation for pooled effect (positioned to avoid overlap)
+        annotation_x = max(ci_upper, pooled_effect) + 0.15
         ax.text(
-            pooled_effect + 0.1,
+            annotation_x,
             pooled_y,
-            f"d = {pooled_effect:.3f} [{ci_lower:.3f}, {ci_upper:.3f}]",
+            f"d = {pooled_effect:.3f}\n[{ci_lower:.3f}, {ci_upper:.3f}]",
             va="center",
             fontsize=9,
-            bbox={"boxstyle": "round", "facecolor": "wheat", "alpha": 0.5},
+            bbox={"boxstyle": "round", "facecolor": "wheat", "alpha": 0.7, "pad": 0.5},
         )
 
         plt.tight_layout()

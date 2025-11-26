@@ -696,12 +696,12 @@
   background-color: var(--jp-layout-color2);
 }
 
-.jp-WWCExtension-tab-active {
-  color: var(--jp-brand-color1);
-  border-bottom-color: var(--jp-brand-color1);
-  border-bottom-width: 3px;
-  font-weight: 600;
-  background-color: var(--jp-layout-color2);
+.jp-WWCExtension-synthesis-tabs button.jp-WWCExtension-tab-active {
+  color: var(--jp-brand-color1) !important;
+  border-bottom: 3px solid var(--jp-brand-color1) !important;
+  font-weight: 700 !important;
+  background-color: var(--jp-brand-color3) !important;
+  border-radius: var(--jp-border-radius) var(--jp-border-radius) 0 0;
   /* Prevent layout shift by maintaining consistent spacing */
   letter-spacing: -0.01em;
 }

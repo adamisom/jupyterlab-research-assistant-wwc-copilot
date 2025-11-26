@@ -28,10 +28,15 @@ export const MetaAnalysisView: React.FC<MetaAnalysisViewProps> = ({
           <span>{formatNumber(result.p_value, 4)}</span>
         </div>
         <div className="jp-WWCExtension-meta-analysis-stat">
-          <strong>I² (Heterogeneity):</strong>
+          <strong>I²:</strong>
           <span>
             {formatNumber(result.i_squared, 1)}% -{' '}
-            {result.heterogeneity_interpretation || 'N/A'}
+            {result.heterogeneity_interpretation
+              ? result.heterogeneity_interpretation.replace(
+                  /\s*heterogeneity\s*/gi,
+                  ''
+                )
+              : 'N/A'}
           </span>
         </div>
         <div className="jp-WWCExtension-meta-analysis-stat">
