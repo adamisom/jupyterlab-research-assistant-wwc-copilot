@@ -38,6 +38,8 @@ def add_test_papers():
                 "methodology": "RCT",
                 "sample_size_baseline": 100,
                 "sample_size_endline": 95,
+                "treatment_attrition": 0.04,  # 4% attrition in treatment
+                "control_attrition": 0.06,  # 6% attrition in control
                 "effect_sizes": {
                     "math_achievement": {"d": 0.45, "se": 0.12},
                     "retention": {"d": 0.38, "se": 0.14},
@@ -58,6 +60,8 @@ def add_test_papers():
                 "methodology": "RCT",
                 "sample_size_baseline": 150,
                 "sample_size_endline": 145,
+                "treatment_attrition": 0.03,  # 3% attrition in treatment
+                "control_attrition": 0.03,  # 3% attrition in control
                 "effect_sizes": {
                     "science_achievement": {"d": 0.62, "se": 0.15},
                     "engagement": {"d": 0.51, "se": 0.13},
@@ -78,6 +82,10 @@ def add_test_papers():
                 "methodology": "Quasi-experimental",
                 "sample_size_baseline": 200,
                 "sample_size_endline": 195,
+                "treatment_attrition": 0.02,  # 2% attrition in treatment
+                "control_attrition": 0.03,  # 3% attrition in control
+                "baseline_means": {"treatment": 50.2, "control": 50.0},
+                "baseline_sds": {"treatment": 10.5, "control": 10.3},
                 "effect_sizes": {
                     "reading_comprehension": {"d": 0.38, "se": 0.11},
                     "vocabulary": {"d": 0.29, "se": 0.12},
@@ -98,6 +106,8 @@ def add_test_papers():
                 "methodology": "RCT",
                 "sample_size_baseline": 120,
                 "sample_size_endline": 118,
+                "treatment_attrition": 0.015,  # 1.5% attrition in treatment
+                "control_attrition": 0.017,  # 1.7% attrition in control
                 "effect_sizes": {
                     "history_knowledge": {"d": 0.55, "se": 0.14},
                 },
@@ -117,6 +127,8 @@ def add_test_papers():
                 "methodology": "RCT",
                 "sample_size_baseline": 180,
                 "sample_size_endline": 175,
+                "treatment_attrition": 0.025,  # 2.5% attrition in treatment
+                "control_attrition": 0.028,  # 2.8% attrition in control
                 "effect_sizes": {
                     "writing_quality": {"d": 0.41, "se": 0.13},
                     "revision_quality": {"d": 0.33, "se": 0.12},
@@ -143,10 +155,16 @@ def add_test_papers():
     print("  - Bias assessment (3+ papers)")
     print("  - Sensitivity analysis (3+ papers)")
     print("  - Subgroup analysis (2+ papers with subgroup metadata)")
+    print("  - WWC Assessment (papers have sample sizes and attrition data)")
+    print("\nNote: For WWC assessment to pass, you need to:")
+    print("  1. Set 'Randomization Documented' = true")
+    print("  2. Choose an attrition boundary (cautious or optimistic)")
+    print(
+        "  - Papers 1-5 have low attrition rates that should pass with 'optimistic' boundary"
+    )
 
     return added_papers
 
 
 if __name__ == "__main__":
     add_test_papers()
-
