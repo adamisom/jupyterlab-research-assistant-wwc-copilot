@@ -838,7 +838,7 @@ To ensure the tool is particularly useful for learning science research, the fol
 - **What Works Clearinghouse**: <https://ies.ed.gov/ncee/wwc/>
 - **Campbell Collaboration**: <https://www.campbellcollaboration.org/>
 - **GRADE handbook**: <https://gdt.gradepro.org/app/handbook/handbook.html>
-- **Cochrane Handbook**: <https://training.cochrane.org/handbook>
+- **Cochrane Handbook**: Search for "Cochrane handbook" to find the latest version
 
 ### Statistical Tools
 
