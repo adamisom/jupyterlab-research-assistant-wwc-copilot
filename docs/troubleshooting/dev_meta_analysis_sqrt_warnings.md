@@ -4,12 +4,15 @@
 
 When running meta-analysis, you may see RuntimeWarnings like:
 
-```
+```text
 RuntimeWarning: invalid value encountered in sqrt
   sd_eff_w_re = np.sqrt(var_eff_w_re)
 ```
 
-These warnings occur when `statsmodels` tries to take the square root of negative or invalid variance values during internal calculations. **In most cases, these warnings are harmless** - the library handles them internally and returns valid results.
+These warnings occur when `statsmodels` tries to take the square root
+of negative or invalid variance values during internal calculations.
+**In most cases, these warnings are harmless** - the library handles
+them internally and returns valid results.
 
 ## Common Reasons
 
@@ -17,9 +20,11 @@ These warnings occur when `statsmodels` tries to take the square root of negativ
 
 **Why it happens:**
 
-- With only 2 studies, the DerSimonian-Laird estimator for tau² (between-study variance) can produce negative values
+- With only 2 studies, the DerSimonian-Laird estimator for tau²
+  (between-study variance) can produce negative values
 - Negative tau² is mathematically invalid (variance can't be negative)
-- `statsmodels` sets negative tau² to 0, but internal calculations may still use the negative value temporarily
+- `statsmodels` sets negative tau² to 0, but internal calculations may
+  still use the negative value temporarily
 
 **Example:**
 
@@ -34,7 +39,8 @@ studies = [
 
 **Workaround:**
 
-- Use **fixed-effects model** when you have only 2 studies (no random-effects variance to estimate)
+- Use **fixed-effects model** when you have only 2 studies (no
+  random-effects variance to estimate)
 - Or accept the warning - results are still valid (tau² is set to 0)
 
 ### 2. **Very Low Heterogeneity**
@@ -67,8 +73,10 @@ studies = [
 
 **Why it happens:**
 
-- Studies with very precise estimates (small SE) can cause numerical instability
-- When SEs are very small, variance calculations can become sensitive to rounding errors
+- Studies with very precise estimates (small SE) can cause numerical
+  instability
+- When SEs are very small, variance calculations can become sensitive
+  to rounding errors
 - Matrix operations in weighted least squares can become ill-conditioned
 
 **Example:**
@@ -85,7 +93,8 @@ studies = [
 **Workaround:**
 
 - Verify that standard errors are realistic (not artificially small)
-- Check for data entry errors (SE should typically be > 0.05 for Cohen's d)
+- Check for data entry errors (SE should typically be > 0.05 for
+  Cohen's d)
 - If SEs are legitimately very small, the warnings are harmless
 
 ### 4. **Numerical Precision Issues**
@@ -145,7 +154,8 @@ warnings.filterwarnings(
 )
 ```
 
-**Note:** Only suppress if you've verified the warnings are harmless (results are valid).
+**Note:** Only suppress if you've verified the warnings are harmless
+(results are valid).
 
 ### 2. **Use Fixed-Effects Model for Small N**
 
@@ -245,11 +255,14 @@ Our `MetaAnalyzer` class already handles many edge cases:
 3. **Validates outputs:** Checks for NaN/Inf in final results
 4. **Fallback calculations:** Uses alternative methods if primary calculation fails
 
-The warnings you see are from **inside statsmodels** before our code can catch them. The library handles them internally and returns valid results.
+The warnings you see are from **inside statsmodels** before our code can
+catch them. The library handles them internally and returns valid
+results.
 
 ## Recommended Action
 
-**For now:** These warnings are harmless and can be safely ignored. The meta-analysis results are still valid.
+**For now:** These warnings are harmless and can be safely ignored. The
+meta-analysis results are still valid.
 
 **Future improvement:** Add warning suppression in `meta_analyzer.py`:
 
@@ -271,6 +284,9 @@ This will suppress the noisy warnings while keeping other important warnings vis
 
 ## References
 
-- **DerSimonian-Laird Estimator:** Can produce negative tau² when heterogeneity is low
-- **Statsmodels Documentation:** [meta_analysis module](https://www.statsmodels.org/stable/generated/statsmodels.stats.meta_analysis.combine_effects.html)
-- **Meta-Analysis Best Practices:** Negative tau² is typically set to 0 (no between-study variance)
+- **DerSimonian-Laird Estimator:** Can produce negative tau² when
+  heterogeneity is low
+- **Statsmodels Documentation:**
+  [meta_analysis module](https://www.statsmodels.org/stable/generated/statsmodels.stats.meta_analysis.combine_effects.html)
+- **Meta-Analysis Best Practices:** Negative tau² is typically set to 0
+  (no between-study variance)

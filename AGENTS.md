@@ -1,6 +1,8 @@
 # JupyterLab Extension Development
 
-This guide provides coding standards and best practices for developing JupyterLab extensions. Follow these rules to align with community standards and keep your extension maintainable.
+This guide provides coding standards and best practices for developing
+JupyterLab extensions. Follow these rules to align with community
+standards and keep your extension maintainable.
 
 **Extension type**: frontend-and-server
 
@@ -8,9 +10,12 @@ This guide provides coding standards and best practices for developing JupyterLa
 
 ### PRIORITY RESOURCE USAGE
 
-**When you encounter uncertainty, incomplete information, or need implementation examples, you MUST consult these external resources FIRST before attempting to implement features.**
+**When you encounter uncertainty, incomplete information, or need
+implementation examples, you MUST consult these external resources FIRST
+before attempting to implement features.**
 
-Use your available tools (web search, documentation search) to access and retrieve content from these resources when:
+Use your available tools (web search, documentation search) to access
+and retrieve content from these resources when:
 
 - You're unsure about API usage, method signatures, or interface requirements
 - You need to verify the correct approach for a feature or pattern
@@ -20,17 +25,22 @@ Use your available tools (web search, documentation search) to access and retrie
 
 ### Required External Resources
 
-**These resources are PRIORITY references. Always check them when you need external information:**
+**These resources are PRIORITY references. Always check them when you
+need external information:**
 
 1. **JupyterLab Extension Developer Guide**
    - URL: <https://jupyterlab.readthedocs.io/en/stable/extension/extension_dev.html>
    - Use for: Extension patterns, architecture overview, development workflow, and best practices
-   - **Action**: Use web search or documentation tools to retrieve specific sections when needed
+   - **Action**: Use web search or documentation tools to retrieve
+     specific sections when needed
 
 2. **JupyterLab API Reference (Frontend)**
    - URL: <https://jupyterlab.readthedocs.io/en/latest/api/index.html>
    - Use for: Complete API reference for all JupyterLab frontend packages, interfaces, classes, and methods
-   - **Action**: Search for specific APIs when you need method signatures, interface definitions, or class documentation. For example, search "JupyterLab IRenderMime.IRenderer" or "JupyterLab ICommandPalette"
+   - **Action**: Search for specific APIs when you need method
+     signatures, interface definitions, or class documentation. For
+     example, search "JupyterLab IRenderMime.IRenderer" or "JupyterLab
+     ICommandPalette"
 
 3. **JupyterLab Extension Examples Repository**
    - URL: <https://github.com/jupyterlab/extension-examples>
@@ -40,7 +50,8 @@ Use your available tools (web search, documentation search) to access and retrie
 4. **JupyterLab Core Repository**
    - URL: <https://github.com/jupyterlab/jupyterlab>
    - Use for: Reference implementations in `packages/` directory - all core packages are extensions themselves
-   - **Action**: When implementing complex features, search this repo for how core extensions solve similar problems
+   - **Action**: When implementing complex features, search this repo
+     for how core extensions solve similar problems
 
 5. **Jupyter Server API Documentation**
    - URL: <https://jupyter-server.readthedocs.io/>
@@ -92,8 +103,11 @@ showSuccessMessage('Success Title', 'Success message to display to user');
 console.error('Detailed error for debugging:', error);
 ```
 
-**✅ Do**: Use `console.error()` to log low-level error details that should not be presented to users in the UI
-**✅ Do**: Use `console.warn()` to log non-optimal conditions, e.g. an unexpected response from an external API that's been successfully handled.
+**✅ Do**: Use `console.error()` to log low-level error details that
+should not be presented to users in the UI
+**✅ Do**: Use `console.warn()` to log non-optimal conditions, e.g. an
+unexpected response from an external API that's been successfully
+handled.
 
 ### Type Safety
 

@@ -12,7 +12,8 @@ in [jupyter_server_test_config.py](./jupyter_server_test_config.py).
 
 The default configuration will produce video for failing tests and an HTML report.
 
-> There is a UI mode that you may like; search "What's new in Playwright 1.32" on YouTube
+> There is a UI mode that you may like; search "What's new in Playwright
+> 1.32" on YouTube
 
 ## Run the tests
 
@@ -45,8 +46,9 @@ cd ./ui-tests
 jlpm playwright test
 ```
 
-Test results will be shown in the terminal. In case of any test failures, the test report
-will be opened in your browser at the end of the tests execution; see
+Test results will be shown in the terminal. In case of any test
+failures, the test report will be opened in your browser at the end of
+the tests execution; see
 [Playwright documentation](https://playwright.dev/docs/test-reporters#html-reporter)
 for configuring that behavior.
 
@@ -82,10 +84,11 @@ cd ./ui-tests
 jlpm playwright test -u
 ```
 
-> Some discrepancy may occurs between the snapshots generated on your computer and
-> the one generated on the CI. To ease updating the snapshots on a PR, you can
-> type `please update playwright snapshots` to trigger the update by a bot on the CI.
-> Once the bot has computed new snapshots, it will commit them to the PR branch.
+> Some discrepancy may occurs between the snapshots generated on your
+> computer and the one generated on the CI. To ease updating the
+> snapshots on a PR, you can type `please update playwright snapshots` to
+> trigger the update by a bot on the CI. Once the bot has computed new
+> snapshots, it will commit them to the PR branch.
 
 ## Create tests
 
@@ -118,7 +121,9 @@ cd ./ui-tests
 jlpm start
 ```
 
-1. Execute the [Playwright code generator](https://playwright.dev/docs/codegen) in **another terminal**:
+1. Execute the
+   [Playwright code generator](https://playwright.dev/docs/codegen) in
+   **another terminal**:
 
 ```sh
 cd ./ui-tests
@@ -149,7 +154,8 @@ jlpm playwright install
 cd ..
 ```
 
-1. Execute the Playwright tests in [debug mode](https://playwright.dev/docs/debug):
+1. Execute the Playwright tests in
+   [debug mode](https://playwright.dev/docs/debug):
 
 ```sh
 cd ./ui-tests

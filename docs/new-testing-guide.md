@@ -3,7 +3,8 @@
 **Setup:**
 
 - Build: `jlpm build`
-- Install/update (one-time): `pip install -e . && jupyter labextension develop . --overwrite`
+- Install/update (one-time): `pip install -e . && jupyter labextension
+  develop . --overwrite`
 - Restart: `jupyter lab`
 
 ## Quick Smoke Test
@@ -37,7 +38,8 @@
 - [ ] View all imported papers in list/grid
 - [ ] Search library by title/author/keyword
 - [ ] Filter papers (if applicable)
-- [ ] Paper cards display: title, authors (as names, not [object Object]), year, citation count
+- [ ] Paper cards display: title, authors (as names, not [object
+  Object]), year, citation count
 - [ ] Paper cards have hover effects and left border accent
 - [ ] Click paper card opens detail view
 - [ ] Select multiple papers (checkbox selection)
@@ -106,7 +108,8 @@
 - [ ] Open with 2+ selected papers from library
 - [ ] Command from command palette works
 - [ ] Error if < 2 papers selected
-- [ ] All tabs visible: Meta-Analysis, Conflict Detection, Subgroup Analysis, Bias Assessment, Sensitivity Analysis
+- [ ] All tabs visible: Meta-Analysis, Conflict Detection, Subgroup
+  Analysis, Bias Assessment, Sensitivity Analysis
 
 ### Meta-Analysis Tab
 

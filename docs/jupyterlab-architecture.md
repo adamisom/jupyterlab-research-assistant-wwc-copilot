@@ -1,36 +1,54 @@
 # JupyterLab Architecture Deep Dive for the WWC Co-Pilot
 
-This guide provides a comprehensive overview of the JupyterLab architecture, specifically tailored to building your WWC Co-Pilot extension. It covers the high-level structure, key directories, design patterns, and specific examples relevant to your project.
+This guide provides a comprehensive overview of the JupyterLab
+architecture, specifically tailored to building your WWC Co-Pilot
+extension. It covers the high-level structure, key directories, design
+patterns, and specific examples relevant to your project.
 
 ## 1. High-Level Architecture Overview
 
 JupyterLab is a modular, extensible web application built on a frontend-backend architecture:
 
-- **Frontend**: A single-page application written in TypeScript, using React for UI components and Lumino for the underlying widget and messaging system.
-- **Backend**: A Jupyter Server extension written in Python, providing REST APIs for file access, kernel management, and other services.
+- **Frontend**: A single-page application written in TypeScript, using
+  React for UI components and Lumino for the underlying widget and
+  messaging system.
+- **Backend**: A Jupyter Server extension written in Python, providing
+  REST APIs for file access, kernel management, and other services.
 
 ### The Monorepo Structure
 
-The `jupyterlab/jupyterlab` repository is a **monorepo** managed with Lerna and Yarn workspaces. It contains over 100 individual TypeScript packages in the `packages/` directory. This structure allows for code sharing and consistent dependency management across the entire project.
+The `jupyterlab/jupyterlab` repository is a **monorepo** managed with
+Lerna and Yarn workspaces. It contains over 100 individual TypeScript
+packages in the `packages/` directory. This structure allows for code
+sharing and consistent dependency management across the entire project.
 
 ### Key Architectural Concepts
 
-- **Plugins**: The fundamental unit of extension. Everything in JupyterLab is a plugin, including core features like the file browser and notebook.
-- **Services & Tokens**: A dependency injection system where plugins can provide and consume services using unique `Token` identifiers.
-- **Lumino Widgets**: The foundation of the UI. Lumino provides a high-performance widget system with features like drag-and-drop, custom layouts, and messaging.
-- **Server Extensions**: The mechanism for adding backend functionality to JupyterLab with custom Python handlers.
+- **Plugins**: The fundamental unit of extension. Everything in
+  JupyterLab is a plugin, including core features like the file browser
+  and notebook.
+- **Services & Tokens**: A dependency injection system where plugins can
+  provide and consume services using unique `Token` identifiers.
+- **Lumino Widgets**: The foundation of the UI. Lumino provides a
+  high-performance widget system with features like drag-and-drop, custom
+  layouts, and messaging.
+- **Server Extensions**: The mechanism for adding backend functionality
+  to JupyterLab with custom Python handlers.
 
 ## 2. Key Directories & Their Purposes
 
 When exploring the JupyterLab codebase, these are the most important directories to understand:
 
-| Directory             | Purpose                                                                                                 |
-| --------------------- | ------------------------------------------------------------------------------------------------------- |
-| `packages/`           | **The heart of the frontend**. Contains all the individual TypeScript packages that make up JupyterLab. |
-| `jupyterlab/`         | **The core Python package**. Contains the server extension, application entry point, and build tools.   |
-| `jupyterlab/handlers` | Python API handlers for the backend server.                                                             |
-| `examples/`           | Example extensions that demonstrate various features and integration points.                            |
-| `testutils/`          | Utilities for testing JupyterLab extensions.                                                            |
+| Directory             | Purpose                                                          |
+| --------------------- | ---------------------------------------------------------------- |
+| `packages/`           | **The heart of the frontend**. Contains all the individual
+  TypeScript packages that make up JupyterLab.                     |
+| `jupyterlab/`         | **The core Python package**. Contains the server extension,
+  application entry point, and build tools.                        |
+| `jupyterlab/handlers` | Python API handlers for the backend server.                     |
+| `examples/`           | Example extensions that demonstrate various features and
+  integration points.                                                |
+| `testutils/`          | Utilities for testing JupyterLab extensions.                    |
 
 ## 3. The "Component + Extension" Pattern
 
@@ -38,15 +56,20 @@ JupyterLab follows a common pattern where a feature is split into two packages:
 
 1. **Component Package** (e.g., `@jupyterlab/filebrowser`):
     - Contains the core UI widgets, data models, and logic.
-    - Is framework-agnostic (doesn't depend on the JupyterLab application shell).
+    - Is framework-agnostic (doesn't depend on the JupyterLab
+      application shell).
     - Can be used in other applications outside of JupyterLab.
 
 2. **Extension Package** (e.g., `@jupyterlab/filebrowser-extension`):
     - Integrates the component package into JupyterLab.
-    - Registers commands, adds widgets to the shell, and connects to other services.
+    - Registers commands, adds widgets to the shell, and connects to
+      other services.
     - Depends on the JupyterLab application shell.
 
-**For your project**: Your `jupyterlab-research-assistant` extension will follow this pattern. The core logic for your Research Library and Synthesis Engine will be in component packages, and the main extension package will integrate them into JupyterLab.
+**For your project**: Your `jupyterlab-research-assistant` extension
+will follow this pattern. The core logic for your Research Library and
+Synthesis Engine will be in component packages, and the main extension
+package will integrate them into JupyterLab.
 
 ## 4. Pattern Cheat Sheet for the WWC Co-Pilot
 
@@ -112,7 +135,8 @@ const activate = (app: JupyterFrontEnd, restorer: ILayoutRestorer | null) => {
 
 ### Pattern 2: Creating a Server Extension API (for PDF processing, database access)
 
-**Goal**: Create a Python backend to handle file uploads, run AI metadata extraction, and query the SQLite database.
+**Goal**: Create a Python backend to handle file uploads, run AI
+metadata extraction, and query the SQLite database.
 
 **Key Files to Study**:
 
@@ -166,7 +190,8 @@ def _load_jupyter_server_extension(server_app):
 
 ### Pattern 3: Using Tokens for Dependency Injection
 
-**Goal**: Define a service for your research library and allow other plugins to access it.
+**Goal**: Define a service for your research library and allow other
+plugins to access it.
 
 **Key Files to Study**:
 
@@ -219,13 +244,16 @@ const otherPlugin: JupyterFrontEndPlugin<void> = {
 
 ## 5. Architecture Diagram for the WWC Co-Pilot
 
-See the [architecture diagram](./architecture.mmd) for a visual representation of the WWC Co-Pilot system architecture.
+See the [architecture diagram](./architecture.mmd) for a visual
+representation of the WWC Co-Pilot system architecture.
 
 ## 6. Specific Examples for the WWC Co-Pilot Features
 
 ### Feature 1: Research Library Panel
 
-**What you're building**: A sidebar panel that displays imported papers, allows search/filtering, and provides a "Discovery" tab for Semantic Scholar integration.
+**What you're building**: A sidebar panel that displays imported
+papers, allows search/filtering, and provides a "Discovery" tab for
+Semantic Scholar integration.
 
 **Key patterns to use**:
 
@@ -291,7 +319,9 @@ export class ResearchLibraryAPI {
 
 ### Feature 2: Synthesis Workbench
 
-**What you're building**: A main area widget that opens when a user selects papers for synthesis. It includes the WWC Co-Pilot, meta-analysis tools, and conflict detection.
+**What you're building**: A main area widget that opens when a user
+selects papers for synthesis. It includes the WWC Co-Pilot,
+meta-analysis tools, and conflict detection.
 
 **Key patterns to use**:
 
@@ -427,7 +457,8 @@ async def test_library_handler_get(jp_fetch):
 
 ## 8. Key Directories in the JupyterLab Monorepo
 
-Here's a quick reference for the most important packages in the `packages/` directory that you should study:
+Here's a quick reference for the most important packages in the
+`packages/` directory that you should study:
 
 | Package                       | Purpose                                                      | Relevance to WWC Co-Pilot                                                          |
 | ----------------------------- | ------------------------------------------------------------ | ---------------------------------------------------------------------------------- |

@@ -2,7 +2,9 @@
 
 ## Overview
 
-This document explains how conflict detection works in our system, identifies known issues, and provides troubleshooting strategies for improving accuracy.
+This document explains how conflict detection works in our system,
+identifies known issues, and provides troubleshooting strategies for
+improving accuracy.
 
 ## How Conflict Detection Works
 
@@ -17,7 +19,8 @@ This document explains how conflict detection works in our system, identifies kn
 2. **Contradiction Detection** (`find_contradictions`):
    - Compares every finding from paper 1 against every finding from paper 2
    - Uses Natural Language Inference (NLI) model to classify relationships
-   - Flags pairs where the model predicts "contradiction" with confidence ≥ threshold (default 0.8)
+   - Flags pairs where the model predicts "contradiction" with
+     confidence ≥ threshold (default 0.8)
 
 3. **NLI Model**: `cross-encoder/nli-deberta-v3-base`
    - Cross-encoder architecture (encodes both inputs together)
@@ -30,13 +33,16 @@ This document explains how conflict detection works in our system, identifies kn
 result = self.nli_pipeline(f"{f1} [SEP] {f2}")
 ```
 
-**⚠️ POTENTIAL ISSUE**: This format may not be correct for cross-encoder models. Cross-encoder models typically expect inputs in a specific format, often as a tuple or using the model's tokenizer directly.
+**⚠️ POTENTIAL ISSUE**: This format may not be correct for cross-encoder
+models. Cross-encoder models typically expect inputs in a specific
+format, often as a tuple or using the model's tokenizer directly.
 
 ## Known Issues
 
 ### 1. False Positives: Different Topics Flagged as Contradictions
 
-**Problem**: Findings about different research questions/interventions are being flagged as contradictory.
+**Problem**: Findings about different research questions/interventions
+are being flagged as contradictory.
 
 **Example**:
 
@@ -46,27 +52,35 @@ result = self.nli_pipeline(f"{f1} [SEP] {f2}")
 
 **Why this happens**:
 
-- NLI models are trained to detect logical contradictions (e.g., "The cat is black" vs "The cat is white")
-- They are NOT trained to understand that different interventions studying different outcomes are not contradictory
-- The model may interpret "different" as "contradictory" when findings address different topics
-- Cross-encoder models can be overconfident, producing high scores even for edge cases
+- NLI models are trained to detect logical contradictions (e.g., "The
+  cat is black" vs "The cat is white")
+- They are NOT trained to understand that different interventions
+  studying different outcomes are not contradictory
+- The model may interpret "different" as "contradictory" when findings
+  address different topics
+- Cross-encoder models can be overconfident, producing high scores even
+  for edge cases
 
 ### 2. Input Format May Be Incorrect
 
-**Issue**: Using `f"{f1} [SEP] {f2}"` as a string may not be the correct format for `cross-encoder/nli-deberta-v3-base`.
+**Issue**: Using `f"{f1} [SEP] {f2}"` as a string may not be the correct
+format for `cross-encoder/nli-deberta-v3-base`.
 
 **Expected format for cross-encoder models**:
 
-- Cross-encoder models typically expect inputs as a list of tuples: `[(premise, hypothesis), ...]`
+- Cross-encoder models typically expect inputs as a list of tuples:
+  `[(premise, hypothesis), ...]`
 - Or using the model's tokenizer with special tokens
-- The `[SEP]` token might not be properly recognized when passed as a plain string
+- The `[SEP]` token might not be properly recognized when passed as a
+  plain string
 
 ### 3. Model Training Context Mismatch
 
 **Issue**: The model was trained on MNLI, which contains:
 
 - Premise-hypothesis pairs designed for logical inference
-- Examples like: "The man is sleeping" (premise) vs "The man is awake" (hypothesis) → contradiction
+- Examples like: "The man is sleeping" (premise) vs "The man is awake"
+  (hypothesis) → contradiction
 
 **Our use case**:
 
@@ -80,8 +94,10 @@ result = self.nli_pipeline(f"{f1} [SEP] {f2}")
 
 **Possible reasons**:
 
-- Cross-encoder models can be overconfident, especially on out-of-distribution data
-- The model may be picking up on surface-level differences rather than true logical contradictions
+- Cross-encoder models can be overconfident, especially on
+  out-of-distribution data
+- The model may be picking up on surface-level differences rather than
+  true logical contradictions
 - High confidence doesn't necessarily mean the model is correct
 
 ## Troubleshooting Strategies
@@ -119,8 +135,10 @@ scores = model.predict([(f1, f2)])
 **Implementation ideas**:
 
 - Extract intervention type, outcome, or population from findings
-- Only compare findings that address the same or similar research questions
-- Use keyword matching or simple NLP to detect topic similarity before NLI comparison
+- Only compare findings that address the same or similar research
+  questions
+- Use keyword matching or simple NLP to detect topic similarity before
+  NLI comparison
 
 **Example**:
 
@@ -150,16 +168,21 @@ def are_same_topic(finding1: str, finding2: str) -> bool:
 - If findings mention different interventions → likely not contradictory
 - If findings mention different outcomes → likely not contradictory
 - If findings mention different populations → likely not contradictory
-- Only flag if findings are about the same intervention/outcome/population AND model says contradiction
+- Only flag if findings are about the same intervention/outcome/population
+  AND model says contradiction
 
 ### 5. Use a Different Model or Approach
 
 **Alternatives**:
 
-- **Sentence similarity models**: Use semantic similarity to detect when findings are about different topics
-- **Fine-tune on research findings**: Train/fine-tune a model specifically on research paper contradictions
-- **Rule-based pre-filtering**: Use keyword matching to identify same-topic findings before NLI
-- **Hybrid approach**: Combine NLI with topic modeling or keyword extraction
+- **Sentence similarity models**: Use semantic similarity to detect when
+  findings are about different topics
+- **Fine-tune on research findings**: Train/fine-tune a model specifically
+  on research paper contradictions
+- **Rule-based pre-filtering**: Use keyword matching to identify
+  same-topic findings before NLI
+- **Hybrid approach**: Combine NLI with topic modeling or keyword
+  extraction
 
 ### 6. Improve Finding Extraction
 
@@ -167,9 +190,11 @@ def are_same_topic(finding1: str, finding2: str) -> bool:
 
 **Improvements**:
 
-- Extract findings that include specific outcomes, effect sizes, or quantitative results
+- Extract findings that include specific outcomes, effect sizes, or
+  quantitative results
 - Ensure findings are complete sentences with clear claims
-- Filter findings to only include testable, specific claims (not descriptions of what was studied)
+- Filter findings to only include testable, specific claims (not
+  descriptions of what was studied)
 
 ### 7. Add Context to Findings
 
@@ -199,27 +224,43 @@ This might help the model recognize they're about different topics.
 
 ### Test Cases to Verify
 
-1. **True contradiction**: "Intervention A increased scores" vs "Intervention A decreased scores" (same intervention, opposite effects)
-2. **Different topics (should NOT flag)**: "Intervention A improved reading" vs "Intervention B improved math"
-3. **Same topic, different results (edge case)**: "Intervention A improved reading in elementary" vs "Intervention A had no effect on reading in high school"
-4. **Entailment (should NOT flag)**: "Intervention A improved reading" vs "Intervention A was effective for reading"
+1. **True contradiction**: "Intervention A increased scores" vs
+   "Intervention A decreased scores" (same intervention, opposite
+   effects)
+2. **Different topics (should NOT flag)**: "Intervention A improved
+   reading" vs "Intervention B improved math"
+3. **Same topic, different results (edge case)**: "Intervention A
+   improved reading in elementary" vs "Intervention A had no effect on
+   reading in high school"
+4. **Entailment (should NOT flag)**: "Intervention A improved reading"
+   vs "Intervention A was effective for reading"
 
 ### Debugging Steps
 
-1. **Log raw model outputs**: Print the full model response (all labels and scores, not just contradiction)
-2. **Test with known examples**: Use simple test cases to verify the model works correctly
-3. **Compare with other models**: Try different NLI models to see if results are consistent
-4. **Inspect extracted findings**: Verify that findings are specific and testable
+1. **Log raw model outputs**: Print the full model response (all labels
+   and scores, not just contradiction)
+2. **Test with known examples**: Use simple test cases to verify the
+   model works correctly
+3. **Compare with other models**: Try different NLI models to see if
+   results are consistent
+4. **Inspect extracted findings**: Verify that findings are specific
+   and testable
 
 ## Recommended Next Steps
 
-1. **Immediate**: Verify the input format is correct for cross-encoder models
-2. **Short-term**: Add topic/intervention filtering before NLI comparison
-3. **Medium-term**: Implement post-processing filters to remove obvious false positives
-4. **Long-term**: Consider fine-tuning or using a model specifically trained for research findings
+1. **Immediate**: Verify the input format is correct for cross-encoder
+   models
+2. **Short-term**: Add topic/intervention filtering before NLI
+   comparison
+3. **Medium-term**: Implement post-processing filters to remove obvious
+   false positives
+4. **Long-term**: Consider fine-tuning or using a model specifically
+   trained for research findings
 
 ## References
 
-- Hugging Face Model Card: `cross-encoder/nli-deberta-v3-base`
+- Hugging Face Model Card:
+  `cross-encoder/nli-deberta-v3-base`
 - MNLI Dataset: Multi-Genre Natural Language Inference
-- Cross-encoder architecture: Encodes both inputs together (vs. bi-encoder which encodes separately)
+- Cross-encoder architecture: Encodes both inputs together (vs.
+  bi-encoder which encodes separately)
