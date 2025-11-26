@@ -1,6 +1,7 @@
 """Conflict detection using Natural Language Inference (NLI) models."""
 
 import logging
+import re
 
 logger = logging.getLogger(__name__)
 
@@ -64,7 +65,8 @@ class ConflictDetector:
         Args:
             findings1: List of finding statements from first study
             findings2: List of finding statements from second study
-            confidence_threshold: Minimum confidence score for contradiction (0.0 to 1.0)
+            confidence_threshold: Minimum confidence score for contradiction
+                (0.0 to 1.0)
 
         Returns:
             List of contradiction dictionaries with:
@@ -133,7 +135,9 @@ class ConflictDetector:
                     "key_findings": {
                         "type": "array",
                         "items": {"type": "string"},
-                        "description": "List of key findings or conclusions from the study",
+                        "description": (
+                            "List of key findings or conclusions from the study"
+                        ),
                     }
                 },
                 "required": ["key_findings"],
@@ -149,35 +153,92 @@ class ConflictDetector:
                 )
 
         # Fallback to keyword-based extraction
+        # Prioritize specific, testable claims over generic descriptions
         findings = []
-        keywords = [
-            "significant",
+
+        # High-priority keywords: indicate specific findings or results
+        high_priority_keywords = [
             "found that",
             "results show",
-            "conclusion",
             "demonstrated",
+            "revealed",
+            "increased by",
+            "decreased by",
+            "improved",
+            "reduced",
+            "effect size",
+            "cohen's d",
+            "significant effect",
+            "no significant",
+        ]
+
+        # Medium-priority keywords: indicate conclusions or evidence
+        medium_priority_keywords = [
+            "significant",
+            "conclusion",
             "indicate",
             "suggest",
-            "reveal",
             "evidence",
             "effect",
             "impact",
         ]
+
+        # Low-priority: generic descriptive phrases (avoid if possible)
+        low_priority_phrases = [
+            "this study examined",
+            "this study investigated",
+            "the purpose of",
+            "the study aimed",
+        ]
+
         sentences = paper_text.split(".")
+        scored_sentences = []
 
         for sentence_raw in sentences:
             sentence = sentence_raw.strip()
-            # More lenient: accept sentences with keywords OR substantial sentences
-            if len(sentence) > 20:
-                has_keyword = any(kw in sentence.lower() for kw in keywords)
-                is_substantial = (
-                    len(sentence) > 50
-                    and len(findings) < max_findings
-                    and len(paper_text) > 500  # Only for full_text, not short abstracts
-                )
-                if has_keyword or is_substantial:
-                    findings.append(sentence)
-                if len(findings) >= max_findings:
-                    break
+            if len(sentence) < 20:  # Skip very short sentences
+                continue
+
+            sentence_lower = sentence.lower()
+
+            # Skip sentences that are just describing what was studied
+            if any(phrase in sentence_lower for phrase in low_priority_phrases):
+                continue
+
+            # Score sentences based on specificity
+            score = 0
+            has_high_priority = any(
+                kw in sentence_lower for kw in high_priority_keywords
+            )
+            has_medium_priority = any(
+                kw in sentence_lower for kw in medium_priority_keywords
+            )
+
+            # Check for quantitative indicators (numbers, percentages, effect sizes)
+            has_number = bool(re.search(r"\d+", sentence))
+            has_percent = "%" in sentence or "percent" in sentence_lower
+            has_effect_size = any(
+                term in sentence_lower
+                for term in ["d =", "d=", "g =", "g=", "effect size", "cohen"]
+            )
+
+            # Scoring: prioritize specific, quantitative findings
+            if has_high_priority:
+                score += 3
+            if has_medium_priority:
+                score += 1
+            if has_number or has_percent:
+                score += 2  # Quantitative findings are more specific
+            if has_effect_size:
+                score += 3  # Effect sizes are highly specific
+            if len(sentence) > 50:
+                score += 1  # Longer sentences often contain more detail
+
+            if score > 0:
+                scored_sentences.append((score, sentence))
+
+        # Sort by score (highest first) and take top findings
+        scored_sentences.sort(key=lambda x: x[0], reverse=True)
+        findings = [sentence for _, sentence in scored_sentences[:max_findings]]
 
         return findings

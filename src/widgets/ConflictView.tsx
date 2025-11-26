@@ -94,6 +94,38 @@ export const ConflictView: React.FC<ConflictViewProps> = ({ result }) => {
                   <strong>Finding 2:</strong> {conflict.finding2}
                 </div>
               </div>
+              <div className="jp-WWCExtension-conflict-explanation">
+                <strong>Why this was flagged:</strong>
+                <p>
+                  The NLI model detected a contradiction with{' '}
+                  {formatPercent(conflict.confidence, 1)} confidence. This means
+                  the model determined that these two findings cannot both be
+                  true simultaneously.
+                </p>
+                <p>
+                  <strong>Note:</strong> Not all flagged contradictions
+                  represent genuine conflicts. The model may flag findings that:
+                </p>
+                <ul>
+                  <li>
+                    Address different topics or interventions (e.g., peer
+                    tutoring vs. multimedia instruction)
+                  </li>
+                  <li>
+                    Use different methodologies or study different populations
+                  </li>
+                  <li>
+                    Make claims that are logically incompatible (true
+                    contradictions)
+                  </li>
+                </ul>
+                <p>
+                  <strong>Review carefully:</strong> Consider whether these
+                  findings actually contradict each other, or if they simply
+                  describe different studies with different interventions or
+                  contexts.
+                </p>
+              </div>
             </div>
           ))}
         </div>
