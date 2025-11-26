@@ -50,6 +50,8 @@ const SynthesisWorkbenchComponent: React.FC<SynthesisWorkbenchProps> = ({
     useState<ISensitivityAnalysisResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [subgroupVariable, setSubgroupVariable] = useState<string>('');
+  const [subgroupAnalysisAttempted, setSubgroupAnalysisAttempted] =
+    useState(false);
 
   const handleRunMetaAnalysis = async () => {
     setIsLoading(true);
@@ -91,11 +93,13 @@ const SynthesisWorkbenchComponent: React.FC<SynthesisWorkbenchProps> = ({
       return;
     }
     setIsLoading(true);
+    setSubgroupAnalysisAttempted(true);
     try {
       const result = await performSubgroupAnalysis(paperIds, subgroupVariable);
       setSubgroupResult(result);
       setActiveTab('subgroups');
     } catch (err) {
+      setSubgroupResult(null); // Clear any previous result on error
       showError(
         'Subgroup Analysis Error',
         err instanceof Error ? err.message : 'Unknown error',
@@ -239,29 +243,36 @@ const SynthesisWorkbenchComponent: React.FC<SynthesisWorkbenchProps> = ({
         )}
         {activeTab === 'subgroups' && !subgroupResult && (
           <div className="jp-WWCExtension-synthesis-empty">
-            <h3>No Subgroup Analysis Results</h3>
-            <p>
-              Subgroup analysis requires at least 2 studies with both effect
-              sizes and the selected subgroup variable metadata.
-            </p>
-            <p>To run subgroup analysis:</p>
-            <ul>
-              <li>Select a subgroup variable from the dropdown above</li>
-              <li>
-                Ensure your papers have effect sizes (run AI extraction if
-                needed)
-              </li>
-              <li>
-                Ensure your papers have the selected subgroup variable in their
-                metadata
-              </li>
-            </ul>
-            <p className="jp-WWCExtension-synthesis-empty-note">
-              <strong>Note:</strong> If you've already run subgroup analysis and
-              see this message, the analysis may have failed due to insufficient
-              data. Check the error message that appeared when you clicked "Run
-              Subgroup Analysis".
-            </p>
+            {subgroupAnalysisAttempted ? (
+              <>
+                <h3>No Subgroup Analysis Could Be Performed</h3>
+                <p>
+                  Subgroup analysis requires at least 2 studies with both effect
+                  sizes and the selected subgroup variable metadata. The
+                  analysis could not be completed with the current data.
+                </p>
+                <p>To perform subgroup analysis, ensure your papers have:</p>
+                <ul>
+                  <li>Effect sizes (run AI extraction if needed)</li>
+                  <li>
+                    The selected subgroup variable (
+                    {subgroupVariable || 'select one above'}) in their metadata
+                  </li>
+                </ul>
+              </>
+            ) : (
+              <>
+                <h3>No Subgroup Analysis Results</h3>
+                <p>
+                  To run subgroup analysis, select a subgroup variable from the
+                  dropdown above and click "Run Subgroup Analysis".
+                </p>
+                <p>
+                  Subgroup analysis requires at least 2 studies with both effect
+                  sizes and the selected subgroup variable metadata.
+                </p>
+              </>
+            )}
           </div>
         )}
         {activeTab === 'bias' && biasResult && (
