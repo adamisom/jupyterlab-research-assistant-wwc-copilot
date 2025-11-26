@@ -106,16 +106,22 @@ class ConflictDetector:
         f2_outcomes = [kw for kw in outcome_keywords if kw in finding2_lower]
 
         # If both mention interventions, check for overlap
-        if f1_interventions and f2_interventions:
-            if not set(f1_interventions).intersection(set(f2_interventions)):
-                # Different interventions - likely different topics
-                return False
+        if (
+            f1_interventions
+            and f2_interventions
+            and not set(f1_interventions).intersection(set(f2_interventions))
+        ):
+            # Different interventions - likely different topics
+            return False
 
         # If both mention outcomes, check for overlap
-        if f1_outcomes and f2_outcomes:
-            if not set(f1_outcomes).intersection(set(f2_outcomes)):
-                # Different outcomes - likely different topics
-                return False
+        if (
+            f1_outcomes
+            and f2_outcomes
+            and not set(f1_outcomes).intersection(set(f2_outcomes))
+        ):
+            # Different outcomes - likely different topics
+            return False
 
         # If one has intervention/outcome keywords and the other doesn't, be cautious
         # but don't filter out (might be about same topic with different wording)
