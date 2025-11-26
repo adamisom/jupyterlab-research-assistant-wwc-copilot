@@ -193,14 +193,18 @@ const SynthesisWorkbenchComponent: React.FC<SynthesisWorkbenchProps> = ({
           <button
             onClick={handleAssessBias}
             disabled={isLoading || !metaAnalysisResult}
-            className="jp-WWCExtension-button"
+            className={`jp-WWCExtension-button ${
+              paperIds.length < 3 ? 'jp-mod-muted' : ''
+            }`}
           >
             Assess Publication Bias
           </button>
           <button
             onClick={handleRunSensitivityAnalysis}
             disabled={isLoading || !metaAnalysisResult}
-            className="jp-WWCExtension-button"
+            className={`jp-WWCExtension-button ${
+              paperIds.length < 3 ? 'jp-mod-muted' : ''
+            }`}
           >
             Sensitivity Analysis
           </button>

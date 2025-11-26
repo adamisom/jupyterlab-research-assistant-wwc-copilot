@@ -2,6 +2,41 @@
 
 This guide provides information for developers working on the JupyterLab Research Assistant & WWC Co-Pilot extension.
 
+## Meta-Analysis Data Flow
+
+### How Meta-Analysis Works
+
+Meta-analysis uses **structured study metadata** stored in the database, not the full PDF text. Specifically, it reads from `study_metadata.effect_sizes` which contains structured effect size data (Cohen's d and standard errors).
+
+**Data Source:**
+- Meta-analysis reads from `paper.study_metadata.effect_sizes` (database field)
+- Each effect size entry has: `{"d": <cohen's_d>, "se": <standard_error>}`
+- The analysis can target a specific outcome name or use the first available outcome
+
+**Why this matters:**
+- Papers imported from discovery sources (Semantic Scholar, OpenAlex) are "metadata-only" and don't have `study_metadata.effect_sizes`
+- These papers cannot be used for meta-analysis until effect sizes are added
+- The UI prevents synthesis with metadata-only papers for this reason
+
+### How PDF Upload Populates Study Metadata
+
+When a PDF is uploaded, the system can extract structured metadata using AI:
+
+1. **PDF Text Extraction**: The `PDFParser` extracts `full_text` from the PDF file
+2. **AI Extraction (Optional)**: If AI extraction is enabled (`ai_config.enabled = true`), the `AIExtractor` processes the full text using the `LEARNING_SCIENCE_EXTRACTION_SCHEMA`
+3. **Metadata Population**: The AI extracts structured data including:
+   - `study_metadata.effect_sizes` - Effect sizes by outcome name
+   - `study_metadata.methodology` - Research methodology (RCT, Quasi-experimental, etc.)
+   - `study_metadata.sample_size_baseline/endline` - Sample sizes
+   - `learning_science_metadata` - Domain, intervention type, age group, etc.
+4. **Database Storage**: The extracted metadata is saved to the `study_metadata` and `learning_science_metadata` tables
+
+**Important Notes:**
+- AI extraction is **optional** - PDFs can be uploaded without it
+- If AI extraction fails or is disabled, the PDF is still saved but `effect_sizes` may be empty
+- Papers without `effect_sizes` cannot be used for meta-analysis
+- The test script (`scripts/test_add_papers_with_effect_sizes.py`) bypasses this workflow and directly adds papers with effect sizes to the database
+
 ## Testing
 
 ### Adding Test Papers with Effect Sizes
