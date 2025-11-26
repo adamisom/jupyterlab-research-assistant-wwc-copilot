@@ -24,9 +24,21 @@ export const DetailView: React.FC<DetailViewProps> = ({ paper, onClose }) => {
   return (
     <div className="jp-WWCExtension-detail-view">
       <div className="jp-WWCExtension-detail-header">
-        <button onClick={onClose} className="jp-WWCExtension-close-button">
-          ×
-        </button>
+        <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginBottom: '8px' }}>
+          <button onClick={onClose} className="jp-WWCExtension-button">
+            ← Go Back
+          </button>
+          {paper.id !== undefined && (
+            <button
+              onClick={() => {
+                AppEvents.dispatchOpenWWCCopilot(paper.id!, paper.title);
+              }}
+              className="jp-WWCExtension-button"
+            >
+              Open WWC Co-Pilot
+            </button>
+          )}
+        </div>
         <h2>{paper.title}</h2>
         <div className="jp-WWCExtension-detail-meta">
           {paper.authors && paper.authors.length > 0 && (
@@ -73,10 +85,16 @@ export const DetailView: React.FC<DetailViewProps> = ({ paper, onClose }) => {
       <div className="jp-WWCExtension-detail-content">
         {activeTab === 'overview' && (
           <div>
-            {paper.abstract && (
+            {paper.abstract ? (
               <div className="jp-WWCExtension-detail-section">
                 <h3>Abstract</h3>
                 <p>{paper.abstract}</p>
+              </div>
+            ) : (
+              <div className="jp-WWCExtension-detail-section">
+                <p style={{ color: 'var(--jp-content-font-color2)', fontStyle: 'italic' }}>
+                  No abstract available for this paper.
+                </p>
               </div>
             )}
           </div>
@@ -146,16 +164,6 @@ export const DetailView: React.FC<DetailViewProps> = ({ paper, onClose }) => {
       </div>
 
       <div className="jp-WWCExtension-detail-actions">
-        {paper.id !== undefined && (
-          <button
-            onClick={() => {
-              AppEvents.dispatchOpenWWCCopilot(paper.id!, paper.title);
-            }}
-            className="jp-WWCExtension-button"
-          >
-            Open WWC Co-Pilot
-          </button>
-        )}
         {paper.pdf_path && (
           <button onClick={openPDF} className="jp-WWCExtension-button">
             Open PDF

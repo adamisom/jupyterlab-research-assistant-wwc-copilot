@@ -360,8 +360,9 @@
 }
 
 .jp-WWCExtension-detail-content {
-  flex: 1;
+  flex: 0 1 auto;
   overflow-y: auto;
+  min-height: 0;
 }
 
 .jp-WWCExtension-detail-section {
