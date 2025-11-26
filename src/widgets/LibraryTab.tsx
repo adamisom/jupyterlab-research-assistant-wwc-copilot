@@ -179,44 +179,54 @@ export const LibraryTab: React.FC = () => {
 
   return (
     <div className="jp-WWCExtension-library">
-      <SearchBar
-        query={searchQuery}
-        onQueryChange={setSearchQuery}
-        onSearch={handleSearch}
-        isLoading={isLoading}
-        placeholder="Search your library..."
-        additionalInputs={
-          <select
-            onChange={async e => {
-              const format = e.target.value as 'json' | 'csv' | 'bibtex' | '';
-              if (format) {
-                try {
-                  await exportLibrary(format);
-                  showSuccess(
-                    'Export Complete',
-                    `Library exported as ${format.toUpperCase()}`
-                  );
-                } catch (err) {
-                  showError(
-                    'Export Failed',
-                    err instanceof Error ? err.message : 'Unknown error'
-                  );
+      <div style={{ marginBottom: '0' }}>
+        <SearchBar
+          query={searchQuery}
+          onQueryChange={setSearchQuery}
+          onSearch={handleSearch}
+          isLoading={isLoading}
+          placeholder="Search your library..."
+          additionalInputs={
+            <select
+              onChange={async e => {
+                const format = e.target.value as 'json' | 'csv' | 'bibtex' | '';
+                if (format) {
+                  try {
+                    await exportLibrary(format);
+                    showSuccess(
+                      'Export Complete',
+                      `Library exported as ${format.toUpperCase()}`
+                    );
+                  } catch (err) {
+                    showError(
+                      'Export Failed',
+                      err instanceof Error ? err.message : 'Unknown error'
+                    );
+                  }
+                  e.target.value = ''; // Reset
                 }
-                e.target.value = ''; // Reset
-              }
-            }}
-            className="jp-WWCExtension-select"
-          >
-            <option value="">Export...</option>
-            <option value="json">Export as JSON</option>
-            <option value="csv">Export as CSV</option>
-            <option value="bibtex">Export as BibTeX</option>
-          </select>
-        }
-      />
+              }}
+              className="jp-WWCExtension-select"
+            >
+              <option value="">Export...</option>
+              <option value="json">Export as JSON</option>
+              <option value="csv">Export as CSV</option>
+              <option value="bibtex">Export as BibTeX</option>
+            </select>
+          }
+        />
+      </div>
 
-      {/* PDF Upload Section */}
-      <div className="jp-WWCExtension-upload-section">
+      {/* Upload PDF and Synthesize buttons - same line */}
+      <div
+        style={{
+          display: 'flex',
+          gap: '10px',
+          alignItems: 'center',
+          marginBottom: '10px',
+          marginLeft: '8px'
+        }}
+      >
         <input
           ref={fileInputRef}
           type="file"
@@ -224,26 +234,36 @@ export const LibraryTab: React.FC = () => {
           onChange={handleFileSelect}
           className="jp-WWCExtension-file-input"
           id="pdf-upload-input"
+          style={{ display: 'none' }}
         />
         <label
           htmlFor="pdf-upload-input"
-          className="jp-WWCExtension-button jp-mod-file-upload-label"
+          className="jp-WWCExtension-button jp-WWCExtension-synthesis-button"
+          style={{ cursor: 'pointer' }}
         >
           {isUploading ? 'Uploading...' : 'Upload PDF'}
         </label>
+        {papers.length > 0 && selectedPapers.size >= 2 && (
+          <button
+            onClick={handleOpenSynthesis}
+            className="jp-WWCExtension-button jp-WWCExtension-synthesis-button"
+          >
+            Synthesize {selectedPapers.size} Studies
+          </button>
+        )}
       </div>
 
       <ErrorDisplay error={error} />
 
-      {/* Action buttons - show when papers exist */}
+      {/* Select All and Delete buttons - on their own line */}
       {papers.length > 0 && (
         <div
-          className="jp-WWCExtension-library-actions"
           style={{
-            margin: '10px 0',
             display: 'flex',
             gap: '10px',
-            alignItems: 'center'
+            alignItems: 'center',
+            marginBottom: '16px',
+            marginLeft: '8px'
           }}
         >
           <button onClick={handleSelectAll} className="jp-WWCExtension-button">
@@ -257,15 +277,6 @@ export const LibraryTab: React.FC = () => {
               className="jp-WWCExtension-button jp-mod-warn"
             >
               Delete {selectedPapers.size} from Library
-            </button>
-          )}
-          {selectedPapers.size >= 2 && (
-            <button
-              onClick={handleOpenSynthesis}
-              className="jp-WWCExtension-button jp-WWCExtension-synthesis-button"
-              style={{ marginLeft: 'auto' }}
-            >
-              Synthesize {selectedPapers.size} Studies
             </button>
           )}
         </div>
