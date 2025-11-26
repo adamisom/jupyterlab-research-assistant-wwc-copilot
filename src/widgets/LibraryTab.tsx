@@ -3,8 +3,6 @@ import {
   IPaper,
   getLibrary,
   searchLibrary,
-  searchSemanticScholar,
-  importPaper,
   importPDF,
   exportLibrary,
   deletePapers
@@ -18,12 +16,9 @@ import { DetailView } from './DetailView';
 import { getPaperKey } from '../utils/paper';
 import { AppEvents } from '../utils/events';
 
-type SearchMode = 'library' | 'discovery';
-
 export const LibraryTab: React.FC = () => {
   const [papers, setPapers] = useState<IPaper[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [searchMode, setSearchMode] = useState<SearchMode>('library');
   const [isLoading, setIsLoading] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -99,7 +94,7 @@ export const LibraryTab: React.FC = () => {
     }
   };
 
-  const handleLibrarySearch = async () => {
+  const handleSearch = async () => {
     if (!searchQuery.trim()) {
       loadLibrary();
       return;
@@ -107,7 +102,6 @@ export const LibraryTab: React.FC = () => {
 
     setIsLoading(true);
     setError(null);
-    setSearchMode('library');
     try {
       const results = await searchLibrary(searchQuery);
       setPapers(results);
@@ -115,41 +109,6 @@ export const LibraryTab: React.FC = () => {
       setError(err instanceof Error ? err.message : 'Search failed');
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const handleDiscoverySearch = async () => {
-    if (!searchQuery.trim()) {
-      return;
-    }
-
-    setIsLoading(true);
-    setError(null);
-    setSearchMode('discovery');
-    try {
-      const response = await searchSemanticScholar(searchQuery, 20);
-      setPapers(response.data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Discovery search failed');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleImport = async (paper: IPaper) => {
-    try {
-      await importPaper(paper);
-      showSuccess('Paper Imported', `Successfully imported: ${paper.title}`);
-      // If in discovery mode, refresh library to show the new paper
-      if (searchMode === 'discovery') {
-        await loadLibrary();
-      }
-    } catch (err) {
-      showError(
-        'Import Failed',
-        err instanceof Error ? err.message : 'Unknown error occurred',
-        err instanceof Error ? err : undefined
-      );
     }
   };
 
@@ -215,59 +174,41 @@ export const LibraryTab: React.FC = () => {
 
   return (
     <div className="jp-WWCExtension-library">
-      {/* Search Section */}
-      <div className="jp-WWCExtension-search-section">
-        <div style={{ marginBottom: '8px', fontSize: '12px', color: 'var(--jp-ui-font-color2)' }}>
-          {searchMode === 'library' 
-            ? 'Search your library for imported papers'
-            : 'Discover new research from Semantic Scholar / OpenAlex'}
-        </div>
-        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-          <SearchBar
-            query={searchQuery}
-            onQueryChange={setSearchQuery}
-            onSearch={handleLibrarySearch}
-            isLoading={isLoading && searchMode === 'library'}
-            placeholder="Search your library..."
-            additionalInputs={
-              <select
-                onChange={async e => {
-                  const format = e.target.value as 'json' | 'csv' | 'bibtex' | '';
-                  if (format) {
-                    try {
-                      await exportLibrary(format);
-                      showSuccess(
-                        'Export Complete',
-                        `Library exported as ${format.toUpperCase()}`
-                      );
-                    } catch (err) {
-                      showError(
-                        'Export Failed',
-                        err instanceof Error ? err.message : 'Unknown error'
-                      );
-                    }
-                    e.target.value = ''; // Reset
-                  }
-                }}
-                className="jp-WWCExtension-select"
-              >
-                <option value="">Export...</option>
-                <option value="json">Export as JSON</option>
-                <option value="csv">Export as CSV</option>
-                <option value="bibtex">Export as BibTeX</option>
-              </select>
-            }
-          />
-          <button
-            onClick={handleDiscoverySearch}
-            disabled={isLoading || !searchQuery.trim()}
-            className="jp-WWCExtension-button"
-            style={{ whiteSpace: 'nowrap' }}
+      <SearchBar
+        query={searchQuery}
+        onQueryChange={setSearchQuery}
+        onSearch={handleSearch}
+        isLoading={isLoading}
+        placeholder="Search your library..."
+        additionalInputs={
+          <select
+            onChange={async e => {
+              const format = e.target.value as 'json' | 'csv' | 'bibtex' | '';
+              if (format) {
+                try {
+                  await exportLibrary(format);
+                  showSuccess(
+                    'Export Complete',
+                    `Library exported as ${format.toUpperCase()}`
+                  );
+                } catch (err) {
+                  showError(
+                    'Export Failed',
+                    err instanceof Error ? err.message : 'Unknown error'
+                  );
+                }
+                e.target.value = ''; // Reset
+              }
+            }}
+            className="jp-WWCExtension-select"
           >
-            {isLoading && searchMode === 'discovery' ? 'Searching...' : 'Discover More Research'}
-          </button>
-        </div>
-      </div>
+            <option value="">Export...</option>
+            <option value="json">Export as JSON</option>
+            <option value="csv">Export as CSV</option>
+            <option value="bibtex">Export as BibTeX</option>
+          </select>
+        }
+      />
 
       {/* PDF Upload Section */}
       <div className="jp-WWCExtension-upload-section">
@@ -289,8 +230,8 @@ export const LibraryTab: React.FC = () => {
 
       <ErrorDisplay error={error} />
 
-      {/* Action buttons - show when papers exist and in library mode */}
-      {papers.length > 0 && searchMode === 'library' && (
+      {/* Action buttons - show when papers exist */}
+      {papers.length > 0 && (
         <div className="jp-WWCExtension-library-actions" style={{ margin: '10px 0', display: 'flex', gap: '10px', alignItems: 'center' }}>
           <button
             onClick={handleSelectAll}
@@ -323,9 +264,8 @@ export const LibraryTab: React.FC = () => {
       <div className="jp-WWCExtension-papers">
         {papers.length === 0 && !isLoading && (
           <div className="jp-WWCExtension-empty">
-            {searchMode === 'library' 
-              ? 'No papers found. Use "Discover More Research" to search external sources, or upload a PDF above.'
-              : 'No results found. Try a different search query.'}
+            No papers found. Use the Discovery tab to search and import papers,
+            or upload a PDF above.
           </div>
         )}
         {papers.map(paper => (
@@ -333,10 +273,9 @@ export const LibraryTab: React.FC = () => {
             key={getPaperKey(paper)}
             paper={paper}
             onViewDetails={() => setSelectedPaper(paper)}
-            onImport={searchMode === 'discovery' ? () => handleImport(paper) : undefined}
-            selected={searchMode === 'library' && paper.id !== undefined && selectedPapers.has(paper.id)}
+            selected={paper.id !== undefined && selectedPapers.has(paper.id)}
             onToggleSelection={
-              searchMode === 'library' && paper.id !== undefined
+              paper.id !== undefined
                 ? () => handleToggleSelection(paper.id!)
                 : undefined
             }
