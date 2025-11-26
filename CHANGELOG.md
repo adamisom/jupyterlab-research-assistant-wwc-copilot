@@ -1,6 +1,15 @@
 # Changelog
 
-## [Unreleased]
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [0.1.0] - 2025-11-25
+
+### Added
+
+- **[User Guide](./USER_GUIDE.md)**: Comprehensive user documentation covering all features, workflows, and best practices
 
 ### Fixed
 
@@ -40,10 +49,12 @@
 
 - **Stage 1: Research Library & Discovery Engine** - Fully implemented with:
   - Semantic Scholar API integration for paper discovery
+  - OpenAlex API integration with automatic fallback when Semantic Scholar fails
   - PDF parsing and text extraction
   - AI-powered metadata extraction (configurable: Claude, OpenAI, Ollama)
   - SQLite database for paper storage and search
   - Research Library sidebar panel with Discovery and Library tabs
+  - PDF viewing support
   - Export functionality (CSV, JSON, BibTeX)
 
 - **Stage 2: WWC Co-Pilot & Synthesis Engine** - Fully implemented with:

@@ -53,8 +53,10 @@ jupyterlab_research_assistant_wwc_copilot/
 │   └── models.py             # SQLAlchemy ORM models (Paper, StudyMetadata, LearningScienceMetadata)
 └── services/                 # Business logic modules
     ├── semantic_scholar.py   # Semantic Scholar API client
+    ├── openalex.py            # OpenAlex API client (fallback for discovery)
     ├── pdf_parser.py         # PDF text extraction (PyMuPDF)
     ├── ai_extractor.py       # AI metadata extraction (Claude/GPT/Ollama)
+    ├── extraction_schema.py # JSON schemas for AI extraction
     ├── db_manager.py         # Database session management
     ├── import_service.py     # PDF import orchestration
     ├── export_formatter.py   # Export to JSON/CSV/BibTeX/Markdown
@@ -76,9 +78,10 @@ All routes extend `BaseAPIHandler` and are registered in
 - `GET /library` - Get all papers
 - `POST /library` - Add paper
 - `GET /search?q=...` - Search library
-- `GET /discovery?q=...` - Search Semantic Scholar
+- `GET /discovery?q=...` - Search Semantic Scholar (with OpenAlex fallback)
 - `POST /import` - Import PDF file
 - `GET /export?format=...` - Export library (JSON/CSV/BibTeX)
+- `GET /pdf?paper_id=...` - Serve PDF file for viewing
 
 **Stage 2 Routes:**
 
@@ -158,8 +161,10 @@ src/
 ├── api.ts                    # Typed API client functions (all backend calls)
 ├── widgets/                  # React components
 │   ├── ResearchLibraryPanel.tsx    # Main sidebar panel (Discovery + Library tabs)
-│   ├── DiscoveryTab.tsx           # Semantic Scholar search UI
+│   ├── DiscoveryTab.tsx           # Semantic Scholar/OpenAlex search UI
 │   ├── LibraryTab.tsx              # Local library view with search/filter
+│   ├── SearchBar.tsx               # Reusable search input component
+│   ├── Tabs.tsx                     # Reusable tab navigation component
 │   ├── PaperCard.tsx               # Paper card component
 │   ├── DetailView.tsx              # Paper detail view
 │   ├── WWCCoPilot.tsx              # WWC assessment wizard (main area widget)
@@ -169,7 +174,9 @@ src/
 │   ├── SubgroupAnalysisView.tsx    # Subgroup analysis results
 │   ├── BiasAssessmentView.tsx      # Publication bias results
 │   ├── SensitivityAnalysisView.tsx # Sensitivity analysis results
-│   └── [LoadingState, ErrorDisplay, SkeletonLoader, etc.]
+│   ├── LoadingState.tsx            # Loading indicator component
+│   ├── ErrorDisplay.tsx            # Error message display component
+│   └── SkeletonLoader.tsx          # Skeleton loading placeholder
 └── utils/                    # Utility modules
     ├── api-response.ts       # Response handling/validation
     ├── download.ts           # File download helpers
@@ -248,13 +255,14 @@ Custom events for cross-component communication:
    - `DatabaseManager.add_paper()` - Store in database
 5. **Response** → Frontend updates library view
 
-### Semantic Scholar Discovery Flow
+### Paper Discovery Flow
 
 1. **User searches** → `DiscoveryTab` component
 2. **Frontend** → `api.ts:searchSemanticScholar()` →
    `GET /discovery?q=...`
-3. **Backend** → `DiscoveryHandler.get()` →
-   `SemanticScholarAPI.search_papers()`
+3. **Backend** → `DiscoveryHandler.get()`:
+   - Attempts `SemanticScholarAPI.search_papers()`
+   - If Semantic Scholar fails or is rate-limited, automatically falls back to `OpenAlexAPI.search_papers()`
 4. **Response** → Display results, user can import
 
 ### WWC Assessment Flow
@@ -323,7 +331,7 @@ Custom events for cross-component communication:
 - `statsmodels` - Meta-analysis
 - `matplotlib` - Plot generation
 - `transformers` (optional) - NLI models for conflict detection
-- `requests` - HTTP client for Semantic Scholar API
+- `requests` - HTTP client for Semantic Scholar and OpenAlex APIs
 - `PyMuPDF` (fitz) - PDF parsing
 - `openai` / `anthropic` - AI extraction (optional)
 
@@ -340,30 +348,38 @@ Custom events for cross-component communication:
 
 ### Backend Services
 
-- **`semantic_scholar.py`**: External API client, rate limiting
-- **`pdf_parser.py`**: PDF text extraction
-- **`ai_extractor.py`**: AI metadata extraction (configurable provider)
+- **`semantic_scholar.py`**: Semantic Scholar API client, rate limiting
+- **`openalex.py`**: OpenAlex API client (fallback for discovery), rate limiting
+- **`pdf_parser.py`**: PDF text extraction using PyMuPDF
+- **`ai_extractor.py`**: AI metadata extraction (configurable provider: Claude, OpenAI, Ollama)
+- **`extraction_schema.py`**: JSON schemas defining metadata extraction structure (learning science schema)
 - **`db_manager.py`**: Database session context manager, CRUD operations
-- **`import_service.py`**: Orchestrates PDF import workflow
+- **`import_service.py`**: Orchestrates PDF import workflow (parsing → AI extraction → storage)
 - **`export_formatter.py`**: Formats data for export (JSON/CSV/BibTeX/Markdown)
-- **`wwc_assessor.py`**: WWC quality assessment logic
-- **`meta_analyzer.py`**: Statistical meta-analysis
-- **`visualizer.py`**: Plot generation (forest, funnel)
-- **`conflict_detector.py`**: Natural language inference for conflict detection
+- **`wwc_assessor.py`**: WWC quality assessment logic (implements WWC Handbook v5.0)
+- **`meta_analyzer.py`**: Statistical meta-analysis (random-effects, subgroup, sensitivity)
+- **`visualizer.py`**: Plot generation (forest plots, funnel plots) using matplotlib
+- **`conflict_detector.py`**: Natural language inference for conflict detection (NLI models)
 
 ### Frontend Widgets
 
-- **`ResearchLibraryPanel`**: Main sidebar container
-- **`DiscoveryTab`**: Search and import from Semantic Scholar
+- **`ResearchLibraryPanel`**: Main sidebar container with tab navigation
+- **`DiscoveryTab`**: Search and import from Semantic Scholar/OpenAlex
 - **`LibraryTab`**: Browse local library, search, filter, select papers
-- **`DetailView`**: Display paper metadata, launch WWC assessment
-- **`WWCCoPilot`**: 5-step WWC assessment wizard
+- **`SearchBar`**: Reusable search input component with debouncing
+- **`Tabs`**: Reusable tab navigation component
+- **`PaperCard`**: Individual paper card display with metadata preview
+- **`DetailView`**: Display paper metadata, launch WWC assessment, view PDF
+- **`WWCCoPilot`**: 5-step WWC assessment wizard with localStorage persistence
 - **`SynthesisWorkbench`**: Tabbed interface for synthesis analyses
 - **`MetaAnalysisView`**: Display meta-analysis results and forest plot
-- **`ConflictView`**: Display detected contradictions
-- **`SubgroupAnalysisView`**: Display subgroup analysis results
-- **`BiasAssessmentView`**: Display publication bias results and funnel plot
-- **`SensitivityAnalysisView`**: Display sensitivity analysis results
+- **`ConflictView`**: Display detected contradictions with confidence scores
+- **`SubgroupAnalysisView`**: Display subgroup analysis results with comparisons
+- **`BiasAssessmentView`**: Display publication bias results (Egger's test) and funnel plot
+- **`SensitivityAnalysisView`**: Display sensitivity analysis results (leave-one-out)
+- **`LoadingState`**: Loading indicator for async operations
+- **`ErrorDisplay`**: Error message display with retry options
+- **`SkeletonLoader`**: Skeleton loading placeholder for better UX
 
 ### Utilities
 

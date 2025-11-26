@@ -5,7 +5,18 @@
     "keywords": [
         "jupyter",
         "jupyterlab",
-        "jupyterlab-extension"
+        "jupyterlab-extension",
+        "research",
+        "education",
+        "meta-analysis",
+        "wwc",
+        "systematic-review",
+        "learning-science",
+        "educational-research",
+        "cognitive-science",
+        "pedagogy",
+        "instructional-design",
+        "educational-technology"
     ],
     "homepage": "https://github.com/adamisom/jupyterlab-research-assistant-wwc-copilot",
     "bugs": {

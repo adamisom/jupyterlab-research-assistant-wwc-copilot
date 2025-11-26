@@ -4,11 +4,13 @@
 
 A JupyterLab extension for academic research management and WWC quality assessment
 
+📖 **[User Guide](./USER_GUIDE.md)** - Complete guide for using all extension features
+
 This extension provides two main features:
 
 - **Research Library & Discovery Engine** (Stage 1 - ✅ Complete):
-  Discover, import, and manage academic papers with Semantic Scholar
-  integration, PDF parsing, and AI-powered metadata extraction
+  Discover, import, and manage academic papers with Semantic Scholar and
+  OpenAlex integration, PDF parsing, and AI-powered metadata extraction
 - **WWC Co-Pilot & Synthesis Engine** (Stage 2 - ✅ Complete): Perform
   rigorous WWC quality assessments, meta-analysis, conflict detection,
   subgroup analysis, publication bias assessment, and sensitivity
@@ -31,6 +33,9 @@ For advanced features:
 
 - **AI Metadata Extraction**: Requires API keys for Claude, OpenAI, or
   local Ollama instance
+- **Paper Discovery**: Semantic Scholar and OpenAlex APIs are used for
+  paper discovery. OpenAlex is used as an automatic fallback if Semantic
+  Scholar fails or is rate-limited. No API keys required for either service.
 - **Conflict Detection**: Requires `transformers` and `torch` libraries
   (optional, can be installed separately)
 
@@ -87,115 +92,8 @@ jupyter labextension list
 
 ## Contributing
 
-### Development install
-
-Note: You will need NodeJS to build the extension package.
-
-The `jlpm` command is JupyterLab's pinned version of
-[yarn](https://yarnpkg.com/) that is installed with JupyterLab. You may use
-`yarn` or `npm` in lieu of `jlpm` below.
-
-```bash
-# Clone the repo to your local environment
-# Change directory to the jupyterlab_research_assistant_wwc_copilot directory
-
-# Set up a virtual environment and install package in development mode
-python -m venv .venv
-source .venv/bin/activate
-pip install --editable ".[dev,test]"
-
-# Link your development version of the extension with JupyterLab
-jupyter labextension develop . --overwrite
-# Server extension must be manually installed in develop mode
-jupyter server extension enable jupyterlab_research_assistant_wwc_copilot
-
-# Rebuild extension Typescript source after making changes
-# IMPORTANT: Unlike the steps above which are performed only once, do this step
-# every time you make a change.
-jlpm build
-```
-
-You can watch the source directory and run JupyterLab at the same time
-in different terminals to watch for changes in the extension's source
-and automatically rebuild the extension.
-
-```bash
-# Watch the source directory in one terminal, automatically rebuilding when needed
-jlpm watch
-# Run JupyterLab in another terminal
-jupyter lab
-```
-
-With the watch command running, every saved change will immediately be
-built locally and available in your running JupyterLab. Refresh
-JupyterLab to load the change in your browser (you may need to wait
-several seconds for the extension to be rebuilt).
-
-By default, the `jlpm build` command generates the source maps for this
-extension to make it easier to debug using the browser dev tools. To
-also generate source maps for the JupyterLab core extensions, you can
-run the following command:
-
-```bash
-jupyter lab build --minimize=False
-```
-
-### Development uninstall
-
-```bash
-# Server extension must be manually disabled in develop mode
-jupyter server extension disable jupyterlab_research_assistant_wwc_copilot
-pip uninstall jupyterlab_research_assistant_wwc_copilot
-```
-
-In development mode, you will also need to remove the symlink created
-by `jupyter labextension develop` command. To find its location, you can
-run `jupyter labextension list` to figure out where the `labextensions`
-folder is located. Then you can remove the symlink named
-`jupyterlab-research-assistant-wwc-copilot` within that folder.
-
-### Testing the extension
-
-#### Server tests
-
-This extension is using [Pytest](https://docs.pytest.org/) for Python code testing.
-
-Install test dependencies (needed only once):
-
-```sh
-pip install -e ".[test]"
-# Each time you install the Python package, you need to restore the
-# front-end extension link
-jupyter labextension develop . --overwrite
-```
-
-To execute them, run:
-
-```sh
-pytest -vv -r ap --cov jupyterlab_research_assistant_wwc_copilot
-```
-
-#### Frontend tests
-
-This extension is using [Jest](https://jestjs.io/) for JavaScript code testing.
-
-To execute them, execute:
-
-```sh
-jlpm
-jlpm test
-```
-
-#### Integration tests
-
-This extension uses [Playwright](https://playwright.dev/docs/intro) for
-the integration tests (aka user level tests). More precisely, the
-JupyterLab helper
-[Galata](https://github.com/jupyterlab/jupyterlab/tree/master/galata) is
-used to handle testing the extension in JupyterLab.
-
-More information are provided within the
-[ui-tests](./ui-tests/README.md) README.
+For development setup, testing, and contribution guidelines, see the
+[Developer Guide](./docs/developer-guide.md).
 
 ## AI Coding Assistant Support
 
@@ -249,7 +147,7 @@ standards.
 
 ## Documentation
 
-Comprehensive documentation is available in the [`docs/`](./docs/) directory:
+Comprehensive developer documentation is available in the [`docs/`](./docs/) directory:
 
 ### Reference Documentation
 
@@ -257,8 +155,6 @@ Comprehensive documentation is available in the [`docs/`](./docs/) directory:
   architecture and feature breakdown
 - **[JupyterLab Architecture](./docs/jupyterlab-architecture.md)**: Deep
   dive into JupyterLab extension patterns
-- **[Quick Reference](./docs/quick-reference.md)**: Essential commands
-  for building and testing
 - **[Getting Started](./docs/getting-started.md)**: JupyterLab core
   development environment setup (for understanding JupyterLab, not this
   extension)
@@ -274,21 +170,7 @@ Comprehensive documentation is available in the [`docs/`](./docs/) directory:
 - **API Routes**:
   `/jupyterlab-research-assistant-wwc-copilot/endpoint-name`
 
-### Implementation Workflow
-
-1. **Setup** (one-time):
-
-   ```bash
-   pip install -e ".[dev,test]"
-   jupyter labextension develop . --overwrite
-   jupyter server extension enable jupyterlab_research_assistant_wwc_copilot
-   ```
-
-2. **Development**:
-   - Frontend: `jlpm watch` (auto-rebuilds) + refresh browser
-   - Backend: Make changes + restart JupyterLab
-
-3. **Testing**: Run tests after making changes (see Testing section above)
+For detailed development workflow, see the [Developer Guide](./docs/developer-guide.md).
 
 ## Changelog
 
@@ -296,4 +178,4 @@ See [CHANGELOG.md](CHANGELOG.md) for a detailed list of changes.
 
 ## Packaging the extension
 
-See [RELEASE](RELEASE.md)
+See [RELEASE.md](RELEASE.md) for release instructions.

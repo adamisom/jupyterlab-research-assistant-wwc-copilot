@@ -1,5 +1,8 @@
 # Making a new release of jupyterlab_research_assistant_wwc_copilot
 
+> **📖 For a comprehensive release guide**, see [docs/RELEASE_PREPARATION.md](docs/RELEASE_PREPARATION.md)
+> which includes pre-release checklists, step-by-step instructions, and extension registry submission.
+
 The extension can be published to `PyPI` and `npm` manually or using the
 [Jupyter Releaser](https://github.com/jupyter-server/jupyter_releaser).
 
