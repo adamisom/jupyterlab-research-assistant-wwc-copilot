@@ -26,7 +26,12 @@
   border-bottom: 2px solid transparent;
   color: var(--jp-content-font-color2);
   font-size: var(--jp-ui-font-size1);
-  transition: all 0.2s ease-in-out;
+  transition:
+    color 0.15s ease-in-out,
+    background-color 0.15s ease-in-out,
+    border-bottom-color 0.15s ease-in-out;
+  font-weight: 500;
+  min-width: fit-content;
 }
 
 .jp-WWCExtension-tab:hover {
@@ -38,6 +43,8 @@
   color: var(--jp-content-font-color1);
   border-bottom-color: var(--jp-brand-color1);
   font-weight: 600;
+  /* Prevent layout shift by maintaining consistent spacing */
+  letter-spacing: -0.01em;
 }
 
 .jp-WWCExtension-content {
@@ -650,8 +657,15 @@
 
 .jp-WWCExtension-synthesis-actions {
   display: flex;
+  flex-direction: column;
   gap: 12px;
   margin-bottom: 24px;
+}
+
+.jp-WWCExtension-synthesis-actions-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
 .jp-WWCExtension-synthesis-tabs {
@@ -661,10 +675,33 @@
   border-bottom: 1px solid var(--jp-border-color1);
 }
 
+.jp-WWCExtension-synthesis-tabs button {
+  background: none;
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  color: var(--jp-content-font-color2);
+  font-size: var(--jp-ui-font-size1);
+  transition:
+    color 0.15s ease-in-out,
+    background-color 0.15s ease-in-out,
+    border-bottom-color 0.15s ease-in-out;
+  font-weight: 500;
+  min-width: fit-content;
+}
+
+.jp-WWCExtension-synthesis-tabs button:hover {
+  color: var(--jp-content-font-color1);
+  background-color: var(--jp-layout-color2);
+}
+
 .jp-WWCExtension-tab-active {
   color: var(--jp-content-font-color1);
   border-bottom-color: var(--jp-brand-color1);
   font-weight: 600;
+  /* Prevent layout shift by maintaining consistent spacing */
+  letter-spacing: -0.01em;
 }
 
 .jp-WWCExtension-synthesis-content {
