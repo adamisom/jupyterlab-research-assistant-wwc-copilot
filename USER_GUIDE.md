@@ -433,6 +433,7 @@ The WWC Co-Pilot guides you through a **5-step process**:
 - Check the [Developer Guide](./docs/developer-guide.md) for technical details
 - Review [Troubleshooting](./docs/troubleshooting/) documentation
 - Open an issue on [GitHub](https://github.com/adamisom/jupyterlab-research-assistant-wwc-copilot/issues)
+- Reach out to the author directly on [Twitter](https://x.com/adam__isom)
 
 ---
 
