@@ -1,4 +1,12 @@
-"""Meta-analysis engine using statsmodels for random-effects models."""
+"""
+Meta-analysis engine using statsmodels for random-effects models.
+
+IMPORTANT FOR DEVELOPERS:
+- Uses DerSimonian-Laird (DL) estimator for between-study variance (tau²)
+- statsmodels may produce NaN/Inf values with 2 studies or low heterogeneity - always validate
+- Matrix condition numbers must be checked for Egger's test to avoid numerical errors
+- I² can be negative (set to 0) - this is expected with low heterogeneity
+"""
 
 import logging
 import warnings
@@ -10,6 +18,7 @@ logger = logging.getLogger(__name__)
 
 # Suppress harmless sqrt() warnings from statsmodels when tau² is negative
 # (common with 2 studies or low heterogeneity - statsmodels handles this internally)
+# NOTE: These warnings are numerical artifacts, not errors - the library handles them correctly
 warnings.filterwarnings(
     "ignore",
     category=RuntimeWarning,
@@ -61,21 +70,24 @@ class MetaAnalyzer:
             raise ValueError("Standard errors must be positive")
 
         # Perform random-effects meta-analysis using DerSimonian-Laird estimator
+        # CRITICAL: method_re="DL" uses DerSimonian-Laird method (standard in education research)
+        # use_t=True uses t-distribution for CIs (more conservative than normal approximation)
         try:
             result = meta.combine_effects(
                 effect_sizes,
                 std_errors,
-                method_re="DL",
-                use_t=True,  # DerSimonian-Laird
+                method_re="DL",  # DerSimonian-Laird estimator
+                use_t=True,  # Use t-distribution for confidence intervals
             )
 
             # Calculate heterogeneity statistics
             het_test = result.test_homogeneity()
 
             # Get Q statistic and I² from result
+            # NOTE: I² can be negative with low heterogeneity (common with 2-3 studies)
+            # Negative values are set to 0 per convention (Higgins et al., 2003)
             q_statistic = result.q
             i_squared = result.i2
-            # I² can be negative (set to 0 if negative)
             i_squared = 0.0 if i_squared < 0 else float(i_squared)
 
             # Calculate study weights (inverse variance weights)
@@ -116,11 +128,12 @@ class MetaAnalyzer:
             )
 
             # Calculate p-value for pooled effect (two-tailed test)
-            # Using t-distribution with df = n_studies - 1
+            # CRITICAL: Always validate sd_eff_w_re before division to avoid NaN/Inf
+            # With 2 studies or low variance, sd_eff_w_re can be 0 or invalid
             from scipy import stats  # noqa: PLC0415
 
             df = len(studies) - 1
-            # Handle case where sd_eff_w_re might be 0, NaN, or invalid
+            # Validate standard error before calculating test statistic
             if (
                 hasattr(result, "sd_eff_w_re")
                 and result.sd_eff_w_re
@@ -373,7 +386,9 @@ class MetaAnalyzer:
             XWX = XW.T @ X  # noqa: N806
             XWy = XW.T @ effect_sizes  # noqa: N806
 
-            # Check matrix condition number to avoid ill-conditioned matrices
+            # CRITICAL: Check matrix condition number before solving
+            # Ill-conditioned matrices (high condition number) cause numerical instability
+            # Common with small sample sizes or highly correlated predictors
             cond_num = np.linalg.cond(XWX)
             if cond_num > 1e12:
                 raise ValueError(  # noqa: TRY301

@@ -1,8 +1,18 @@
-"""Forest plot generation using matplotlib."""
+"""
+Forest plot generation using matplotlib.
+
+IMPORTANT FOR DEVELOPERS:
+- Uses 'Agg' backend (non-interactive) for server environments (no display required)
+- Always close figures (plt.close()) to free memory - critical for long-running servers
+- Base64 encoding allows embedding images in JSON responses for frontend
+- Dynamic figure sizing prevents label overlap with many studies
+"""
 
 import matplotlib
 
-matplotlib.use("Agg")  # Non-interactive backend for server
+# CRITICAL: Set backend BEFORE importing pyplot
+# 'Agg' backend works without display (required for server environments)
+matplotlib.use("Agg")
 import base64
 import io
 import logging
@@ -143,10 +153,11 @@ class Visualizer:
 
         plt.tight_layout()
 
-        # Convert to base64
+        # Convert to base64 for JSON response
+        # CRITICAL: Always close figure to free memory (prevents memory leaks)
         buf = io.BytesIO()
         fig.savefig(buf, format="png", bbox_inches="tight", dpi=dpi)
-        plt.close(fig)
+        plt.close(fig)  # CRITICAL: Free matplotlib memory
         buf.seek(0)
 
         image_base64 = base64.b64encode(buf.read()).decode("utf-8")
@@ -205,10 +216,11 @@ class Visualizer:
 
         plt.tight_layout()
 
-        # Convert to base64
+        # Convert to base64 for JSON response
+        # CRITICAL: Always close figure to free memory
         buf = io.BytesIO()
         fig.savefig(buf, format="png", bbox_inches="tight", dpi=dpi)
-        plt.close(fig)
+        plt.close(fig)  # CRITICAL: Free matplotlib memory
         buf.seek(0)
 
         image_base64 = base64.b64encode(buf.read()).decode("utf-8")

@@ -71,7 +71,7 @@ class ConflictDetector:
                 # Set to evaluation mode (disables dropout, batch norm updates, etc.)
                 # This is important for consistent inference results
                 self.model.eval()
-                
+
                 # Device handling: automatically use GPU if available, otherwise CPU
                 # NOTE: First model load is slow (downloading weights), subsequent uses are fast
                 # Consider caching models if loading multiple times
@@ -225,7 +225,7 @@ class ConflictDetector:
                     # CRITICAL: Tokenize the pair with proper formatting for cross-encoder
                     # Cross-encoder models expect (premise, hypothesis) tuple format
                     # DO NOT concatenate strings - use tokenizer(f1, f2) format
-                    # 
+                    #
                     # REQUIRED parameters to prevent tensor errors:
                     # - padding=True: Ensures all sequences in batch have same length
                     # - truncation=True: Cuts sequences longer than max_length
@@ -263,7 +263,7 @@ class ConflictDetector:
                     # - Some models: 0=contradiction, 1=entailment, 2=neutral
                     # - Other models: 0=entailment, 1=neutral, 2=contradiction
                     # - Always use model.config to get correct mapping
-                    # 
+                    #
                     # NOTE: id2label maps class_id -> label_name (e.g., 0 -> "contradiction")
                     #       label2id maps label_name -> class_id (e.g., "contradiction" -> 0)
                     if (
@@ -300,7 +300,7 @@ class ConflictDetector:
                     # We use this (not the predicted class) because we want the confidence
                     # in contradiction, not just whether it's the top prediction
                     contradiction_score = label_scores.get("contradiction", 0.0)
-                    
+
                     # Also get the predicted label for reporting
                     predicted_class_id = predictions.argmax().item()
                     predicted_label = id2label.get(
@@ -376,7 +376,7 @@ class ConflictDetector:
         # Fallback to keyword-based extraction
         # NOTE: This is a simple heuristic - AI extraction is preferred when available
         # This method prioritizes specific, testable claims over generic descriptions
-        # 
+        #
         # PERFORMANCE: This is O(n) where n = number of sentences
         # For very long papers, consider chunking or limiting sentence count
         findings = []
@@ -454,7 +454,9 @@ class ConflictDetector:
             if has_high_priority:
                 score += 3  # High weight for phrases like "found that", "results show"
             if has_medium_priority:
-                score += 1  # Lower weight for generic terms like "significant", "effect"
+                score += (
+                    1  # Lower weight for generic terms like "significant", "effect"
+                )
             if has_number or has_percent:
                 score += 2  # Quantitative findings are more specific and testable
             if has_effect_size:

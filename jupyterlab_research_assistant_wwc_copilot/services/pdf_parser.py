@@ -1,9 +1,16 @@
-"""PDF text and metadata extraction using PyMuPDF."""
+"""
+PDF text and metadata extraction using PyMuPDF.
+
+IMPORTANT FOR DEVELOPERS:
+- PyMuPDF (fitz) is imported as 'fitz' for historical compatibility
+- Safety limits prevent memory exhaustion with very large PDFs
+- Always close documents to free memory (handled in try/finally or context manager)
+"""
 
 import logging
 from pathlib import Path
 
-import fitz  # PyMuPDF
+import fitz  # PyMuPDF (imported as 'fitz' for historical reasons)
 
 logger = logging.getLogger(__name__)
 
@@ -11,8 +18,10 @@ logger = logging.getLogger(__name__)
 class PDFParser:
     """Parser for extracting text and metadata from PDF files."""
 
+    # CRITICAL: Safety limits to prevent memory exhaustion
+    # Very large PDFs (e.g., 1000+ pages) can consume excessive memory
     MAX_PAGES = 200  # Safety limit for very large PDFs
-    MAX_TEXT_LENGTH = 500000  # ~500KB of text
+    MAX_TEXT_LENGTH = 500000  # ~500KB of text (prevents memory issues)
 
     def extract_text_and_metadata(self, pdf_path: str) -> dict:
         """
@@ -33,12 +42,15 @@ class PDFParser:
             raise FileNotFoundError(f"PDF not found: {pdf_path}")
 
         try:
+            # CRITICAL: Always close document to free memory
+            # PyMuPDF keeps document in memory until explicitly closed
             doc = fitz.open(str(pdf_path_obj))
 
-            # Extract metadata from PDF properties
+            # Extract metadata from PDF properties (title, author, subject)
             metadata = doc.metadata
 
             # Extract full text (with page limit for safety)
+            # NOTE: get_text() extracts plain text - formatting/layout info is lost
             full_text = ""
             total_pages = len(doc)
             page_count = min(total_pages, self.MAX_PAGES)
@@ -49,13 +61,14 @@ class PDFParser:
                 full_text += page_text + "\n"
 
                 # Safety check for extremely long documents
+                # Prevents memory exhaustion with text-heavy PDFs
                 if len(full_text) > self.MAX_TEXT_LENGTH:
                     logger.warning(
                         f"PDF text truncated at {self.MAX_TEXT_LENGTH} characters"
                     )
                     break
 
-            doc.close()
+            doc.close()  # CRITICAL: Free memory
 
             return {
                 "title": metadata.get("title", "").strip() or None,
