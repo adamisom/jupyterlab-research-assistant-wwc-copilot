@@ -2,6 +2,7 @@
 
 import json
 import logging
+from pathlib import Path
 from typing import Optional
 
 import numpy as np
@@ -1037,6 +1038,57 @@ class SensitivityAnalysisHandler(BaseAPIHandler):
             self.send_error(500, str(e))
 
 
+class PDFHandler(BaseAPIHandler):
+    """Handler for serving PDF files."""
+
+    @tornado.web.authenticated
+    def get(self):
+        """Serve a PDF file by paper ID."""
+        paper_id = self.get_argument("paper_id", None)
+        if not paper_id:
+            self.send_error(400, "paper_id parameter is required")
+            return
+
+        try:
+            paper_id_int = int(paper_id)
+        except ValueError:
+            self.send_error(400, "Invalid paper_id")
+            return
+
+        try:
+            with DatabaseManager() as db:
+                paper = db.get_paper_by_id(paper_id_int)
+                if not paper:
+                    self.send_error(404, "Paper not found")
+                    return
+
+                pdf_path = paper.get("pdf_path")
+                if not pdf_path:
+                    self.send_error(404, "PDF not available for this paper")
+                    return
+
+                # Read the PDF file
+                pdf_file = Path(pdf_path)
+                if not pdf_file.exists():
+                    self.send_error(404, "PDF file not found on disk")
+                    return
+
+                # Set headers for PDF download/viewing
+                self.set_header("Content-Type", "application/pdf")
+                self.set_header(
+                    "Content-Disposition",
+                    f'inline; filename="{pdf_file.name}"',
+                )
+
+                # Read and send the file
+                with pdf_file.open("rb") as f:
+                    self.write(f.read())
+                self.finish()
+        except Exception as e:
+            logger.exception("Error serving PDF")
+            self.send_error(500, str(e))
+
+
 def setup_route_handlers(web_app):
     """Register all API route handlers."""
     host_pattern = ".*$"
@@ -1075,6 +1127,10 @@ def setup_route_handlers(web_app):
         (
             url_path_join(base_url, route_prefix, "sensitivity-analysis"),
             SensitivityAnalysisHandler,
+        ),
+        (
+            url_path_join(base_url, route_prefix, "pdf"),
+            PDFHandler,
         ),
     ]
 

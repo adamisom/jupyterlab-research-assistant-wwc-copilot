@@ -194,7 +194,13 @@ export const WWCCoPilot: React.FC<WWCCoPilotProps> = ({
 
         {/* Warning box - Show if assessment found missing data or if assessment failed */}
         {(assessmentError ||
-          (assessment && assessment.overall_attrition === undefined)) && (
+          (assessment &&
+            (assessment.overall_attrition === undefined ||
+              assessment.rating_justification.some(
+                msg =>
+                  msg.includes('incomplete') ||
+                  msg.includes('Insufficient data')
+              )))) && (
           <div className="jp-WWCExtension-wwc-warning-box">
             <div className="jp-WWCExtension-wwc-warning-content">
               <strong>⚠️ Missing Required Data</strong>

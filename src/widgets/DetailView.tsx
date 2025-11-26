@@ -1,4 +1,6 @@
 import React from 'react';
+import { ServerConnection } from '@jupyterlab/services';
+import { URLExt } from '@jupyterlab/coreutils';
 import { IPaper } from '../api';
 import { AppEvents } from '../utils/events';
 import { Tabs } from './Tabs';
@@ -15,9 +17,16 @@ export const DetailView: React.FC<DetailViewProps> = ({ paper, onClose }) => {
   >('overview');
 
   const openPDF = () => {
-    if (paper.pdf_path) {
-      // Open PDF in new tab (if accessible via JupyterLab file browser)
-      window.open(`/files${paper.pdf_path}`, '_blank');
+    if (paper.id !== undefined) {
+      // Open PDF via our backend route
+      const settings = ServerConnection.makeSettings();
+      const url = URLExt.join(
+        settings.baseUrl,
+        'jupyterlab-research-assistant-wwc-copilot',
+        'pdf',
+        `?paper_id=${paper.id}`
+      );
+      window.open(url, '_blank');
     }
   };
 
