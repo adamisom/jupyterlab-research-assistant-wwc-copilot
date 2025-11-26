@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   runWWCAssessment,
   IWWCAssessment,
@@ -35,6 +35,7 @@ export const WWCCoPilot: React.FC<WWCCoPilotProps> = ({
     adjustment_strategy_is_valid: undefined,
     randomization_documented: undefined
   });
+  const isRunningRef = useRef(false); // Prevent concurrent assessment calls
 
   const steps: WizardStep[] = [
     'randomization',
@@ -97,30 +98,43 @@ export const WWCCoPilot: React.FC<WWCCoPilotProps> = ({
     useAsyncOperation(runAssessmentWithRequest);
 
   const runAssessment = useCallback(async () => {
-    const result = await executeAssessment(paperId, judgments);
-    if (result) {
-      setAssessment(result);
-      saveProgress();
+    // Prevent concurrent calls
+    if (isRunningRef.current) {
+      return;
+    }
+    isRunningRef.current = true;
+    try {
+      const result = await executeAssessment(paperId, judgments);
+      if (result) {
+        setAssessment(result);
+        saveProgress();
+      }
+    } finally {
+      isRunningRef.current = false;
     }
   }, [paperId, judgments, executeAssessment]);
 
-  // Auto-run assessment when judgments change (except on initial load)
+  // Only auto-run assessment when moving to review step (not on every judgment change)
   useEffect(() => {
-    if (currentStep !== 'randomization') {
+    if (currentStep === 'review' && !assessment && !isAssessmentLoading) {
+      // Only run if we don't already have an assessment and not currently loading
       runAssessment();
     }
-  }, [judgments, currentStep, runAssessment]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentStep]); // Intentionally exclude runAssessment to prevent infinite loops
 
-  // Handle errors
+  // Handle errors - only show once per error
+  const [lastError, setLastError] = useState<Error | null>(null);
   useEffect(() => {
-    if (assessmentError) {
+    if (assessmentError && assessmentError !== lastError) {
+      setLastError(assessmentError);
       showError(
         'WWC Assessment Error',
-        assessmentError.message,
+        assessmentError.message || 'Failed to fetch assessment',
         assessmentError
       );
     }
-  }, [assessmentError]);
+  }, [assessmentError, lastError]);
 
   const handleNext = () => {
     const currentIndex = getStepIndex(currentStep);
