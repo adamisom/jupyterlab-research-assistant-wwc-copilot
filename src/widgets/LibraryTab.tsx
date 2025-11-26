@@ -135,7 +135,9 @@ export const LibraryTab: React.FC = () => {
       setSelectedPapers(new Set());
     } else {
       // Select all
-      setSelectedPapers(new Set(papers.filter(p => p.id !== undefined).map(p => p.id!)));
+      setSelectedPapers(
+        new Set(papers.filter(p => p.id !== undefined).map(p => p.id!))
+      );
     }
   };
 
@@ -145,11 +147,14 @@ export const LibraryTab: React.FC = () => {
     }
 
     const paperIds = Array.from(selectedPapers);
-    
+
     try {
       const result = await deletePapers(paperIds);
-      showSuccess('Papers Deleted', `Successfully deleted ${result.deleted_count} paper(s)`);
-      
+      showSuccess(
+        'Papers Deleted',
+        `Successfully deleted ${result.deleted_count} paper(s)`
+      );
+
       // Refresh library to remove deleted papers
       await loadLibrary();
       // Clear selections
@@ -232,12 +237,19 @@ export const LibraryTab: React.FC = () => {
 
       {/* Action buttons - show when papers exist */}
       {papers.length > 0 && (
-        <div className="jp-WWCExtension-library-actions" style={{ margin: '10px 0', display: 'flex', gap: '10px', alignItems: 'center' }}>
-          <button
-            onClick={handleSelectAll}
-            className="jp-WWCExtension-button"
-          >
-            {selectedPapers.size === papers.length ? 'Deselect All' : 'Select All'}
+        <div
+          className="jp-WWCExtension-library-actions"
+          style={{
+            margin: '10px 0',
+            display: 'flex',
+            gap: '10px',
+            alignItems: 'center'
+          }}
+        >
+          <button onClick={handleSelectAll} className="jp-WWCExtension-button">
+            {selectedPapers.size === papers.length
+              ? 'Deselect All'
+              : 'Select All'}
           </button>
           {selectedPapers.size > 0 && (
             <button

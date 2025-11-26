@@ -2,7 +2,17 @@
 
 from pathlib import Path
 
-from sqlalchemy import JSON, Column, ForeignKey, Integer, String, Text, create_engine
+from sqlalchemy import (
+    JSON,
+    Column,
+    ForeignKey,
+    Integer,
+    String,
+    Text,
+    create_engine,
+    inspect,
+    text,
+)
 from sqlalchemy.orm import declarative_base, relationship, sessionmaker
 
 Base = declarative_base()
@@ -76,18 +86,22 @@ def get_db_path() -> Path:
 
 def _migrate_database(engine):
     """Run database migrations for schema changes."""
-    from sqlalchemy import inspect, text
-    
     inspector = inspect(engine)
-    
+
     # Check if learning_science_metadata table exists
     if "learning_science_metadata" in inspector.get_table_names():
         # Check if age_group column exists
-        columns = [col["name"] for col in inspector.get_columns("learning_science_metadata")]
+        columns = [
+            col["name"] for col in inspector.get_columns("learning_science_metadata")
+        ]
         if "age_group" not in columns:
             # Add the missing column
             with engine.connect() as conn:
-                conn.execute(text("ALTER TABLE learning_science_metadata ADD COLUMN age_group VARCHAR(50)"))
+                conn.execute(
+                    text(
+                        "ALTER TABLE learning_science_metadata ADD COLUMN age_group VARCHAR(50)"
+                    )
+                )
                 conn.commit()
 
 

@@ -10,9 +10,9 @@ has_binder: false
 has_settings: true
 kind: frontend-and-server
 labextension_name: jupyterlab-research-assistant-wwc-copilot
-project_short_description: A JupyterLab extension for academic research management
-    and WWC quality assessment
+project_short_description:
+  A JupyterLab extension for academic research management
+  and WWC quality assessment
 python_name: jupyterlab_research_assistant_wwc_copilot
 repository: https://github.com/adamisom/jupyterlab-research-assistant-wwc-copilot
 test: true
-

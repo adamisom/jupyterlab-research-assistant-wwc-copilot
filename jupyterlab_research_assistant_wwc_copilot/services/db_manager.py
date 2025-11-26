@@ -115,7 +115,7 @@ class DatabaseManager:
         """Delete multiple papers by their IDs. Returns number of deleted papers."""
         if not paper_ids:
             return 0
-        
+
         papers = self.session.query(Paper).filter(Paper.id.in_(paper_ids)).all()
         count = len(papers)
         for paper in papers:

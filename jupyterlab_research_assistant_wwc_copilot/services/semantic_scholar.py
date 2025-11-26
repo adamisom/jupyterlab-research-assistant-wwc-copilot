@@ -117,7 +117,10 @@ class SemanticScholarAPI:
                         end_year_int = int(end_year.strip())
                         for paper in papers:
                             paper_year = paper.get("year")
-                            if paper_year and start_year_int <= paper_year <= end_year_int:
+                            if (
+                                paper_year
+                                and start_year_int <= paper_year <= end_year_int
+                            ):
                                 filtered_papers.append(paper)
                     except (ValueError, AttributeError):
                         # Invalid year range format, return all papers

@@ -95,11 +95,16 @@ export async function importPaper(paper: IPaper): Promise<IPaper> {
   return handleAPIResponse(response, 'Import failed');
 }
 
-export async function deletePapers(paperIds: number[]): Promise<{ deleted_count: number }> {
-  const response = await requestAPI<IAPIResponse<{ deleted_count: number }>>('library', {
-    method: 'DELETE',
-    body: JSON.stringify({ paper_ids: paperIds })
-  });
+export async function deletePapers(
+  paperIds: number[]
+): Promise<{ deleted_count: number }> {
+  const response = await requestAPI<IAPIResponse<{ deleted_count: number }>>(
+    'library',
+    {
+      method: 'DELETE',
+      body: JSON.stringify({ paper_ids: paperIds })
+    }
+  );
 
   return handleAPIResponse(response, 'Delete failed') || { deleted_count: 0 };
 }
