@@ -177,6 +177,50 @@ export const WWCCoPilot: React.FC<WWCCoPilotProps> = ({
         )}
       </div>
 
+      {/* Data Availability Warning */}
+      {(!assessment || assessment.overall_attrition === undefined) && (
+        <div className="jp-WWCExtension-wwc-data-warning">
+          <div className="jp-WWCExtension-wwc-warning-content">
+            <strong>⚠️ Missing Required Data</strong>
+            <p>
+              <strong>Important:</strong> WWC assessment requires sample sizes
+              and attrition rates to calculate whether a study meets WWC
+              standards. Without this data, the assessment will always result in
+              "Does Not Meet WWC Standards."
+            </p>
+            <p>
+              <strong>Why this happens:</strong> Papers imported from Semantic
+              Scholar or OpenAlex discovery only include basic bibliographic
+              information (title, authors, abstract). They do not include
+              structured study metadata like sample sizes or attrition rates.
+            </p>
+            <p>
+              <strong>To complete WWC assessment:</strong>
+            </p>
+            <ul>
+              <li>
+                <strong>Upload the PDF</strong> of the paper using the "Upload
+                PDF" button in the Library tab
+              </li>
+              <li>
+                <strong>Run AI extraction</strong> to parse the full text and
+                extract study metadata (sample sizes, attrition rates,
+                methodology, etc.)
+              </li>
+              <li>
+                Once the paper has <code>study_metadata</code> with sample sizes
+                and attrition data, return here to run the assessment
+              </li>
+            </ul>
+            <p style={{ marginTop: '12px', fontStyle: 'italic' }}>
+              The assessment can still run without this data, but it will
+              default to "Does Not Meet" because it cannot calculate attrition
+              thresholds.
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Progress Indicator */}
       <div className="jp-WWCExtension-wwc-progress">
         <div className="jp-WWCExtension-wwc-progress-bar">

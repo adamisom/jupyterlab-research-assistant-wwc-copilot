@@ -16,32 +16,34 @@ export const BiasAssessmentView: React.FC<BiasAssessmentViewProps> = ({
       <div className="jp-WWCExtension-eggers-test">
         <h4>Egger's Test</h4>
         {result.eggers_test.intercept_pvalue !== null ? (
-          <div className="jp-WWCExtension-meta-analysis-summary">
-            <div className="jp-WWCExtension-meta-analysis-stat">
-              <strong>Intercept:</strong>
-              <span>
-                {result.eggers_test.intercept !== null
-                  ? result.eggers_test.intercept.toFixed(4)
-                  : 'N/A'}
-              </span>
+          <>
+            <div className="jp-WWCExtension-meta-analysis-summary">
+              <div className="jp-WWCExtension-meta-analysis-stat">
+                <strong>Intercept:</strong>
+                <span>
+                  {result.eggers_test.intercept !== null
+                    ? result.eggers_test.intercept.toFixed(4)
+                    : 'N/A'}
+                </span>
+              </div>
+              <div className="jp-WWCExtension-meta-analysis-stat">
+                <strong>Standard Error:</strong>
+                <span>
+                  {result.eggers_test.intercept_se !== null
+                    ? result.eggers_test.intercept_se.toFixed(4)
+                    : 'N/A'}
+                </span>
+              </div>
+              <div className="jp-WWCExtension-meta-analysis-stat">
+                <strong>P-value:</strong>
+                <span>{result.eggers_test.intercept_pvalue.toFixed(4)}</span>
+              </div>
             </div>
-            <div className="jp-WWCExtension-meta-analysis-stat">
-              <strong>Standard Error:</strong>
-              <span>
-                {result.eggers_test.intercept_se !== null
-                  ? result.eggers_test.intercept_se.toFixed(4)
-                  : 'N/A'}
-              </span>
-            </div>
-            <div className="jp-WWCExtension-meta-analysis-stat">
-              <strong>P-value:</strong>
-              <span>{result.eggers_test.intercept_pvalue.toFixed(4)}</span>
-            </div>
-            <div className="jp-WWCExtension-meta-analysis-stat">
+            <div className="jp-WWCExtension-eggers-interpretation">
               <strong>Interpretation:</strong>
               <span>{result.eggers_test.interpretation}</span>
             </div>
-          </div>
+          </>
         ) : (
           <p>{result.eggers_test.interpretation}</p>
         )}

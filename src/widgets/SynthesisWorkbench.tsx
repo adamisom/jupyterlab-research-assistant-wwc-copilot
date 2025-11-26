@@ -237,6 +237,33 @@ const SynthesisWorkbenchComponent: React.FC<SynthesisWorkbenchProps> = ({
         {activeTab === 'subgroups' && subgroupResult && (
           <SubgroupAnalysisView result={subgroupResult} />
         )}
+        {activeTab === 'subgroups' && !subgroupResult && (
+          <div className="jp-WWCExtension-synthesis-empty">
+            <h3>No Subgroup Analysis Results</h3>
+            <p>
+              Subgroup analysis requires at least 2 studies with both effect
+              sizes and the selected subgroup variable metadata.
+            </p>
+            <p>To run subgroup analysis:</p>
+            <ul>
+              <li>Select a subgroup variable from the dropdown above</li>
+              <li>
+                Ensure your papers have effect sizes (run AI extraction if
+                needed)
+              </li>
+              <li>
+                Ensure your papers have the selected subgroup variable in their
+                metadata
+              </li>
+            </ul>
+            <p className="jp-WWCExtension-synthesis-empty-note">
+              <strong>Note:</strong> If you've already run subgroup analysis and
+              see this message, the analysis may have failed due to insufficient
+              data. Check the error message that appeared when you clicked "Run
+              Subgroup Analysis".
+            </p>
+          </div>
+        )}
         {activeTab === 'bias' && biasResult && (
           <BiasAssessmentView result={biasResult} />
         )}

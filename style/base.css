@@ -64,10 +64,10 @@
 .jp-WWCExtension-input {
   flex: 1;
   min-width: 150px;
-  padding: 6px 8px;
+  padding: 12px 16px;
   border: 1px solid var(--jp-border-color1);
   border-radius: var(--jp-border-radius);
-  font-size: var(--jp-ui-font-size1);
+  font-size: var(--jp-ui-font-size2);
   background-color: var(--jp-layout-color0);
   color: var(--jp-content-font-color1);
   transition:
@@ -99,12 +99,12 @@
 }
 
 .jp-WWCExtension-button {
-  padding: 6px 16px;
+  padding: 12px 24px;
   border: 1px solid var(--jp-border-color1);
   border-radius: var(--jp-border-radius);
   background-color: var(--jp-brand-color1);
   color: var(--jp-ui-inverse-font-color1);
-  font-size: var(--jp-ui-font-size1);
+  font-size: var(--jp-ui-font-size2);
   cursor: pointer;
   font-weight: 500;
   transition: all 0.2s ease-in-out;
@@ -718,11 +718,38 @@
 }
 
 .jp-WWCExtension-synthesis-empty {
-  padding: 32px;
+  padding: 32px 32px 48px;
   text-align: center;
   color: var(--jp-content-font-color2);
   font-size: var(--jp-ui-font-size1);
   line-height: 1.5;
+}
+
+.jp-WWCExtension-synthesis-empty h3 {
+  margin: 0 0 16px;
+  font-size: var(--jp-ui-font-size2);
+  font-weight: 600;
+  color: var(--jp-content-font-color1);
+}
+
+.jp-WWCExtension-synthesis-empty p {
+  margin: 12px 0;
+  text-align: left;
+}
+
+.jp-WWCExtension-synthesis-empty ul {
+  margin: 12px 0;
+  padding-left: 24px;
+  text-align: left;
+}
+
+.jp-WWCExtension-synthesis-empty li {
+  margin: 8px 0;
+}
+
+.jp-WWCExtension-synthesis-empty-note {
+  margin-top: 24px;
+  padding-bottom: 24px;
 }
 
 /* Meta-Analysis View Styles */
@@ -841,14 +868,23 @@
   color: var(--jp-content-font-color1);
   border-bottom: 2px solid var(--jp-border-color1);
   line-height: 1.4;
+  white-space: nowrap;
 }
 
 .jp-WWCExtension-table td {
   padding: 8px 12px;
   color: var(--jp-content-font-color2);
   border-bottom: 1px solid var(--jp-border-color2);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
   line-height: 1.5;
   transition: background-color 0.2s ease-in-out;
+}
+
+.jp-WWCExtension-table td:first-child {
+  max-width: 250px;
+  min-width: 150px;
+  word-break: break-word;
 }
 
 .jp-WWCExtension-table tbody tr:hover {
@@ -975,6 +1011,52 @@
   font-weight: 600;
   display: block;
   margin-bottom: 4px;
+}
+
+/* WWC Data Warning Banner */
+.jp-WWCExtension-wwc-data-warning {
+  margin: 16px 0 24px;
+  padding: 16px;
+  background-color: var(--jp-warn-color3);
+  border: 2px solid var(--jp-warn-color1);
+  border-radius: var(--jp-border-radius);
+  border-left-width: 4px;
+}
+
+.jp-WWCExtension-wwc-warning-content {
+  color: var(--jp-content-font-color1);
+}
+
+.jp-WWCExtension-wwc-warning-content strong {
+  color: var(--jp-warn-color0);
+  font-weight: 600;
+  display: block;
+  margin-bottom: 8px;
+  font-size: var(--jp-ui-font-size1);
+}
+
+.jp-WWCExtension-wwc-warning-content p {
+  margin: 8px 0;
+  line-height: 1.6;
+  font-size: var(--jp-ui-font-size1);
+}
+
+.jp-WWCExtension-wwc-warning-content ul {
+  margin: 8px 0 8px 20px;
+  padding-left: 0;
+}
+
+.jp-WWCExtension-wwc-warning-content li {
+  margin: 6px 0;
+  line-height: 1.5;
+}
+
+.jp-WWCExtension-wwc-warning-content code {
+  background-color: var(--jp-layout-color2);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: var(--jp-code-font-family);
+  font-size: var(--jp-ui-font-size0);
 }
 
 /* WWC Wizard Progress Indicator */
@@ -1205,6 +1287,7 @@
 
 /* Sensitivity Analysis Styles */
 .jp-WWCExtension-sensitivity-analysis {
+  padding-bottom: 48px;
   display: flex;
   flex-direction: column;
   gap: 24px;

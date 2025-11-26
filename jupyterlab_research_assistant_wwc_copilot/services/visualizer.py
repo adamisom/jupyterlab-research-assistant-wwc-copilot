@@ -57,8 +57,8 @@ class Visualizer:
         # Create figure with more space for labels
         fig, ax = plt.subplots(figsize=figsize, dpi=dpi)
 
-        # Adjust margins to prevent label overlap
-        plt.subplots_adjust(left=0.25, right=0.95, top=0.95, bottom=0.1)
+        # Adjust margins to prevent label overlap - increased left margin
+        plt.subplots_adjust(left=0.35, right=0.95, top=0.95, bottom=0.1)
 
         y_positions = np.arange(n_studies + 1)  # +1 for pooled effect row
 
@@ -89,19 +89,6 @@ class Visualizer:
             # Plot confidence interval
             ax.plot([ci_low, ci_high], [y_pos, y_pos], "b-", linewidth=2)
 
-            # Add study label on the left (truncated)
-            label = study.get("study_label", f"Study {i + 1}")
-            truncated_label = truncate_label(label, max_length=60)
-            ax.text(
-                x_min,
-                y_pos,
-                truncated_label,
-                va="center",
-                ha="right",
-                fontsize=9,
-                wrap=True,
-            )
-
         # Plot pooled effect (diamond shape)
         pooled_y = y_positions[-1]
         ax.plot(
@@ -126,12 +113,16 @@ class Visualizer:
         ax.set_title(title, fontsize=12, fontweight="bold")
 
         # Set y-axis ticks with truncated labels
+        # Truncate more aggressively and ensure no overlap
         y_labels = [
-            truncate_label(s.get("study_label", f"Study {i + 1}"), max_length=40)
+            truncate_label(s.get("study_label", f"Study {i + 1}"), max_length=35)
             for i, s in enumerate(studies)
         ] + ["Pooled Effect"]
         ax.set_yticks(y_positions)
         ax.set_yticklabels(y_labels, fontsize=9)
+
+        # Rotate labels slightly if needed to prevent overlap
+        plt.setp(ax.get_yticklabels(), rotation=0, ha="right")
 
         # Set x-axis limits with padding
         ax.set_xlim(x_min, x_max)

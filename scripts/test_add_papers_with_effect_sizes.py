@@ -33,8 +33,12 @@ def add_test_papers():
             "authors": ["Smith, J.", "Doe, A."],
             "year": 2023,
             "abstract": (
-                "This study examined the effect of spaced repetition "
-                "on math achievement."
+                "This study examined the effect of spaced repetition on math achievement. "
+                "Results show a significant improvement in test scores for students using "
+                "spaced repetition compared to traditional study methods. The findings "
+                "demonstrate that spaced repetition leads to better retention of mathematical "
+                "concepts. Evidence suggests this intervention is effective for elementary "
+                "school students."
             ),
             "study_metadata": {
                 "methodology": "RCT",
@@ -57,7 +61,14 @@ def add_test_papers():
             "title": "Active Learning Strategies in Science Education",
             "authors": ["Johnson, M.", "Williams, K."],
             "year": 2022,
-            "abstract": "A randomized controlled trial of active learning strategies.",
+            "abstract": (
+                "A randomized controlled trial of active learning strategies in science education. "
+                "The results show that students in the active learning group showed significant "
+                "improvements in science achievement. We found that hands-on experiments and "
+                "collaborative activities had a positive impact on learning outcomes. The "
+                "conclusion indicates that active learning is more effective than traditional "
+                "lecture-based instruction for middle school students."
+            ),
             "study_metadata": {
                 "methodology": "RCT",
                 "sample_size_baseline": 150,
@@ -79,7 +90,14 @@ def add_test_papers():
             "title": "Peer Tutoring Impact on Reading Comprehension",
             "authors": ["Brown, S.", "Davis, L.", "Miller, R."],
             "year": 2023,
-            "abstract": "Quasi-experimental study of peer tutoring interventions.",
+            "abstract": (
+                "Quasi-experimental study of peer tutoring interventions in reading "
+                "comprehension. The study revealed that peer tutoring significantly "
+                "improved reading scores. Findings indicate that students who participated "
+                "in peer tutoring showed greater gains than those in the control group. "
+                "Evidence suggests peer tutoring is an effective strategy for improving "
+                "reading comprehension in elementary students."
+            ),
             "study_metadata": {
                 "methodology": "Quasi-experimental",
                 "sample_size_baseline": 200,
@@ -104,7 +122,12 @@ def add_test_papers():
             "authors": ["Wilson, T.", "Anderson, P."],
             "year": 2022,
             "abstract": (
-                "Experimental study comparing multimedia vs. traditional instruction."
+                "Experimental study comparing multimedia vs. traditional instruction in history "
+                "education. Results demonstrate that multimedia instruction led to significantly "
+                "higher test scores. The findings show that students learned more effectively "
+                "when using interactive multimedia content. Evidence indicates that multimedia "
+                "approaches have a positive impact on history knowledge retention for high school "
+                "students."
             ),
             "study_metadata": {
                 "methodology": "RCT",
