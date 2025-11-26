@@ -391,6 +391,4 @@ For detailed architecture information, see:
 ## Additional Resources
 
 - **[AGENTS.md](../AGENTS.md)**: Coding standards and best practices
-- **[Quick Reference](./quick-reference.md)**: Essential commands
 - **[Styling Principles](./styling-principles.md)**: CSS and UI guidelines
-- **[Troubleshooting](./troubleshooting/)**: Common issues and solutions
