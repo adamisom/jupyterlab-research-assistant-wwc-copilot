@@ -183,6 +183,31 @@
   line-height: 1.5;
 }
 
+.jp-WWCExtension-paper-status {
+  margin: 8px 0;
+}
+
+.jp-WWCExtension-pdf-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: var(--jp-border-radius);
+  font-size: var(--jp-ui-font-size0);
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.jp-WWCExtension-pdf-badge.jp-mod-has-pdf {
+  background-color: var(--jp-success-color3);
+  color: var(--jp-success-color0);
+  border: 1px solid var(--jp-success-color1);
+}
+
+.jp-WWCExtension-pdf-badge.jp-mod-metadata-only {
+  background-color: var(--jp-warn-color3);
+  color: var(--jp-warn-color0);
+  border: 1px solid var(--jp-warn-color1);
+}
+
 .jp-WWCExtension-paper-actions {
   display: flex;
   gap: 8px;

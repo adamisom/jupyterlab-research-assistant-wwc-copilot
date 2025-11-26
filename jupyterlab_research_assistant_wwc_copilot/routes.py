@@ -94,8 +94,22 @@ class LibraryHandler(BaseAPIHandler):
             return
 
         with DatabaseManager() as db:
+            # Check for duplicate before adding
+            title = data.get("title", "")
+            authors = data.get("authors", [])
+            year = data.get("year")
+            existing_paper = db.find_existing_paper(
+                title=title, authors=authors, year=year
+            )
+
+            if existing_paper:
+                # Paper already exists - return existing paper with duplicate flag
+                self.send_success({"paper": existing_paper, "is_duplicate": True}, 200)
+                return
+
+            # No duplicate found - add new paper
             paper = db.add_paper(data)
-            self.send_success(paper, 201)
+            self.send_success({"paper": paper, "is_duplicate": False}, 201)
 
     @tornado.web.authenticated
     def delete(self):
@@ -196,11 +210,13 @@ class ImportHandler(BaseAPIHandler):
             ai_extractor=None,  # Will be created by service if needed
         )
 
-        paper = import_service.import_pdf(
+        result = import_service.import_pdf(
             file_content=file_content, filename=filename, ai_config=ai_config
         )
 
-        self.send_success(paper, 201)
+        # Return appropriate status code based on whether it was a duplicate
+        status_code = 200 if result["is_duplicate"] else 201
+        self.send_success(result, status_code)
 
     def _parse_ai_config(self) -> Optional[dict]:
         """Parse AI config from form data."""

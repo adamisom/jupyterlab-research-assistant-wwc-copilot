@@ -13,7 +13,7 @@ import { SearchBar } from './SearchBar';
 import { ErrorDisplay } from './ErrorDisplay';
 import { LoadingState } from './LoadingState';
 import { DetailView } from './DetailView';
-import { getPaperKey } from '../utils/paper';
+import { getPaperKey, hasFullPDF } from '../utils/paper';
 import { AppEvents } from '../utils/events';
 
 export const LibraryTab: React.FC = () => {
@@ -69,13 +69,27 @@ export const LibraryTab: React.FC = () => {
     try {
       // Get AI config from settings if available
       // For now, pass undefined - settings will be read on backend
-      const importedPaper = await importPDF(file);
+      const result = await importPDF(file);
       // Refresh library to show new paper
       await loadLibrary();
-      showSuccess(
-        'PDF Uploaded',
-        `Successfully imported: ${importedPaper.title}`
-      );
+      if (result.is_duplicate) {
+        if (result.already_has_pdf) {
+          showSuccess(
+            'PDF Already in Library',
+            `"${result.paper.title}" already exists in your library with a full PDF.`
+          );
+        } else {
+          showSuccess(
+            'PDF Updated Existing Paper',
+            `"${result.paper.title}" was already in your library (metadata-only). The PDF has been added and the entry updated.`
+          );
+        }
+      } else {
+        showSuccess(
+          'PDF Uploaded',
+          `Successfully imported: ${result.paper.title}`
+        );
+      }
       // Reset file input
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
@@ -124,9 +138,35 @@ export const LibraryTab: React.FC = () => {
 
   const handleOpenSynthesis = () => {
     const paperIds = Array.from(selectedPapers);
-    if (paperIds.length >= 2) {
-      AppEvents.dispatchOpenSynthesisWorkbench(paperIds);
+    if (paperIds.length < 2) {
+      return;
     }
+
+    // Check if all selected papers have full PDFs
+    const selectedPaperObjects = papers.filter(
+      p => p.id !== undefined && paperIds.includes(p.id)
+    );
+    const metadataOnlyPapers = selectedPaperObjects.filter(p => !hasFullPDF(p));
+
+    if (metadataOnlyPapers.length > 0) {
+      const titles = metadataOnlyPapers
+        .map(p => p.title)
+        .slice(0, 3)
+        .join(', ');
+      const moreText =
+        metadataOnlyPapers.length > 3
+          ? ` and ${metadataOnlyPapers.length - 3} more`
+          : '';
+      showError(
+        'Cannot Synthesize Metadata-Only Papers',
+        `The following papers are metadata-only (no PDF): ${titles}${moreText}. ` +
+          'Please upload PDFs for these papers or only select papers with full PDFs. ' +
+          'Papers with full PDFs are marked with "📄 Full PDF" badge.'
+      );
+      return;
+    }
+
+    AppEvents.dispatchOpenSynthesisWorkbench(paperIds);
   };
 
   const handleSelectAll = () => {
@@ -243,14 +283,20 @@ export const LibraryTab: React.FC = () => {
         >
           {isUploading ? 'Uploading...' : 'Upload PDF'}
         </label>
-        {papers.length > 0 && selectedPapers.size >= 2 && (
-          <button
-            onClick={handleOpenSynthesis}
-            className="jp-WWCExtension-button jp-WWCExtension-synthesis-button"
-          >
-            Synthesize {selectedPapers.size} Studies
-          </button>
-        )}
+        {(() => {
+          // Count selected papers with full PDFs
+          const selectedWithPDFs = papers.filter(
+            p => p.id !== undefined && selectedPapers.has(p.id) && hasFullPDF(p)
+          );
+          return selectedWithPDFs.length >= 2 ? (
+            <button
+              onClick={handleOpenSynthesis}
+              className="jp-WWCExtension-button jp-WWCExtension-synthesis-button"
+            >
+              Synthesize {selectedWithPDFs.length} Studies
+            </button>
+          ) : null;
+        })()}
       </div>
 
       <ErrorDisplay error={error} />

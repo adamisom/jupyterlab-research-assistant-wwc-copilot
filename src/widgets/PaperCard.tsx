@@ -1,5 +1,6 @@
 import React from 'react';
 import { IPaper } from '../api';
+import { hasFullPDF } from '../utils/paper';
 
 interface PaperCardProps {
   paper: IPaper;
@@ -62,6 +63,17 @@ export const PaperCard: React.FC<PaperCardProps> = ({
           {paper.abstract.length > 200 ? '...' : ''}
         </div>
       )}
+      <div className="jp-WWCExtension-paper-status">
+        {hasFullPDF(paper) ? (
+          <span className="jp-WWCExtension-pdf-badge jp-mod-has-pdf">
+            📄 Full PDF
+          </span>
+        ) : (
+          <span className="jp-WWCExtension-pdf-badge jp-mod-metadata-only">
+            📋 Metadata Only
+          </span>
+        )}
+      </div>
       <div className="jp-WWCExtension-paper-actions">
         {onViewDetails && (
           <button onClick={onViewDetails} className="jp-WWCExtension-button">

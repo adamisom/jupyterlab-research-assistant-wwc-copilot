@@ -188,11 +188,12 @@ export const WWCCoPilot: React.FC<WWCCoPilotProps> = ({
               Standards."
             </p>
             <p>
-              Papers imported from discovery sources (Semantic Scholar, OpenAlex)
-              only include basic bibliographic information. To complete the
-              assessment, ensure the paper has <code>study_metadata</code> with
-              sample sizes and attrition data. This can be added via AI
-              extraction during PDF upload (if configured) or manually.
+              Papers imported from discovery sources (Semantic Scholar,
+              OpenAlex) only include basic bibliographic information. To
+              complete the assessment, ensure the paper has{' '}
+              <code>study_metadata</code> with sample sizes and attrition data.
+              This can be added via AI extraction during PDF upload (if
+              configured) or manually.
             </p>
           </div>
         </div>

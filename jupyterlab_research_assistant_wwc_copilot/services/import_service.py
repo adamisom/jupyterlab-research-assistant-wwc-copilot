@@ -55,10 +55,20 @@ class ImportService:
         # Extract text and metadata from PDF
         extracted = self.pdf_parser.extract_text_and_metadata(str(file_path))
 
+        # Get title and authors for deduplication check
+        title = extracted.get("title") or filename.replace(".pdf", "")
+        author = extracted.get("author")
+        # Convert author string to list if needed
+        # Author might be a comma-separated string, split it
+        authors = [a.strip() for a in author.split(",") if a.strip()] if author else []
+        # PDF metadata doesn't typically include year, so we'll match without it
+        year = None
+
         # Create paper record
         paper_data = {
-            "title": extracted.get("title") or filename.replace(".pdf", ""),
-            "author": extracted.get("author"),
+            "title": title,
+            "authors": authors,
+            "year": year,
             "full_text": extracted.get("full_text"),
             "pdf_path": str(file_path),
         }
@@ -92,8 +102,48 @@ class ImportService:
                     f"AI extraction failed: {e!s}, continuing without AI metadata"
                 )
 
-        # Save to database
+        # Save to database (check for existing paper first)
         with DatabaseManager() as db:
-            paper = db.add_paper(paper_data)
+            # Check if paper already exists (same title, authors, year)
+            existing_paper = db.find_existing_paper(
+                title=title, authors=authors, year=year
+            )
 
-        return paper
+            if existing_paper:
+                # Check if existing paper already has a full PDF
+                has_full_pdf = bool(
+                    existing_paper.get("pdf_path") or existing_paper.get("full_text")
+                )
+
+                if has_full_pdf:
+                    # Paper already has a full PDF - don't upload, just return existing
+                    logger.info(
+                        f"Found existing paper with full PDF (same title/authors/year): {title}. "
+                        f"Not uploading duplicate PDF for paper ID {existing_paper['id']}."
+                    )
+                    return {"paper": existing_paper, "is_duplicate": True, "already_has_pdf": True}
+                else:
+                    # Paper is metadata-only - update it with PDF data
+                    logger.info(
+                        f"Found existing metadata-only paper (same title/authors/year): {title}. "
+                        f"Updating paper ID {existing_paper['id']} with PDF data."
+                    )
+                    # Merge existing data with new PDF data
+                    # Preserve existing metadata that might not be in PDF
+                    merged_data = {
+                        **existing_paper,  # Keep existing fields
+                        **paper_data,  # Overwrite with PDF data (pdf_path, full_text)
+                    }
+                    # Preserve existing study_metadata and learning_science_metadata
+                    # unless AI extraction provides new data
+                    if "study_metadata" not in paper_data:
+                        merged_data.pop("study_metadata", None)
+                    if "learning_science_metadata" not in paper_data:
+                        merged_data.pop("learning_science_metadata", None)
+
+                    paper = db.update_paper(existing_paper["id"], merged_data)
+                    return {"paper": paper, "is_duplicate": True, "already_has_pdf": False}
+            else:
+                # Add new paper
+                paper = db.add_paper(paper_data)
+                return {"paper": paper, "is_duplicate": False}

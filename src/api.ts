@@ -86,13 +86,25 @@ export async function searchSemanticScholar(
   });
 }
 
-export async function importPaper(paper: IPaper): Promise<IPaper> {
-  const response = await requestAPI<IAPIResponse<IPaper>>('library', {
-    method: 'POST',
-    body: JSON.stringify(paper)
-  });
+export interface IImportPaperResponse {
+  paper: IPaper;
+  is_duplicate: boolean;
+  already_has_pdf?: boolean;
+}
 
-  return handleAPIResponse(response, 'Import failed');
+export async function importPaper(
+  paper: IPaper
+): Promise<IImportPaperResponse> {
+  const response = await requestAPI<IAPIResponse<IImportPaperResponse>>(
+    'library',
+    {
+      method: 'POST',
+      body: JSON.stringify(paper)
+    }
+  );
+
+  const result = handleAPIResponse(response, 'Import failed');
+  return result;
 }
 
 export async function deletePapers(
@@ -118,7 +130,7 @@ export async function importPDF(
     model?: string;
     ollamaUrl?: string;
   }
-): Promise<IPaper> {
+): Promise<IImportPaperResponse> {
   const formData = new FormData();
   formData.append('file', file);
   if (aiConfig) {
@@ -129,10 +141,13 @@ export async function importPDF(
     formData.append('aiConfig', aiConfigBlob, 'aiConfig.json');
   }
 
-  const response = await requestAPI<IAPIResponse<IPaper>>('import', {
-    method: 'POST',
-    body: formData
-  });
+  const response = await requestAPI<IAPIResponse<IImportPaperResponse>>(
+    'import',
+    {
+      method: 'POST',
+      body: formData
+    }
+  );
 
   return handleAPIResponse(response, 'PDF import failed');
 }

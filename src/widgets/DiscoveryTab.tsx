@@ -33,8 +33,15 @@ export const DiscoveryTab: React.FC = () => {
 
   const handleImport = async (paper: IPaper) => {
     try {
-      await importPaper(paper);
-      showSuccess('Paper Imported', `Successfully imported: ${paper.title}`);
+      const result = await importPaper(paper);
+      if (result.is_duplicate) {
+        showSuccess(
+          'Paper Already in Library',
+          `"${paper.title}" is already in your library.`
+        );
+      } else {
+        showSuccess('Paper Imported', `Successfully imported: ${paper.title}`);
+      }
     } catch (err) {
       showError(
         'Import Failed',
