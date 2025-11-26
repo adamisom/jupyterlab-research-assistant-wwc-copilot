@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- **Conflict Detection**: Fixed input format for cross-encoder NLI model (now uses tuple format instead of string concatenation)
+- **Conflict Detection**: Added topic filtering to reduce false positives when findings are about different interventions/outcomes
+- **Meta-Analysis**: Suppressed harmless sqrt() warnings from statsmodels when tau² is negative (common with 2 studies or low heterogeneity)
+
 ### Added
 
 - Stage 2 enhancements (all features now complete):
@@ -16,6 +22,7 @@
 
 - Updated documentation to reflect Stage 2 completion (core features + enhancements)
 - Updated main README with complete feature status
+- Conflict detection now filters out comparisons between findings about different topics by default (reduces false positives)
 
 ### Completed
 

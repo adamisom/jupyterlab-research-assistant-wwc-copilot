@@ -1,11 +1,21 @@
 """Meta-analysis engine using statsmodels for random-effects models."""
 
 import logging
+import warnings
 
 import numpy as np
 import statsmodels.stats.meta_analysis as meta
 
 logger = logging.getLogger(__name__)
+
+# Suppress harmless sqrt() warnings from statsmodels when tau² is negative
+# (common with 2 studies or low heterogeneity - statsmodels handles this internally)
+warnings.filterwarnings(
+    "ignore",
+    category=RuntimeWarning,
+    message="invalid value encountered in sqrt",
+    module="statsmodels.stats.meta_analysis",
+)
 
 
 class MetaAnalyzer:

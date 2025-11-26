@@ -53,11 +53,80 @@ class ConflictDetector:
         else:
             logger.warning("transformers not available. Conflict detection disabled.")
 
+    def _are_same_topic(self, finding1: str, finding2: str) -> bool:
+        """
+        Check if two findings are about the same topic/intervention/outcome.
+
+        This is a simple heuristic to filter out false positives where findings
+        are about different research questions.
+
+        Args:
+            finding1: First finding statement
+            finding2: Second finding statement
+
+        Returns:
+            True if findings appear to be about the same topic
+        """
+        # Extract key terms (simple keyword-based approach)
+        finding1_lower = finding1.lower()
+        finding2_lower = finding2.lower()
+
+        # Common intervention keywords
+        intervention_keywords = [
+            "tutoring",
+            "instruction",
+            "intervention",
+            "treatment",
+            "program",
+            "curriculum",
+            "method",
+            "approach",
+            "strategy",
+            "technique",
+        ]
+
+        # Common outcome keywords
+        outcome_keywords = [
+            "reading",
+            "math",
+            "comprehension",
+            "knowledge",
+            "performance",
+            "achievement",
+            "score",
+            "test",
+            "learning",
+            "skill",
+        ]
+
+        # Check if findings share intervention or outcome keywords
+        f1_interventions = [kw for kw in intervention_keywords if kw in finding1_lower]
+        f2_interventions = [kw for kw in intervention_keywords if kw in finding2_lower]
+        f1_outcomes = [kw for kw in outcome_keywords if kw in finding1_lower]
+        f2_outcomes = [kw for kw in outcome_keywords if kw in finding2_lower]
+
+        # If both mention interventions, check for overlap
+        if f1_interventions and f2_interventions:
+            if not set(f1_interventions).intersection(set(f2_interventions)):
+                # Different interventions - likely different topics
+                return False
+
+        # If both mention outcomes, check for overlap
+        if f1_outcomes and f2_outcomes:
+            if not set(f1_outcomes).intersection(set(f2_outcomes)):
+                # Different outcomes - likely different topics
+                return False
+
+        # If one has intervention/outcome keywords and the other doesn't, be cautious
+        # but don't filter out (might be about same topic with different wording)
+        return True
+
     def find_contradictions(
         self,
         findings1: list[str],
         findings2: list[str],
         confidence_threshold: float = 0.8,
+        filter_different_topics: bool = True,
     ) -> list[dict]:
         """
         Compare two lists of findings and identify contradictions.
@@ -67,6 +136,8 @@ class ConflictDetector:
             findings2: List of finding statements from second study
             confidence_threshold: Minimum confidence score for contradiction
                 (0.0 to 1.0)
+            filter_different_topics: If True, filter out comparisons between
+                findings about different topics/interventions/outcomes
 
         Returns:
             List of contradiction dictionaries with:
@@ -84,8 +155,13 @@ class ConflictDetector:
         for f1 in findings1:
             for f2 in findings2:
                 try:
-                    # Format for NLI: premise [SEP] hypothesis
-                    result = self.nli_pipeline(f"{f1} [SEP] {f2}")
+                    # Filter out comparisons between different topics if enabled
+                    if filter_different_topics and not self._are_same_topic(f1, f2):
+                        continue
+
+                    # Correct format for cross-encoder models: pass as tuple
+                    # The pipeline will handle tokenization with proper [SEP] tokens
+                    result = self.nli_pipeline((f1, f2))
 
                     # Handle different return formats
                     if isinstance(result, list) and len(result) > 0:
