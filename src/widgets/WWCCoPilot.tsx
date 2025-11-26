@@ -177,27 +177,41 @@ export const WWCCoPilot: React.FC<WWCCoPilotProps> = ({
         )}
       </div>
 
-      {/* Data Availability Warning */}
-      {(!assessment || assessment.overall_attrition === undefined) && (
-        <div className="jp-WWCExtension-wwc-data-warning">
-          <div className="jp-WWCExtension-wwc-warning-content">
-            <strong>⚠️ Missing Required Data</strong>
+      {/* Info Boxes - Always show info, conditionally show warning */}
+      <div className="jp-WWCExtension-wwc-info-container">
+        {/* Always-visible informational box */}
+        <div className="jp-WWCExtension-wwc-info-box">
+          <div className="jp-WWCExtension-wwc-info-content">
+            <strong>ℹ️ About WWC Assessment</strong>
             <p>
-              WWC assessment requires sample sizes and attrition rates. Without
-              this data, the assessment will default to "Does Not Meet WWC
-              Standards."
-            </p>
-            <p>
-              Papers imported from discovery sources (Semantic Scholar,
-              OpenAlex) only include basic bibliographic information. To
-              complete the assessment, ensure the paper has{' '}
-              <code>study_metadata</code> with sample sizes and attrition data.
-              This can be added via AI extraction during PDF upload (if
-              configured) or manually.
+              WWC assessment evaluates studies based on randomization
+              documentation, attrition rates, baseline equivalence, and
+              statistical adjustments. Complete the wizard steps to get your
+              assessment rating.
             </p>
           </div>
         </div>
-      )}
+
+        {/* Warning box - Only show if assessment found missing data */}
+        {assessment && assessment.overall_attrition === undefined && (
+          <div className="jp-WWCExtension-wwc-warning-box">
+            <div className="jp-WWCExtension-wwc-warning-content">
+              <strong>⚠️ Missing Required Data</strong>
+              <p>
+                Attrition data was not found in this paper. Without sample sizes
+                and attrition rates, the assessment will default to "Does Not
+                Meet WWC Standards."
+              </p>
+              <p>
+                To complete the assessment, ensure the paper has{' '}
+                <code>study_metadata</code> with sample sizes and attrition
+                data. This can be added via AI extraction during PDF upload (if
+                configured) or manually.
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
 
       {/* Progress Indicator */}
       <div className="jp-WWCExtension-wwc-progress">

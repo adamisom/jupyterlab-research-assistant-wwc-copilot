@@ -1075,18 +1075,60 @@
   color: var(--jp-content-font-color2);
 }
 
-/* WWC Data Warning Banner */
-.jp-WWCExtension-wwc-data-warning {
+/* WWC Info Boxes Container */
+.jp-WWCExtension-wwc-info-container {
   margin: 16px 0 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 0; /* No gap between boxes when stacked */
+}
+
+/* Always-visible informational box */
+.jp-WWCExtension-wwc-info-box {
+  padding: 16px;
+  background-color: var(--jp-info-color3);
+  border: 2px solid var(--jp-info-color1);
+  border-radius: var(--jp-border-radius);
+  border-left-width: 4px;
+  width: 100%;
+}
+
+/* Warning box - only shows when data is missing */
+.jp-WWCExtension-wwc-warning-box {
   padding: 16px;
   background-color: var(--jp-warn-color3);
   border: 2px solid var(--jp-warn-color1);
   border-radius: var(--jp-border-radius);
   border-left-width: 4px;
+  width: 100%;
 }
 
+/* When info box is followed by warning box, connect them seamlessly */
+.jp-WWCExtension-wwc-info-box + .jp-WWCExtension-wwc-warning-box {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  margin-top: 0;
+}
+
+/* When warning follows info, remove bottom radius from info box */
+.jp-WWCExtension-wwc-info-box:has(+ .jp-WWCExtension-wwc-warning-box) {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  margin-bottom: 0;
+}
+
+/* Shared content styling */
+.jp-WWCExtension-wwc-info-content,
 .jp-WWCExtension-wwc-warning-content {
   color: var(--jp-content-font-color1);
+}
+
+.jp-WWCExtension-wwc-info-content strong {
+  color: var(--jp-info-color0);
+  font-weight: 600;
+  display: block;
+  margin-bottom: 8px;
+  font-size: var(--jp-ui-font-size1);
 }
 
 .jp-WWCExtension-wwc-warning-content strong {
@@ -1097,6 +1139,7 @@
   font-size: var(--jp-ui-font-size1);
 }
 
+.jp-WWCExtension-wwc-info-content p,
 .jp-WWCExtension-wwc-warning-content p {
   margin: 8px 0;
   line-height: 1.6;
@@ -1113,6 +1156,7 @@
   line-height: 1.5;
 }
 
+.jp-WWCExtension-wwc-info-content code,
 .jp-WWCExtension-wwc-warning-content code {
   background-color: var(--jp-layout-color2);
   padding: 2px 6px;
