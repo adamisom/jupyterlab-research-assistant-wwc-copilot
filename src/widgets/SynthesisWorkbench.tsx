@@ -152,21 +152,23 @@ const SynthesisWorkbenchComponent: React.FC<SynthesisWorkbenchProps> = ({
       </div>
 
       <div className="jp-WWCExtension-synthesis-actions">
-        <button
-          onClick={handleRunMetaAnalysis}
-          disabled={isLoading}
-          className="jp-WWCExtension-button"
-        >
-          Run Meta-Analysis
-        </button>
-        <button
-          onClick={handleDetectConflicts}
-          disabled={isLoading}
-          className="jp-WWCExtension-button"
-        >
-          Detect Conflicts
-        </button>
-        <div className="jp-WWCExtension-subgroup-controls">
+        <div className="jp-WWCExtension-synthesis-actions-row">
+          <button
+            onClick={handleRunMetaAnalysis}
+            disabled={isLoading}
+            className="jp-WWCExtension-button"
+          >
+            Run Meta-Analysis
+          </button>
+          <button
+            onClick={handleDetectConflicts}
+            disabled={isLoading}
+            className="jp-WWCExtension-button"
+          >
+            Detect Conflicts
+          </button>
+        </div>
+        <div className="jp-WWCExtension-synthesis-actions-row">
           <select
             value={subgroupVariable}
             onChange={e => setSubgroupVariable(e.target.value)}
@@ -184,21 +186,21 @@ const SynthesisWorkbenchComponent: React.FC<SynthesisWorkbenchProps> = ({
           >
             Run Subgroup Analysis
           </button>
+          <button
+            onClick={handleAssessBias}
+            disabled={isLoading || !metaAnalysisResult}
+            className="jp-WWCExtension-button"
+          >
+            Assess Publication Bias
+          </button>
+          <button
+            onClick={handleRunSensitivityAnalysis}
+            disabled={isLoading || !metaAnalysisResult}
+            className="jp-WWCExtension-button"
+          >
+            Sensitivity Analysis
+          </button>
         </div>
-        <button
-          onClick={handleAssessBias}
-          disabled={isLoading || !metaAnalysisResult}
-          className="jp-WWCExtension-button"
-        >
-          Assess Publication Bias
-        </button>
-        <button
-          onClick={handleRunSensitivityAnalysis}
-          disabled={isLoading || !metaAnalysisResult}
-          className="jp-WWCExtension-button"
-        >
-          Sensitivity Analysis
-        </button>
       </div>
 
       {isLoading && (
