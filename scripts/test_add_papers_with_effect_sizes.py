@@ -27,35 +27,52 @@ from jupyterlab_research_assistant_wwc_copilot.services.db_manager import (
 )
 
 
-def create_simple_pdf(title: str, authors: list[str], abstract: str, content: str, upload_dir: Path) -> Path:
+def create_simple_pdf(
+    title: str, authors: list[str], abstract: str, content: str, upload_dir: Path
+) -> Path:
     """Create a simple PDF file with the given content."""
     doc = fitz.open()  # Create new PDF
     page = doc.new_page()
-    
+
     # Add title
     title_rect = fitz.Rect(50, 50, 550, 100)
-    page.insert_text(title_rect.tl, title, fontsize=16, fontname="helv", color=(0, 0, 0))
-    
+    page.insert_text(
+        title_rect.tl, title, fontsize=16, fontname="helv", color=(0, 0, 0)
+    )
+
     # Add authors
     authors_text = ", ".join(authors)
     authors_rect = fitz.Rect(50, 110, 550, 140)
-    page.insert_text(authors_rect.tl, authors_text, fontsize=12, fontname="helv", color=(0, 0, 0))
-    
+    page.insert_text(
+        authors_rect.tl, authors_text, fontsize=12, fontname="helv", color=(0, 0, 0)
+    )
+
     # Add abstract
     abstract_rect = fitz.Rect(50, 160, 550, 300)
-    page.insert_text(abstract_rect.tl, f"Abstract\n\n{abstract}", fontsize=10, fontname="helv", color=(0, 0, 0))
-    
+    page.insert_text(
+        abstract_rect.tl,
+        f"Abstract\n\n{abstract}",
+        fontsize=10,
+        fontname="helv",
+        color=(0, 0, 0),
+    )
+
     # Add content
     content_rect = fitz.Rect(50, 320, 550, 750)
-    page.insert_text(content_rect.tl, content, fontsize=10, fontname="helv", color=(0, 0, 0))
-    
+    page.insert_text(
+        content_rect.tl, content, fontsize=10, fontname="helv", color=(0, 0, 0)
+    )
+
     # Save PDF
-    safe_filename = "".join(c for c in title if c.isalnum() or c in (" ", "-", "_")).rstrip() + ".pdf"
+    safe_filename = (
+        "".join(c for c in title if c.isalnum() or c in (" ", "-", "_")).rstrip()
+        + ".pdf"
+    )
     safe_filename = safe_filename.replace(" ", "_")
     pdf_path = upload_dir / safe_filename
     doc.save(str(pdf_path))
     doc.close()
-    
+
     return pdf_path
 
 
@@ -64,7 +81,7 @@ def add_test_papers():
     # Set up upload directory
     upload_dir = Path.home() / ".jupyter" / "research_assistant" / "uploads"
     upload_dir.mkdir(parents=True, exist_ok=True)
-    
+
     papers_data = [
         {
             "title": "Effectiveness of Spaced Repetition on Math Achievement",
@@ -274,7 +291,7 @@ def add_test_papers():
             # Check if we need to create a PDF for this paper
             create_pdf = paper_data.pop("_create_pdf", False)
             pdf_content = paper_data.pop("_pdf_content", None)
-            
+
             if create_pdf and pdf_content:
                 # Create PDF file
                 pdf_path = create_simple_pdf(
@@ -282,7 +299,7 @@ def add_test_papers():
                     authors=paper_data["authors"],
                     abstract=paper_data["abstract"],
                     content=pdf_content,
-                    upload_dir=upload_dir
+                    upload_dir=upload_dir,
                 )
                 # Read the PDF content to get full_text
                 doc = fitz.open(str(pdf_path))
@@ -290,15 +307,17 @@ def add_test_papers():
                 for page in doc:
                     full_text += page.get_text() + "\n"
                 doc.close()
-                
+
                 # Add PDF data to paper
                 paper_data["pdf_path"] = str(pdf_path)
                 paper_data["full_text"] = full_text
                 print(f"✓ Created PDF: {pdf_path.name}")  # noqa: T201
-            
+
             paper = db.add_paper(paper_data)
             added_papers.append(paper)
-            pdf_status = "📄 Full PDF" if paper_data.get("pdf_path") else "📋 Metadata Only"
+            pdf_status = (
+                "📄 Full PDF" if paper_data.get("pdf_path") else "📋 Metadata Only"
+            )
             print(f"✓ Added: {paper['title']} (ID: {paper['id']}) - {pdf_status}")  # noqa: T201
 
     print(f"\n✓ Successfully added {len(added_papers)} papers with effect sizes")  # noqa: T201

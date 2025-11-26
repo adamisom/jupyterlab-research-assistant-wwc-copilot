@@ -75,7 +75,8 @@ def test_import_pdf_basic(mock_path_class, mock_pdf_parser, temp_db):
     )
 
     assert result is not None
-    assert "title" in result
+    assert "paper" in result
+    assert "title" in result["paper"]
     # Verify PDF parser was called
     mock_pdf_parser.extract_text_and_metadata.assert_called_once()
 

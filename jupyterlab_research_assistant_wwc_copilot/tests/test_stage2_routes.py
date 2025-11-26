@@ -115,7 +115,7 @@ async def test_subgroup_analysis_with_papers(jp_fetch):
         method="POST",
         body=json.dumps(paper1),
     )
-    paper1_id = json.loads(response1.body)["data"]["id"]
+    paper1_id = json.loads(response1.body)["data"]["paper"]["id"]
 
     response2 = await jp_fetch(
         "jupyterlab-research-assistant-wwc-copilot",
@@ -123,7 +123,7 @@ async def test_subgroup_analysis_with_papers(jp_fetch):
         method="POST",
         body=json.dumps(paper2),
     )
-    paper2_id = json.loads(response2.body)["data"]["id"]
+    paper2_id = json.loads(response2.body)["data"]["paper"]["id"]
 
     # Perform subgroup analysis
     response = await jp_fetch(
@@ -171,7 +171,7 @@ async def test_bias_assessment_with_papers(jp_fetch):
             method="POST",
             body=json.dumps(paper),
         )
-        papers.append(json.loads(response.body)["data"]["id"])
+        papers.append(json.loads(response.body)["data"]["paper"]["id"])
 
     # Perform bias assessment - suppress expected numerical warnings
     with warnings.catch_warnings():
@@ -216,7 +216,7 @@ async def test_sensitivity_analysis_with_papers(jp_fetch):
             method="POST",
             body=json.dumps(paper),
         )
-        papers.append(json.loads(response.body)["data"]["id"])
+        papers.append(json.loads(response.body)["data"]["paper"]["id"])
 
     # Perform sensitivity analysis
     response = await jp_fetch(

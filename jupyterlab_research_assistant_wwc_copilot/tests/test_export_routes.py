@@ -64,8 +64,8 @@ async def test_meta_analysis_export_success(jp_fetch):
         body=json.dumps(paper2_data),
     )
 
-    paper1_id = json.loads(create1_response.body)["data"]["id"]
-    paper2_id = json.loads(create2_response.body)["data"]["id"]
+    paper1_id = json.loads(create1_response.body)["data"]["paper"]["id"]
+    paper2_id = json.loads(create2_response.body)["data"]["paper"]["id"]
 
     response = await jp_fetch(
         "jupyterlab-research-assistant-wwc-copilot",
@@ -147,8 +147,8 @@ async def test_synthesis_export_success(jp_fetch):
         body=json.dumps(paper2_data),
     )
 
-    paper1_id = json.loads(create1_response.body)["data"]["id"]
-    paper2_id = json.loads(create2_response.body)["data"]["id"]
+    paper1_id = json.loads(create1_response.body)["data"]["paper"]["id"]
+    paper2_id = json.loads(create2_response.body)["data"]["paper"]["id"]
 
     response = await jp_fetch(
         "jupyterlab-research-assistant-wwc-copilot",

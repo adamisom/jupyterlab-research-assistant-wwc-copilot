@@ -73,8 +73,8 @@ async def test_wwc_assessment_success(jp_fetch):
     )
 
     assert create_response.code == 201
-    created_paper = json.loads(create_response.body)["data"]
-    paper_id = created_paper["id"]
+    response_data = json.loads(create_response.body)["data"]
+    paper_id = response_data["paper"]["id"]
 
     # Now run WWC assessment
     assessment_data = {
@@ -154,8 +154,8 @@ async def test_meta_analysis_no_effect_sizes(jp_fetch):
         body=json.dumps(paper2_data),
     )
 
-    paper1_id = json.loads(create1_response.body)["data"]["id"]
-    paper2_id = json.loads(create2_response.body)["data"]["id"]
+    paper1_id = json.loads(create1_response.body)["data"]["paper"]["id"]
+    paper2_id = json.loads(create2_response.body)["data"]["paper"]["id"]
 
     from tornado.httpclient import HTTPClientError
 
@@ -222,8 +222,8 @@ async def test_meta_analysis_success(jp_fetch):
         body=json.dumps(paper2_data),
     )
 
-    paper1_id = json.loads(create1_response.body)["data"]["id"]
-    paper2_id = json.loads(create2_response.body)["data"]["id"]
+    paper1_id = json.loads(create1_response.body)["data"]["paper"]["id"]
+    paper2_id = json.loads(create2_response.body)["data"]["paper"]["id"]
 
     response = await jp_fetch(
         "jupyterlab-research-assistant-wwc-copilot",
@@ -290,8 +290,8 @@ async def test_meta_analysis_with_outcome_name(jp_fetch):
         body=json.dumps(paper2_data),
     )
 
-    paper1_id = json.loads(create1_response.body)["data"]["id"]
-    paper2_id = json.loads(create2_response.body)["data"]["id"]
+    paper1_id = json.loads(create1_response.body)["data"]["paper"]["id"]
+    paper2_id = json.loads(create2_response.body)["data"]["paper"]["id"]
 
     response = await jp_fetch(
         "jupyterlab-research-assistant-wwc-copilot",
@@ -367,8 +367,8 @@ async def test_conflict_detection_success(jp_fetch):
         body=json.dumps(paper2_data),
     )
 
-    paper1_id = json.loads(create1_response.body)["data"]["id"]
-    paper2_id = json.loads(create2_response.body)["data"]["id"]
+    paper1_id = json.loads(create1_response.body)["data"]["paper"]["id"]
+    paper2_id = json.loads(create2_response.body)["data"]["paper"]["id"]
 
     response = await jp_fetch(
         "jupyterlab-research-assistant-wwc-copilot",
