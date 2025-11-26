@@ -93,6 +93,23 @@ def add_test_papers():
 
     This is intentional for testing purposes - the script needs to populate the database
     directly without going through the full API/service workflows.
+
+    WWC ASSESSMENT TESTING:
+    All 5 test papers include the required data for WWC assessment:
+    - sample_size_baseline and sample_size_endline (for calculating overall attrition)
+    - treatment_attrition and control_attrition (for calculating differential attrition)
+    - Low attrition rates that should pass WWC standards with the "optimistic" boundary
+
+    To make a paper pass WWC assessment in the UI:
+    1. Set "Randomization Documented" = true
+    2. Choose an attrition boundary (recommend "optimistic" for these test papers)
+    3. The assessment should calculate low attrition and return "Meets WWC Standards Without Reservations"
+
+    Paper 1 ("Spaced Repetition"): 5% overall, 2% differential → Should pass
+    Paper 2 ("Active Learning"): 3.3% overall, 0% differential → Should pass easily
+    Paper 3 ("Peer Tutoring"): 2.5% overall, 1% differential → Should pass easily
+    Paper 4 ("Multimedia Learning"): 1.7% overall, 0.2% differential → Should pass easily
+    Paper 5 ("Feedback Timing"): 2.8% overall, 0.3% differential → Should pass easily
     """
     # Set up upload directory
     upload_dir = Path.home() / ".jupyter" / "research_assistant" / "uploads"
