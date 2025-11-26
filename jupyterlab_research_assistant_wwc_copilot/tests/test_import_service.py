@@ -140,3 +140,124 @@ def test_import_pdf_ai_extraction_failure_continues(
 
     assert result is not None
     # Import should succeed even if AI extraction fails
+
+
+@patch("jupyterlab_research_assistant_wwc_copilot.services.import_service.Path")
+def test_import_pdf_duplicate_with_full_pdf(mock_path_class, mock_pdf_parser, temp_db):
+    """Test PDF import when existing paper already has full PDF."""
+    from jupyterlab_research_assistant_wwc_copilot.services.db_manager import (
+        DatabaseManager,
+    )
+
+    # First, add a paper with full PDF to the database
+    with DatabaseManager() as db:
+        existing_paper = db.add_paper(
+            {
+                "title": "Test PDF Title",
+                "authors": ["Test Author"],
+                "year": 2023,
+                "pdf_path": "/tmp/existing.pdf",
+                "full_text": "Existing full text",
+            }
+        )
+
+    # Mock file path operations
+    mock_upload_dir = MagicMock()
+    mock_file_path = MagicMock()
+    mock_file_path.__str__ = lambda x: "/tmp/test.pdf"
+    mock_upload_dir.__truediv__ = lambda x, y: mock_file_path
+    mock_upload_dir.mkdir = Mock()
+    mock_path_class.home.return_value.__truediv__.return_value = mock_upload_dir
+
+    service = ImportService(pdf_parser=mock_pdf_parser, ai_extractor=None)
+
+    file_content = b"fake pdf content"
+    filename = "test.pdf"
+
+    result = service.import_pdf(
+        file_content=file_content, filename=filename, ai_config=None
+    )
+
+    # Should return existing paper with duplicate flags
+    assert result is not None
+    assert result["is_duplicate"] is True
+    assert result["already_has_pdf"] is True
+    assert result["paper"]["id"] == existing_paper["id"]
+    assert result["paper"]["pdf_path"] == "/tmp/existing.pdf"
+    # PDF parser should not be called since we're not uploading
+    mock_pdf_parser.extract_text_and_metadata.assert_called_once()
+
+
+@patch("jupyterlab_research_assistant_wwc_copilot.services.import_service.Path")
+def test_import_pdf_duplicate_metadata_only(mock_path_class, mock_pdf_parser, temp_db):
+    """Test PDF import when existing paper is metadata-only."""
+    from jupyterlab_research_assistant_wwc_copilot.services.db_manager import (
+        DatabaseManager,
+    )
+
+    # First, add a metadata-only paper to the database
+    with DatabaseManager() as db:
+        existing_paper = db.add_paper(
+            {
+                "title": "Test PDF Title",
+                "authors": ["Test Author"],
+                "year": 2023,
+                "abstract": "Test abstract",
+                # No pdf_path or full_text
+            }
+        )
+
+    # Mock file path operations
+    mock_upload_dir = MagicMock()
+    mock_file_path = MagicMock()
+    mock_file_path.__str__ = lambda x: "/tmp/new.pdf"
+    mock_upload_dir.__truediv__ = lambda x, y: mock_file_path
+    mock_upload_dir.mkdir = Mock()
+    mock_path_class.home.return_value.__truediv__.return_value = mock_upload_dir
+
+    service = ImportService(pdf_parser=mock_pdf_parser, ai_extractor=None)
+
+    file_content = b"fake pdf content"
+    filename = "test.pdf"
+
+    result = service.import_pdf(
+        file_content=file_content, filename=filename, ai_config=None
+    )
+
+    # Should update existing paper with PDF data
+    assert result is not None
+    assert result["is_duplicate"] is True
+    assert result["already_has_pdf"] is False
+    assert result["paper"]["id"] == existing_paper["id"]
+    # Should now have PDF data
+    assert result["paper"]["pdf_path"] is not None
+    assert result["paper"]["full_text"] == "Full text content"
+    # Should preserve existing abstract
+    assert result["paper"]["abstract"] == "Test abstract"
+
+
+@patch("jupyterlab_research_assistant_wwc_copilot.services.import_service.Path")
+def test_import_pdf_new_paper(mock_path_class, mock_pdf_parser, temp_db):
+    """Test PDF import for a new paper (no duplicate)."""
+    # Mock file path operations
+    mock_upload_dir = MagicMock()
+    mock_file_path = MagicMock()
+    mock_file_path.__str__ = lambda x: "/tmp/test.pdf"
+    mock_upload_dir.__truediv__ = lambda x, y: mock_file_path
+    mock_upload_dir.mkdir = Mock()
+    mock_path_class.home.return_value.__truediv__.return_value = mock_upload_dir
+
+    service = ImportService(pdf_parser=mock_pdf_parser, ai_extractor=None)
+
+    file_content = b"fake pdf content"
+    filename = "new_paper.pdf"
+
+    result = service.import_pdf(
+        file_content=file_content, filename=filename, ai_config=None
+    )
+
+    # Should add new paper
+    assert result is not None
+    assert result["is_duplicate"] is False
+    assert "already_has_pdf" not in result or result.get("already_has_pdf") is False
+    assert result["paper"]["title"] == "Test PDF Title"

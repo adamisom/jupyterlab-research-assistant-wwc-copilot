@@ -42,8 +42,52 @@ async def test_library_post(jp_fetch):
     assert response.code == 201
     payload = json.loads(response.body)
     assert payload["status"] == "success"
-    assert payload["data"]["title"] == "Test Paper"
-    assert payload["data"]["id"] is not None
+    assert "data" in payload
+    result = payload["data"]
+    assert "paper" in result
+    paper = result["paper"]
+    assert paper["title"] == "Test Paper"
+    assert paper["authors"] == ["Author 1", "Author 2"]
+    assert paper["year"] == 2023
+    assert result["is_duplicate"] is False
+
+
+async def test_library_post_duplicate(jp_fetch):
+    """Test POST library with duplicate paper (same title/authors/year)."""
+    paper_data = {
+        "title": "Duplicate Test Paper",
+        "authors": ["Author 1"],
+        "year": 2023,
+        "abstract": "First import",
+    }
+
+    # First import
+    response1 = await jp_fetch(
+        "jupyterlab-research-assistant-wwc-copilot",
+        "library",
+        method="POST",
+        body=json.dumps(paper_data),
+    )
+
+    assert response1.code == 201
+    payload1 = json.loads(response1.body)
+    assert payload1["status"] == "success"
+    first_paper_id = payload1["data"]["paper"]["id"]
+
+    # Second import (duplicate)
+    response2 = await jp_fetch(
+        "jupyterlab-research-assistant-wwc-copilot",
+        "library",
+        method="POST",
+        body=json.dumps(paper_data),
+    )
+
+    assert response2.code == 200  # Should return 200 for duplicate
+    payload2 = json.loads(response2.body)
+    assert payload2["status"] == "success"
+    result = payload2["data"]
+    assert result["is_duplicate"] is True
+    assert result["paper"]["id"] == first_paper_id  # Should return same paper
 
 
 async def test_library_post_no_data(jp_fetch):
