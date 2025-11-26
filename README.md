@@ -24,7 +24,19 @@ for the frontend extension.
 For advanced features:
 
 - **AI Metadata Extraction**: Requires API keys for Claude, OpenAI, or local Ollama instance
-- **Conflict Detection**: Requires `transformers` library (optional, can be installed separately)
+- **Conflict Detection**: Requires `transformers` and `torch` libraries (optional, can be installed separately)
+
+  To install conflict detection support:
+
+  ```bash
+  pip install "jupyterlab-research-assistant-wwc-copilot[conflict-detection]"
+  ```
+
+  This will install both `transformers` and `torch` (PyTorch). PyTorch is required as the backend for running the NLI models.
+
+  **Note**: The first time you run conflict detection, the NLI model (`cross-encoder/nli-deberta-v3-base`) will automatically download (~500MB-1GB). This makes the first run slower, but subsequent runs will be faster as the model is cached.
+
+  **GPU Support**: By default, conflict detection uses CPU. To use GPU instead, modify `jupyterlab_research_assistant_wwc_copilot/services/conflict_detector.py` and change `device=-1` to `device=0` in the pipeline initialization.
 
 ## Install
 
