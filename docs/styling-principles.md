@@ -2,17 +2,17 @@
 
 ## Key Styling Principles (TL;DR)
 
-1.  **Use CSS Variables**: Never hardcode colors, fonts, or spacing. Always use JupyterLab's built-in CSS variables (e.g., `var(--jp-layout-color1)`, `var(--jp-brand-color1)`) to ensure your extension automatically supports light/dark themes and feels native.
+1. **Use CSS Variables**: Never hardcode colors, fonts, or spacing. Always use JupyterLab's built-in CSS variables (e.g., `var(--jp-layout-color1)`, `var(--jp-brand-color1)`) to ensure your extension automatically supports light/dark themes and feels native.
 
-2.  **Follow Naming Conventions**: Use the `jp-WidgetName-childElement` and `jp-mod-state` (e.g., `jp-mod-selected`) naming scheme for all your CSS classes. This keeps styles scoped and predictable.
+2. **Follow Naming Conventions**: Use the `jp-WidgetName-childElement` and `jp-mod-state` (e.g., `jp-mod-selected`) naming scheme for all your CSS classes. This keeps styles scoped and predictable.
 
-3.  **Leverage UI Components**: Before building a custom component, check if `@jupyterlab/ui-components` already has what you need (e.g., `Button`, `Select`, icons). This saves time and ensures consistency.
+3. **Leverage UI Components**: Before building a custom component, check if `@jupyterlab/ui-components` already has what you need (e.g., `Button`, `Select`, icons). This saves time and ensures consistency.
 
-4.  **Organize Your Files**: Keep all styles in a `style/` directory with a `base.css` for your custom styles and an `index.css` to import everything.
+4. **Organize Your Files**: Keep all styles in a `style/` directory with a `base.css` for your custom styles and an `index.css` to import everything.
 
-5.  **Inspect, Don't Invent**: Use your browser's developer tools to inspect core JupyterLab components (like the file browser) to see how they are styled. Copy their patterns.
+5. **Inspect, Don't Invent**: Use your browser's developer tools to inspect core JupyterLab components (like the file browser) to see how they are styled. Copy their patterns.
 
-6.  **Test Both Themes**: Regularly switch between light and dark themes during development to catch styling issues early.
+6. **Test Both Themes**: Regularly switch between light and dark themes during development to catch styling issues early.
 
 ---
 
@@ -22,9 +22,9 @@ This guide provides a comprehensive overview of how to style your WWC Co-Pilot e
 
 JupyterLab has a sophisticated styling system based on CSS variables. The number one rule is to **use this system**. Don't reinvent the wheel with custom colors, fonts, or spacing. By using the built-in variables, your extension will:
 
-*   **Automatically support light and dark themes**.
-*   **Feel consistent** with the rest of the JupyterLab UI.
-*   **Be maintainable** and adapt to future JupyterLab theme changes.
+* **Automatically support light and dark themes**.
+* **Feel consistent** with the rest of the JupyterLab UI.
+* **Be maintainable** and adapt to future JupyterLab theme changes.
 
 ## 2. The CSS Variable System
 
@@ -42,6 +42,7 @@ Here are the key categories of CSS variables you should use. These are defined i
 | **Elevation**   | `--jp-elevation-z`       | Box shadows for creating depth (Material Design style).                     |
 
 **Example Usage**:
+
 ```css
 .my-custom-card {
   background-color: var(--jp-layout-color2);
@@ -71,12 +72,13 @@ style/
 
 JupyterLab uses a BEM-like naming convention:
 
-1.  **Widget Class**: `jp-MyWidgetName` (matches the TypeScript class)
-2.  **Child Element**: `jp-MyWidgetName-childElement` (e.g., `jp-ResearchLibrary-paperList`)
-3.  **State Modifier**: `jp-mod-active`, `jp-mod-selected`, `jp-mod-hover`
-4.  **Type Modifier**: `jp-type-directory`, `jp-type-code`
+1. **Widget Class**: `jp-MyWidgetName` (matches the TypeScript class)
+2. **Child Element**: `jp-MyWidgetName-childElement` (e.g., `jp-ResearchLibrary-paperList`)
+3. **State Modifier**: `jp-mod-active`, `jp-mod-selected`, `jp-mod-hover`
+4. **Type Modifier**: `jp-type-directory`, `jp-type-code`
 
 **Example**:
+
 ```html
 <div class="jp-ResearchLibrary-paperCard jp-mod-selected">
   <h3 class="jp-ResearchLibrary-paperTitle">My Paper</h3>
@@ -93,6 +95,7 @@ Here are specific, actionable ideas for styling your extension's components.
 **Goal**: Make the paper list scannable, informative, and visually appealing.
 
 **`style/base.css`**
+
 ```css
 /* Main panel styling */
 .jp-ResearchLibrary-panel {
@@ -168,6 +171,7 @@ Here are specific, actionable ideas for styling your extension's components.
 **Goal**: Create a clean, data-driven dashboard for analysis.
 
 **`style/base.css`**
+
 ```css
 /* Main workbench area */
 .jp-SynthesisWorkbench {
@@ -225,11 +229,11 @@ Here are specific, actionable ideas for styling your extension's components.
 
 ## 5. Best Practices & Tips
 
-1.  **Inspect Existing Components**: Use your browser's developer tools to inspect core JupyterLab components like the file browser. See what CSS variables and classes they use and copy their patterns.
-2.  **Use `ui-components`**: The `@jupyterlab/ui-components` package provides pre-styled React components like `Button`, `InputGroup`, `Select`, and various icons. Use them whenever possible.
-3.  **Test in Both Themes**: Regularly switch between the light and dark themes to ensure your styles look good in both.
-4.  **Keep it Subtle**: Good design is often invisible. Focus on clear typography, consistent spacing, and subtle visual cues rather than flashy colors or animations.
-5.  **Accessibility**: Use `aria-label` attributes and ensure sufficient color contrast. The JupyterLab CSS variables are designed with accessibility in mind.
+1. **Inspect Existing Components**: Use your browser's developer tools to inspect core JupyterLab components like the file browser. See what CSS variables and classes they use and copy their patterns.
+2. **Use `ui-components`**: The `@jupyterlab/ui-components` package provides pre-styled React components like `Button`, `InputGroup`, `Select`, and various icons. Use them whenever possible.
+3. **Test in Both Themes**: Regularly switch between the light and dark themes to ensure your styles look good in both.
+4. **Keep it Subtle**: Good design is often invisible. Focus on clear typography, consistent spacing, and subtle visual cues rather than flashy colors or animations.
+5. **Accessibility**: Use `aria-label` attributes and ensure sufficient color contrast. The JupyterLab CSS variables are designed with accessibility in mind.
 
 By following these guidelines, you can create a WWC Co-Pilot extension that not only provides powerful functionality but also looks and feels like a first-class citizen of the JupyterLab ecosystem.
 

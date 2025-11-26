@@ -6,12 +6,18 @@ A JupyterLab extension for academic research management and WWC quality assessme
 
 This extension provides two main features:
 
-- **Research Library & Discovery Engine** (Stage 1 - ✅ Complete): Discover, import, and manage academic papers with Semantic Scholar integration, PDF parsing, and AI-powered metadata extraction
-- **WWC Co-Pilot & Synthesis Engine** (Stage 2 - ✅ Complete): Perform rigorous WWC quality assessments, meta-analysis, conflict detection, subgroup analysis, publication bias assessment, and sensitivity analysis across multiple studies
+- **Research Library & Discovery Engine** (Stage 1 - ✅ Complete):
+  Discover, import, and manage academic papers with Semantic Scholar
+  integration, PDF parsing, and AI-powered metadata extraction
+- **WWC Co-Pilot & Synthesis Engine** (Stage 2 - ✅ Complete): Perform
+  rigorous WWC quality assessments, meta-analysis, conflict detection,
+  subgroup analysis, publication bias assessment, and sensitivity
+  analysis across multiple studies
 
-This extension is composed of a Python package named `jupyterlab_research_assistant_wwc_copilot`
-for the server extension and a NPM package named `jupyterlab-research-assistant-wwc-copilot`
-for the frontend extension.
+This extension is composed of a Python package named
+`jupyterlab_research_assistant_wwc_copilot` for the server extension
+and a NPM package named `jupyterlab-research-assistant-wwc-copilot` for
+the frontend extension.
 
 ## Requirements
 
@@ -23,8 +29,10 @@ for the frontend extension.
 
 For advanced features:
 
-- **AI Metadata Extraction**: Requires API keys for Claude, OpenAI, or local Ollama instance
-- **Conflict Detection**: Requires `transformers` and `torch` libraries (optional, can be installed separately)
+- **AI Metadata Extraction**: Requires API keys for Claude, OpenAI, or
+  local Ollama instance
+- **Conflict Detection**: Requires `transformers` and `torch` libraries
+  (optional, can be installed separately)
 
   To install conflict detection support:
 
@@ -32,11 +40,18 @@ For advanced features:
   pip install "jupyterlab-research-assistant-wwc-copilot[conflict-detection]"
   ```
 
-  This will install both `transformers` and `torch` (PyTorch). PyTorch is required as the backend for running the NLI models.
+  This will install both `transformers` and `torch` (PyTorch). PyTorch
+  is required as the backend for running the NLI models.
 
-  **Note**: The first time you run conflict detection, the NLI model (`cross-encoder/nli-deberta-v3-base`) will automatically download (~500MB-1GB). This makes the first run slower, but subsequent runs will be faster as the model is cached.
+  **Note**: The first time you run conflict detection, the NLI model
+  (`cross-encoder/nli-deberta-v3-base`) will automatically download
+  (~500MB-1GB). This makes the first run slower, but subsequent runs
+  will be faster as the model is cached.
 
-  **GPU Support**: By default, conflict detection uses CPU. To use GPU instead, modify `jupyterlab_research_assistant_wwc_copilot/services/conflict_detector.py` and change `device=-1` to `device=0` in the pipeline initialization.
+  **GPU Support**: By default, conflict detection uses CPU. To use GPU
+  instead, modify
+  `jupyterlab_research_assistant_wwc_copilot/services/conflict_detector.py`
+  and change `device=-1` to `device=0` in the pipeline initialization.
 
 ## Install
 
@@ -100,7 +115,9 @@ jupyter server extension enable jupyterlab_research_assistant_wwc_copilot
 jlpm build
 ```
 
-You can watch the source directory and run JupyterLab at the same time in different terminals to watch for changes in the extension's source and automatically rebuild the extension.
+You can watch the source directory and run JupyterLab at the same time
+in different terminals to watch for changes in the extension's source
+and automatically rebuild the extension.
 
 ```bash
 # Watch the source directory in one terminal, automatically rebuilding when needed
@@ -109,9 +126,15 @@ jlpm watch
 jupyter lab
 ```
 
-With the watch command running, every saved change will immediately be built locally and available in your running JupyterLab. Refresh JupyterLab to load the change in your browser (you may need to wait several seconds for the extension to be rebuilt).
+With the watch command running, every saved change will immediately be
+built locally and available in your running JupyterLab. Refresh
+JupyterLab to load the change in your browser (you may need to wait
+several seconds for the extension to be rebuilt).
 
-By default, the `jlpm build` command generates the source maps for this extension to make it easier to debug using the browser dev tools. To also generate source maps for the JupyterLab core extensions, you can run the following command:
+By default, the `jlpm build` command generates the source maps for this
+extension to make it easier to debug using the browser dev tools. To
+also generate source maps for the JupyterLab core extensions, you can
+run the following command:
 
 ```bash
 jupyter lab build --minimize=False
@@ -125,9 +148,11 @@ jupyter server extension disable jupyterlab_research_assistant_wwc_copilot
 pip uninstall jupyterlab_research_assistant_wwc_copilot
 ```
 
-In development mode, you will also need to remove the symlink created by `jupyter labextension develop`
-command. To find its location, you can run `jupyter labextension list` to figure out where the `labextensions`
-folder is located. Then you can remove the symlink named `jupyterlab-research-assistant-wwc-copilot` within that folder.
+In development mode, you will also need to remove the symlink created
+by `jupyter labextension develop` command. To find its location, you can
+run `jupyter labextension list` to figure out where the `labextensions`
+folder is located. Then you can remove the symlink named
+`jupyterlab-research-assistant-wwc-copilot` within that folder.
 
 ### Testing the extension
 
@@ -139,7 +164,8 @@ Install test dependencies (needed only once):
 
 ```sh
 pip install -e ".[test]"
-# Each time you install the Python package, you need to restore the front-end extension link
+# Each time you install the Python package, you need to restore the
+# front-end extension link
 jupyter labextension develop . --overwrite
 ```
 
@@ -162,19 +188,29 @@ jlpm test
 
 #### Integration tests
 
-This extension uses [Playwright](https://playwright.dev/docs/intro) for the integration tests (aka user level tests).
-More precisely, the JupyterLab helper [Galata](https://github.com/jupyterlab/jupyterlab/tree/master/galata) is used to handle testing the extension in JupyterLab.
+This extension uses [Playwright](https://playwright.dev/docs/intro) for
+the integration tests (aka user level tests). More precisely, the
+JupyterLab helper
+[Galata](https://github.com/jupyterlab/jupyterlab/tree/master/galata) is
+used to handle testing the extension in JupyterLab.
 
-More information are provided within the [ui-tests](./ui-tests/README.md) README.
+More information are provided within the
+[ui-tests](./ui-tests/README.md) README.
 
 ## AI Coding Assistant Support
 
-This project includes an `AGENTS.md` file with coding standards and best practices for JupyterLab extension development. The file follows the [AGENTS.md standard](https://agents.md) for cross-tool compatibility.
+This project includes an `AGENTS.md` file with coding standards and
+best practices for JupyterLab extension development. The file follows
+the [AGENTS.md standard](https://agents.md) for cross-tool
+compatibility.
 
 ### Compatible AI Tools
 
-`AGENTS.md` works with AI coding assistants that support the standard, including Cursor, GitHub Copilot, Windsurf, Aider, and others. For a current list of compatible tools, see [the AGENTS.md standard](https://agents.md).
-This project also includes symlinks for tool-specific compatibility:
+`AGENTS.md` works with AI coding assistants that support the standard,
+including Cursor, GitHub Copilot, Windsurf, Aider, and others. For a
+current list of compatible tools, see
+[the AGENTS.md standard](https://agents.md). This project also includes
+symlinks for tool-specific compatibility:
 
 - `CLAUDE.md` → `AGENTS.md` (for Claude Code)
 
@@ -186,7 +222,8 @@ Other conventions you might encounter:
 - `CONVENTIONS.md` / `CONTRIBUTING.md` - For CodeConventions.ai and GitHub bots
 - Project-specific rules in JetBrains AI Assistant settings
 
-All tool-specific files should be symlinks to `AGENTS.md` as the single source of truth.
+All tool-specific files should be symlinks to `AGENTS.md` as the single
+source of truth.
 
 ### What's Included
 
@@ -201,9 +238,14 @@ The `AGENTS.md` file provides guidance on:
 
 ### Customization
 
-You can edit `AGENTS.md` to add project-specific conventions or adjust guidelines to match your team's practices. The file uses plain Markdown with Do/Don't patterns and references to actual project files.
+You can edit `AGENTS.md` to add project-specific conventions or adjust
+guidelines to match your team's practices. The file uses plain Markdown
+with Do/Don't patterns and references to actual project files.
 
-**Note**: `AGENTS.md` is living documentation. Update it when you change conventions, add dependencies, or discover new patterns. Include `AGENTS.md` updates in commits that modify workflows or coding standards.
+**Note**: `AGENTS.md` is living documentation. Update it when you change
+conventions, add dependencies, or discover new patterns. Include
+`AGENTS.md` updates in commits that modify workflows or coding
+standards.
 
 ## Documentation
 
@@ -211,18 +253,26 @@ Comprehensive documentation is available in the [`docs/`](./docs/) directory:
 
 ### Reference Documentation
 
-- **[Master Plan](./docs/master-plan.md)**: High-level project architecture and feature breakdown
-- **[JupyterLab Architecture](./docs/jupyterlab-architecture.md)**: Deep dive into JupyterLab extension patterns
-- **[Quick Reference](./docs/quick-reference.md)**: Essential commands for building and testing
-- **[Getting Started](./docs/getting-started.md)**: JupyterLab core development environment setup (for understanding JupyterLab, not this extension)
+- **[Master Plan](./docs/master-plan.md)**: High-level project
+  architecture and feature breakdown
+- **[JupyterLab Architecture](./docs/jupyterlab-architecture.md)**: Deep
+  dive into JupyterLab extension patterns
+- **[Quick Reference](./docs/quick-reference.md)**: Essential commands
+  for building and testing
+- **[Getting Started](./docs/getting-started.md)**: JupyterLab core
+  development environment setup (for understanding JupyterLab, not this
+  extension)
 
 ### Key Naming Conventions
 
-- **Python package**: `jupyterlab_research_assistant_wwc_copilot` (underscores)
+- **Python package**: `jupyterlab_research_assistant_wwc_copilot`
+  (underscores)
 - **NPM package**: `jupyterlab-research-assistant-wwc-copilot` (dashes)
 - **Plugin ID**: `jupyterlab-research-assistant-wwc-copilot:plugin`
-- **Command IDs**: `jupyterlab-research-assistant-wwc-copilot:command-name`
-- **API Routes**: `/jupyterlab-research-assistant-wwc-copilot/endpoint-name`
+- **Command IDs**:
+  `jupyterlab-research-assistant-wwc-copilot:command-name`
+- **API Routes**:
+  `/jupyterlab-research-assistant-wwc-copilot/endpoint-name`
 
 ### Implementation Workflow
 

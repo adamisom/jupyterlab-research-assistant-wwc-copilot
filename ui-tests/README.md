@@ -29,7 +29,7 @@ jlpm build:prod
 
 > Check the extension is installed in JupyterLab.
 
-2. Install test dependencies (needed only once):
+1. Install test dependencies (needed only once):
 
 ```sh
 cd ./ui-tests
@@ -38,7 +38,7 @@ jlpm playwright install
 cd ..
 ```
 
-3. Execute the [Playwright](https://playwright.dev/docs/intro) tests:
+1. Execute the [Playwright](https://playwright.dev/docs/intro) tests:
 
 ```sh
 cd ./ui-tests
@@ -66,7 +66,7 @@ jlpm build:prod
 
 > Check the extension is installed in JupyterLab.
 
-2. Install test dependencies (needed only once):
+1. Install test dependencies (needed only once):
 
 ```sh
 cd ./ui-tests
@@ -75,7 +75,7 @@ jlpm playwright install
 cd ..
 ```
 
-3. Execute the [Playwright](https://playwright.dev/docs/intro) command:
+1. Execute the [Playwright](https://playwright.dev/docs/intro) command:
 
 ```sh
 cd ./ui-tests
@@ -102,7 +102,7 @@ jlpm build:prod
 
 > Check the extension is installed in JupyterLab.
 
-2. Install test dependencies (needed only once):
+1. Install test dependencies (needed only once):
 
 ```sh
 cd ./ui-tests
@@ -111,14 +111,14 @@ jlpm playwright install
 cd ..
 ```
 
-3. Start the server:
+1. Start the server:
 
 ```sh
 cd ./ui-tests
 jlpm start
 ```
 
-4. Execute the [Playwright code generator](https://playwright.dev/docs/codegen) in **another terminal**:
+1. Execute the [Playwright code generator](https://playwright.dev/docs/codegen) in **another terminal**:
 
 ```sh
 cd ./ui-tests
@@ -140,7 +140,7 @@ jlpm build:prod
 
 > Check the extension is installed in JupyterLab.
 
-2. Install test dependencies (needed only once):
+1. Install test dependencies (needed only once):
 
 ```sh
 cd ./ui-tests
@@ -149,7 +149,7 @@ jlpm playwright install
 cd ..
 ```
 
-3. Execute the Playwright tests in [debug mode](https://playwright.dev/docs/debug):
+1. Execute the Playwright tests in [debug mode](https://playwright.dev/docs/debug):
 
 ```sh
 cd ./ui-tests

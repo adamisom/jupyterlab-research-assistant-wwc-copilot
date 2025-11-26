@@ -23,27 +23,27 @@ Use your available tools (web search, documentation search) to access and retrie
 **These resources are PRIORITY references. Always check them when you need external information:**
 
 1. **JupyterLab Extension Developer Guide**
-   - URL: https://jupyterlab.readthedocs.io/en/stable/extension/extension_dev.html
+   - URL: <https://jupyterlab.readthedocs.io/en/stable/extension/extension_dev.html>
    - Use for: Extension patterns, architecture overview, development workflow, and best practices
    - **Action**: Use web search or documentation tools to retrieve specific sections when needed
 
 2. **JupyterLab API Reference (Frontend)**
-   - URL: https://jupyterlab.readthedocs.io/en/latest/api/index.html
+   - URL: <https://jupyterlab.readthedocs.io/en/latest/api/index.html>
    - Use for: Complete API reference for all JupyterLab frontend packages, interfaces, classes, and methods
    - **Action**: Search for specific APIs when you need method signatures, interface definitions, or class documentation. For example, search "JupyterLab IRenderMime.IRenderer" or "JupyterLab ICommandPalette"
 
 3. **JupyterLab Extension Examples Repository**
-   - URL: https://github.com/jupyterlab/extension-examples
+   - URL: <https://github.com/jupyterlab/extension-examples>
    - Use for: Working code examples, implementation patterns, complete working extensions
    - **Action**: Search this repository for similar features before implementing from scratch
 
 4. **JupyterLab Core Repository**
-   - URL: https://github.com/jupyterlab/jupyterlab
+   - URL: <https://github.com/jupyterlab/jupyterlab>
    - Use for: Reference implementations in `packages/` directory - all core packages are extensions themselves
    - **Action**: When implementing complex features, search this repo for how core extensions solve similar problems
 
 5. **Jupyter Server API Documentation**
-   - URL: https://jupyter-server.readthedocs.io/
+   - URL: <https://jupyter-server.readthedocs.io/>
    - Use for: Server-side API handlers, route setup, backend integration patterns
    - **Action**: Consult when working on backend routes or server extension configuration
 
@@ -466,28 +466,38 @@ source <path-to-venv>/bin/activate  # On macOS/Linux
 1. **Activate environment** (see above — required first!)
 2. **Write the code** (TypeScript in `src/`, styles in `style/`, Python in `jupyterlab_research_assistant_wwc_copilot/`)
 3. **Install dependencies** (if you added any to `package.json`):
+
    ```bash
    jlpm install
    ```
+
 4. **Build the extension**:
+
    ```bash
    jlpm build
    ```
+
 5. **Install the extension** (REQUIRED for JupyterLab to recognize it):
+
    ```bash
    pip install -e .
    jupyter labextension develop . --overwrite
    jupyter server extension enable jupyterlab_research_assistant_wwc_copilot
    ```
+
 6. **Verify installation**:
+
    ```bash
    jupyter labextension list  # Should show your extension as "enabled" and "OK"
    jupyter server extension list  # Should show backend extension
    ```
+
 7. **Start JupyterLab**:
+
    ```bash
    jupyter lab
    ```
+
 8. **Test the feature** in your browser
 
 **Critical: Steps 5-7 are REQUIRED after building. Building alone is not enough!**
@@ -498,13 +508,13 @@ source <path-to-venv>/bin/activate  # On macOS/Linux
 
 Many issues arise from confusing these two steps:
 
-#### `jlpm build` — Compiles the Extension. Do this every time you change TypeScript code.
+#### `jlpm build` — Compiles the Extension. Do this every time you change TypeScript code
 
 - **What it does**: Compiles TypeScript → JavaScript, bundles the extension
 - **Output**: Creates files in `lib/` and `jupyterlab_research_assistant_wwc_copilot/labextension/`
 - **What it does NOT do**: Register the extension with JupyterLab
 
-#### `pip install -e .` + `jupyter labextension develop .` — Registers the Extension. Do this once as a setup step.
+#### `pip install -e .` + `jupyter labextension develop .` — Registers the Extension. Do this once as a setup step
 
 - **What it does**: Tells JupyterLab where to find your extension
 - **Output**: Creates symlinks so changes are reflected

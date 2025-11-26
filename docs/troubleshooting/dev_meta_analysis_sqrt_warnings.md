@@ -16,11 +16,13 @@ These warnings occur when `statsmodels` tries to take the square root of negativ
 ### 1. **Small Number of Studies (Especially N=2)**
 
 **Why it happens:**
+
 - With only 2 studies, the DerSimonian-Laird estimator for tau² (between-study variance) can produce negative values
 - Negative tau² is mathematically invalid (variance can't be negative)
 - `statsmodels` sets negative tau² to 0, but internal calculations may still use the negative value temporarily
 
 **Example:**
+
 ```python
 # Two studies with similar effect sizes
 studies = [
@@ -31,17 +33,20 @@ studies = [
 ```
 
 **Workaround:**
+
 - Use **fixed-effects model** when you have only 2 studies (no random-effects variance to estimate)
 - Or accept the warning - results are still valid (tau² is set to 0)
 
 ### 2. **Very Low Heterogeneity**
 
 **Why it happens:**
+
 - When studies have very similar effect sizes, heterogeneity is low
 - Low heterogeneity → small or negative tau² estimate
 - The variance calculations (`var_eff_w_re`, `var_hksj_re`) can become negative
 
 **Example:**
+
 ```python
 # Studies with nearly identical effects
 studies = [
@@ -53,6 +58,7 @@ studies = [
 ```
 
 **Workaround:**
+
 - This is actually a **good sign** - it means your studies are consistent
 - The warning is harmless; results are valid
 - Consider using fixed-effects model if heterogeneity is truly zero
@@ -60,11 +66,13 @@ studies = [
 ### 3. **Very Small Standard Errors**
 
 **Why it happens:**
+
 - Studies with very precise estimates (small SE) can cause numerical instability
 - When SEs are very small, variance calculations can become sensitive to rounding errors
 - Matrix operations in weighted least squares can become ill-conditioned
 
 **Example:**
+
 ```python
 # Studies with extremely precise estimates
 studies = [
@@ -75,6 +83,7 @@ studies = [
 ```
 
 **Workaround:**
+
 - Verify that standard errors are realistic (not artificially small)
 - Check for data entry errors (SE should typically be > 0.05 for Cohen's d)
 - If SEs are legitimately very small, the warnings are harmless
@@ -82,6 +91,7 @@ studies = [
 ### 4. **Numerical Precision Issues**
 
 **Why it happens:**
+
 - Floating-point arithmetic can produce values slightly below zero due to rounding
 - Matrix inversion in weighted least squares can amplify small errors
 - This is especially common with:
@@ -90,16 +100,19 @@ studies = [
   - Ill-conditioned matrices
 
 **Workaround:**
+
 - Usually harmless - `statsmodels` handles these internally
 - Results are still valid
 
 ### 5. **Missing or Invalid Data**
 
 **Why it happens:**
+
 - If effect sizes or standard errors contain NaN, Inf, or invalid values
 - If standard errors are zero or negative (should be caught by validation)
 
 **Example:**
+
 ```python
 # Invalid data (should be caught by validation)
 studies = [
@@ -109,6 +122,7 @@ studies = [
 ```
 
 **Workaround:**
+
 - Our code validates inputs (checks `std_errors > 0`)
 - Ensure data quality before running meta-analysis
 
@@ -208,12 +222,14 @@ result = meta.combine_effects(
 ## When to Worry
 
 **These warnings are usually harmless if:**
+
 - ✅ Results look reasonable (pooled effect, CI, p-value are valid)
 - ✅ No NaN or Inf values in final results
 - ✅ You have at least 2 studies
 - ✅ Standard errors are positive and reasonable
 
 **Investigate further if:**
+
 - ❌ Final results contain NaN or Inf
 - ❌ Confidence intervals are invalid (lower > upper)
 - ❌ P-values are NaN or outside [0, 1]
@@ -258,4 +274,3 @@ This will suppress the noisy warnings while keeping other important warnings vis
 - **DerSimonian-Laird Estimator:** Can produce negative tau² when heterogeneity is low
 - **Statsmodels Documentation:** [meta_analysis module](https://www.statsmodels.org/stable/generated/statsmodels.stats.meta_analysis.combine_effects.html)
 - **Meta-Analysis Best Practices:** Negative tau² is typically set to 0 (no between-study variance)
-

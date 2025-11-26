@@ -36,12 +36,12 @@ When exploring the JupyterLab codebase, these are the most important directories
 
 JupyterLab follows a common pattern where a feature is split into two packages:
 
-1.  **Component Package** (e.g., `@jupyterlab/filebrowser`):
+1. **Component Package** (e.g., `@jupyterlab/filebrowser`):
     - Contains the core UI widgets, data models, and logic.
     - Is framework-agnostic (doesn't depend on the JupyterLab application shell).
     - Can be used in other applications outside of JupyterLab.
 
-2.  **Extension Package** (e.g., `@jupyterlab/filebrowser-extension`):
+2. **Extension Package** (e.g., `@jupyterlab/filebrowser-extension`):
     - Integrates the component package into JupyterLab.
     - Registers commands, adds widgets to the shell, and connects to other services.
     - Depends on the JupyterLab application shell.
@@ -482,10 +482,10 @@ Now that you understand the architecture, here's your action plan:
 
 ## 11. Resources & References
 
-- **Official JupyterLab Extension Tutorial**: https://jupyterlab.readthedocs.io/en/latest/extension/extension_tutorial.html
-- **Lumino Documentation**: https://lumino.readthedocs.io/
-- **JupyterLab GitHub Repository**: https://github.com/jupyterlab/jupyterlab
-- **Extension Examples**: https://github.com/jupyterlab/extension-examples
+- **Official JupyterLab Extension Tutorial**: <https://jupyterlab.readthedocs.io/en/latest/extension/extension_tutorial.html>
+- **Lumino Documentation**: <https://lumino.readthedocs.io/>
+- **JupyterLab GitHub Repository**: <https://github.com/jupyterlab/jupyterlab>
+- **Extension Examples**: <https://github.com/jupyterlab/extension-examples>
 
 ---
 

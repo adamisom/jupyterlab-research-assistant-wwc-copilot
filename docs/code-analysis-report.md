@@ -206,7 +206,8 @@ All backend communication goes through typed functions in `api.ts`:
   `performSubgroupAnalysis()`, `assessPublicationBias()`,
   `performSensitivityAnalysis()`
 
-All functions use `requestAPI()` from `request.ts` which handles authentication and base URL construction.
+All functions use `requestAPI()` from `request.ts` which handles
+authentication and base URL construction.
 
 ### Command System (`index.tsx`)
 
@@ -258,7 +259,8 @@ Custom events for cross-component communication:
 
 ### WWC Assessment Flow
 
-1. **User opens WWC Co-Pilot** → `DetailView` triggers event → `index.tsx` creates `WWCCoPilot` widget
+1. **User opens WWC Co-Pilot** → `DetailView` triggers event →
+   `index.tsx` creates `WWCCoPilot` widget
 2. **User makes judgments** → `WWCCoPilot` component state
 3. **Frontend** → `api.ts:runWWCAssessment()` → `POST /wwc-assessment`
 4. **Backend** → `WWCAssessmentHandler.post()` → `WWCQualityAssessor.assess()`
@@ -450,4 +452,3 @@ This extension follows a **clear separation of concerns**:
 
 The codebase is organized into logical modules with clear
 responsibilities, making it maintainable and extensible.
-

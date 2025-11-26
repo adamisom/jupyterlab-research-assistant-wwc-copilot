@@ -16,9 +16,9 @@ JupyterLab is a **monorepo**, which means all the code for its many packages liv
 
 Before you start, make sure you have these installed on your system. This is the most common point of failure, so double-check!
 
-1.  **Git**: To download the code.
-2.  **Miniconda** (or Anaconda): To create an isolated Python environment. This is **highly recommended** to avoid messing up your computer's main Python installation.
-3.  **Node.js**: The latest LTS (Long-Term Support) version is your safest bet. You can check the required version in the `package.json` file at the root of the JupyterLab repository.
+1. **Git**: To download the code.
+2. **Miniconda** (or Anaconda): To create an isolated Python environment. This is **highly recommended** to avoid messing up your computer's main Python installation.
+3. **Node.js**: The latest LTS (Long-Term Support) version is your safest bet. You can check the required version in the `package.json` file at the root of the JupyterLab repository.
 
 ---
 
@@ -92,12 +92,12 @@ Now, open your web browser to the URL it provides (usually `http://localhost:888
 
 **To test it:**
 
-1.  Open a code editor (like VS Code) in the `jupyterlab` directory.
-2.  Navigate to `packages/ui-components/src/components/Button.tsx`.
-3.  Find the `<button>` element and add a simple style change, like `style={{ border: '2px solid red' }}`.
-4.  Save the file.
-5.  Watch your terminal—you should see the builder recompile.
-6.  Refresh your browser. You should now see red borders on JupyterLab's buttons!
+1. Open a code editor (like VS Code) in the `jupyterlab` directory.
+2. Navigate to `packages/ui-components/src/components/Button.tsx`.
+3. Find the `<button>` element and add a simple style change, like `style={{ border: '2px solid red' }}`.
+4. Save the file.
+5. Watch your terminal—you should see the builder recompile.
+6. Refresh your browser. You should now see red borders on JupyterLab's buttons!
 
 If you see the change, you're all set! You have a working development environment and are ready to start building your features.
 
@@ -258,6 +258,6 @@ Create a new API handler in your Python server extension (e.g., `/api/research/s
 
 In your frontend plugin, you'll:
 
-1.  Create a new `Widget` (or `ReactWidget`) that contains your UI.
-2.  Give it a unique ID, title, and icon.
-3.  Use the `app.shell.add(widget, 'left', { rank: 200 });` command to add your widget to the left sidebar. The `rank` option controls its position relative to other icons.
+1. Create a new `Widget` (or `ReactWidget`) that contains your UI.
+2. Give it a unique ID, title, and icon.
+3. Use the `app.shell.add(widget, 'left', { rank: 200 });` command to add your widget to the left sidebar. The `rank` option controls its position relative to other icons.

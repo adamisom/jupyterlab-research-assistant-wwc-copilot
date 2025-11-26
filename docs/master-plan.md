@@ -38,12 +38,12 @@ This phase focuses on understanding JupyterLab's core concepts and design patter
 
 **Key Activities**:
 
-1.  **Documentation Review**: Thoroughly read the official JupyterLab developer documentation, focusing on the extension development guides, architecture overviews, and the Lumino widget framework documentation [1].
-2.  **Study Existing Extensions**: Analyze the structure of 2-3 popular third-party extensions to understand real-world patterns:
+1. **Documentation Review**: Thoroughly read the official JupyterLab developer documentation, focusing on the extension development guides, architecture overviews, and the Lumino widget framework documentation [1].
+2. **Study Existing Extensions**: Analyze the structure of 2-3 popular third-party extensions to understand real-world patterns:
     - **jupyterlab-git**: Demonstrates sidebar panels, server extensions, and complex state management.
     - **jupyterlab-lsp**: Shows how to integrate external services and provide real-time feedback.
     - **jupyterlab-drawio**: Illustrates custom document types and rendering.
-3.  **Pattern Identification**: Document key architectural patterns, including:
+3. **Pattern Identification**: Document key architectural patterns, including:
     - **Plugin System**: How plugins are defined, registered, and activated using tokens for dependency injection.
     - **Service & Token Model**: How different parts of the application provide and consume services.
     - **Lumino Widgets**: The lifecycle and structure of UI components, including panels, menus, and dialogs.
@@ -57,9 +57,9 @@ This phase involves setting up a local development environment for extension dev
 
 **Key Activities**:
 
-1.  **Environment Setup**: Install prerequisites (Git, Miniconda, Node.js LTS). Use `conda` to create an isolated environment for JupyterLab development [2].
-2.  **Install JupyterLab**: Install JupyterLab in your conda environment: `pip install jupyterlab`. This gives you a working JupyterLab instance to develop against.
-3.  **Verify Installation**: Launch JupyterLab (`jupyter lab`) to confirm it works correctly.
+1. **Environment Setup**: Install prerequisites (Git, Miniconda, Node.js LTS). Use `conda` to create an isolated environment for JupyterLab development [2].
+2. **Install JupyterLab**: Install JupyterLab in your conda environment: `pip install jupyterlab`. This gives you a working JupyterLab instance to develop against.
+3. **Verify Installation**: Launch JupyterLab (`jupyter lab`) to confirm it works correctly.
 
 **Deliverable**: A fully functional local JupyterLab installation ready for extension development.
 
@@ -69,7 +69,7 @@ This phase uses the official JupyterLab Extension Template to create your extens
 
 **Key Activities**:
 
-1.  **Use the Extension Template**: Generate your extension using cookiecutter:
+1. **Use the Extension Template**: Generate your extension using cookiecutter:
 
     ```bash
     pip install cookiecutter
@@ -81,13 +81,13 @@ This phase uses the official JupyterLab Extension Template to create your extens
     - Has server extension: `Yes`
     - Has frontend extension: `Yes`
 
-2.  **Explore the Generated Structure**: Examine the scaffolded code to understand:
+2. **Explore the Generated Structure**: Examine the scaffolded code to understand:
     - `src/`: Frontend TypeScript code
     - `jupyterlab_research_assistant/`: Backend Python code
     - `package.json`: Frontend dependencies and build scripts
     - `pyproject.toml`: Python package configuration
 
-3.  **Link for Development**: Install your extension in development mode:
+3. **Link for Development**: Install your extension in development mode:
 
     ```bash
     cd jupyterlab-research-assistant-wwc-copilot
@@ -96,10 +96,12 @@ This phase uses the official JupyterLab Extension Template to create your extens
     jupyter server extension enable jupyterlab_research_assistant_wwc_copilot
     ```
 
-4.  **Test the Setup**: Run JupyterLab in development mode with auto-rebuild:
+4. **Test the Setup**: Run JupyterLab in development mode with auto-rebuild:
+
     ```bash
     jupyter lab --dev-mode --watch
     ```
+
     Verify that the template extension appears in JupyterLab (check the command palette or console for confirmation messages).
 
 **Deliverable**: A working extension repository linked to your local JupyterLab, with live reloading enabled for rapid iteration.
@@ -110,9 +112,9 @@ This phase focuses on engaging with the JupyterLab community to gather feedback,
 
 **Key Activities**:
 
-1.  **Join Community Channels**: Join the JupyterLab community on [Discourse](https://discourse.jupyter.org/) or [Matrix/Element](https://matrix.to/#/#jupyterlab:matrix.org).
-2.  **Introduce Yourself**: Post a brief introduction explaining your background in learning science and your interest in building research tools for JupyterLab.
-3.  **Post an RFC (Request for Comments)**: Share your feature proposals with the community to gather early feedback. Use the template below:
+1. **Join Community Channels**: Join the JupyterLab community on [Discourse](https://discourse.jupyter.org/) or [Matrix/Element](https://matrix.to/#/#jupyterlab:matrix.org).
+2. **Introduce Yourself**: Post a brief introduction explaining your background in learning science and your interest in building research tools for JupyterLab.
+3. **Post an RFC (Request for Comments)**: Share your feature proposals with the community to gather early feedback. Use the template below:
 
 **RFC Post Template**:
 
@@ -148,8 +150,8 @@ Questions for Community:
 - Suggestions for integration points?
 ```
 
-4.  **Identify Active Maintainers**: Review recent PRs to identify 2-3 active maintainers who review extensions. Study their feedback patterns to understand their preferences.
-5.  **Optional: Small Contribution**: Consider making a small, non-critical contribution (e.g., fixing a typo in docs, improving an error message) to familiarize yourself with the review process.
+1. **Identify Active Maintainers**: Review recent PRs to identify 2-3 active maintainers who review extensions. Study their feedback patterns to understand their preferences.
+2. **Optional: Small Contribution**: Consider making a small, non-critical contribution (e.g., fixing a typo in docs, improving an error message) to familiarize yourself with the review process.
 
 **Deliverable**: Positive engagement with the community, feedback on your RFC, and relationships with key maintainers.
 
@@ -190,7 +192,7 @@ This phase establishes the server-side foundation. It will be a JupyterLab serve
 
 **Key Components & Technologies**:
 
-1.  **Academic Discovery Service**:
+1. **Academic Discovery Service**:
     - **Primary Tool**: **Semantic Scholar API**. This provides free, high-quality access to a massive academic graph, including search, paper details, and citation networks [3].
     - **Implementation**: A Python client will be created to handle requests to the Semantic Scholar API. This service will power the frontend's discovery features.
     - **Code Example (`backend/services/semantic_scholar.py`)**:
@@ -245,11 +247,11 @@ This phase establishes the server-side foundation. It will be a JupyterLab serve
               return response.json()
       ```
 
-2.  **PDF Text and Basic Metadata Extraction**:
+2. **PDF Text and Basic Metadata Extraction**:
     - **Primary Tool**: **PyMuPDF (`fitz`)** will be used for its high speed and accuracy in extracting raw text and basic metadata (e.g., title, author from PDF properties) [4].
     - **Implementation**: A Python function will open an uploaded or downloaded PDF, iterate through pages to extract the full text, and retrieve the document's built-in metadata dictionary.
 
-3.  **AI-Powered Deep Metadata Extraction**:
+3. **AI-Powered Deep Metadata Extraction**:
     This is the core intelligent feature for enriching papers beyond what standard APIs provide. The extracted text will be processed by a language model to identify and structure detailed academic metadata, especially for the WWC Co-Pilot.
     - **Alternative A (High-Quality Cloud API)**: **Claude 3** or **GPT-4.1**. Highest accuracy, but requires API keys and internet.
     - **Alternative B (Local/Open-Source LLM)**: **Ollama** with `Llama-3-8B` or `Mistral-7B`. Excellent for privacy, no cost, but requires more powerful hardware.
@@ -288,11 +290,12 @@ This phase establishes the server-side foundation. It will be a JupyterLab serve
                   return {}
       ```
 
-4.  **Database Storage**:
+4. **Database Storage**:
     - **Technology**: **SQLite** via **SQLAlchemy**. This provides a robust, file-based database with a proper ORM for maintainable queries.
     - **Schema**: The schema is expanded to include data from Semantic Scholar and fields necessary for the WWC Co-Pilot.
 
     _Table 1: Expanded Database Schema_
+
     | Table Name | Column Name | Data Type | Description |
     | --------------------------- | --------------------- | --------- | ------------------------------------------------ |
     | `papers` | `id` | INTEGER | Primary Key |
@@ -336,8 +339,8 @@ This phase focuses on building the user-facing interface as a new panel in the J
 
 **Key UI/UX Components**:
 
-1.  **Main Panel**: A new sidebar panel, registered with a custom icon, that serves as the main view for the research library.
-2.  **Discovery & Import Tab**: The default view, allowing users to find new papers.
+1. **Main Panel**: A new sidebar panel, registered with a custom icon, that serves as the main view for the research library.
+2. **Discovery & Import Tab**: The default view, allowing users to find new papers.
     - **UI Mockup**: A search bar, filters for year and open access, and a results list.
     - **Code Example (`src/widgets/DiscoveryTab.tsx`)**:
 
@@ -397,8 +400,8 @@ This phase focuses on building the user-facing interface as a new panel in the J
       };
       ```
 
-3.  **Library Tab**: A tab to view and search the papers already imported into the local database.
-4.  **Paper Detail View**: A dedicated view that displays all extracted metadata for a selected paper, including the learning science-specific fields and a button to open the original PDF.
+3. **Library Tab**: A tab to view and search the papers already imported into the local database.
+4. **Paper Detail View**: A dedicated view that displays all extracted metadata for a selected paper, including the learning science-specific fields and a button to open the original PDF.
 
 ### Phase 1.3: Integration & Command System
 
@@ -406,14 +409,14 @@ This phase focuses on integrating the extension into JupyterLab's command system
 
 **Integration Points**:
 
-1.  **Plugin Registration**: Register the extension with JupyterLab's plugin system using the `JupyterFrontEndPlugin` interface.
-2.  **Command Palette**: Add commands to the command palette for quick access:
+1. **Plugin Registration**: Register the extension with JupyterLab's plugin system using the `JupyterFrontEndPlugin` interface.
+2. **Command Palette**: Add commands to the command palette for quick access:
     - `jupyterlab-research-assistant-wwc-copilot:open-library` - Open the research library panel
     - `jupyterlab-research-assistant-wwc-copilot:import-pdf` - Open file picker to import a local PDF
     - `jupyterlab-research-assistant-wwc-copilot:export-library` - Export library as CSV/JSON
-3.  **Main Menu Integration**: Add a "Research" menu to the main menu bar with the above commands.
-4.  **Keyboard Shortcuts**: Register keyboard shortcuts for frequently used commands (e.g., `Ctrl+Shift+R` for search).
-5.  **File Browser Context Menu**: Add a "Import to Research Library" option when right-clicking PDF files in the file browser.
+3. **Main Menu Integration**: Add a "Research" menu to the main menu bar with the above commands.
+4. **Keyboard Shortcuts**: Register keyboard shortcuts for frequently used commands (e.g., `Ctrl+Shift+R` for search).
+5. **File Browser Context Menu**: Add a "Import to Research Library" option when right-clicking PDF files in the file browser.
 
 **Code Example (`src/index.ts` - plugin registration)**:
 
@@ -459,10 +462,10 @@ export default plugin;
 
 **Testing Strategy**:
 
-1.  **Unit Tests**: Write tests for all backend functions (PDF parsing, metadata extraction, database queries) and frontend components (search bar, paper cards, detail view).
-2.  **Integration Tests**: Test the full workflow from search to import to database storage.
-3.  **Performance Benchmarks**: Measure and document extraction time for papers of various lengths.
-4.  **Edge Cases**:
+1. **Unit Tests**: Write tests for all backend functions (PDF parsing, metadata extraction, database queries) and frontend components (search bar, paper cards, detail view).
+2. **Integration Tests**: Test the full workflow from search to import to database storage.
+3. **Performance Benchmarks**: Measure and document extraction time for papers of various lengths.
+4. **Edge Cases**:
     - **Malformed PDFs**: Handle corrupted or unreadable PDFs gracefully.
     - **API Rate Limits**: Implement exponential backoff for Semantic Scholar and AI APIs.
     - **Large Libraries**: Test performance with 1,000+ papers in the database.
@@ -473,10 +476,10 @@ export default plugin;
 
 **Documentation Requirements**:
 
-1.  **User Guide**: A comprehensive guide with screenshots showing how to search, import, and manage papers.
-2.  **API Documentation**: Document all backend endpoints with request/response examples.
-3.  **Architecture Diagram**: A visual representation of the system components and data flow.
-4.  **Configuration Guide**: Instructions for setting up API keys for Claude, OpenAI, or Ollama.
+1. **User Guide**: A comprehensive guide with screenshots showing how to search, import, and manage papers.
+2. **API Documentation**: Document all backend endpoints with request/response examples.
+3. **Architecture Diagram**: A visual representation of the system components and data flow.
+4. **Configuration Guide**: Instructions for setting up API keys for Claude, OpenAI, or Ollama.
 
 ---
 
@@ -509,7 +512,7 @@ This phase extends the backend server extension with new API endpoints and busin
 
 **Key Components & Technologies**:
 
-1.  **WWC Quality Assessment Engine**:
+1. **WWC Quality Assessment Engine**:
     - **The Core Logic**: This is the heart of the WWC Co-Pilot. It implements the decision rules from the WWC Handbook v5.0 as a series of functions.
     - **Implementation**: A Python class will take in study metadata (extracted in Stage 1) and user judgments to produce a full WWC assessment.
     - **Code Example (`jupyterlab_research_assistant_wwc_copilot/services/wwc_assessor.py`)**: This is the detailed implementation from our research, showing how the handbook's rules are translated into code.
@@ -592,11 +595,11 @@ This phase extends the backend server extension with new API endpoints and busin
               return assessment
       ```
 
-2.  **Meta-Analysis Engine**:
+2. **Meta-Analysis Engine**:
     - **Primary Tool**: The **`statsmodels`** library in Python will be used for its robust and well-validated meta-analysis capabilities [5].
     - **Implementation**: An API endpoint will accept a list of paper IDs. The service will retrieve the relevant study metadata (effect sizes, standard errors, sample sizes) from the database and use `statsmodels.stats.meta_analysis` to perform a random-effects meta-analysis.
 
-3.  **Forest Plot Generation**:
+3. **Forest Plot Generation**:
     - **Primary Tool**: **`matplotlib`** will be used to generate a classic forest plot.
     - **Implementation**: The backend will generate the plot as a PNG or SVG image and send it to the frontend for display.
     - **Code Example (`jupyterlab_research_assistant_wwc_copilot/services/visualizer.py`)**:
@@ -621,7 +624,7 @@ This phase extends the backend server extension with new API endpoints and busin
               return base64.b64encode(buf.getvalue()).decode("utf-8")
       ```
 
-4.  **Conflict & Contradiction Detection**:
+4. **Conflict & Contradiction Detection**:
     - **Approach**: Use a pre-trained **Natural Language Inference (NLI)** model to compare key findings extracted from papers.
     - **Implementation**: Key findings will be paired up and fed into an NLI model (e.g., a DeBERTa or RoBERTa model fine-tuned on an NLI dataset like MNLI). Pairs classified as `contradiction` will be flagged.
 
@@ -631,8 +634,8 @@ This phase builds the UI for the synthesis engine, likely as a new main area wid
 
 **Key UI/UX Components**:
 
-1.  **Study Selection**: The research library panel will be updated to allow multi-select, with a "Synthesize Studies" button appearing when two or more papers are selected.
-2.  **WWC Co-Pilot Interface**: A dedicated view for a single paper that walks the user through the WWC assessment.
+1. **Study Selection**: The research library panel will be updated to allow multi-select, with a "Synthesize Studies" button appearing when two or more papers are selected.
+2. **WWC Co-Pilot Interface**: A dedicated view for a single paper that walks the user through the WWC assessment.
     - **UI Mockup**: A multi-step form with clear sections for Attrition, Baseline Equivalence, etc. It will use the data extracted in Stage 1 to pre-fill fields and show initial calculations.
     - **Code Example (`src/widgets/WWCCoPilot.tsx`)**:
 
@@ -683,11 +686,11 @@ This phase builds the UI for the synthesis engine, likely as a new main area wid
       };
       ```
 
-3.  **Synthesis Dashboard**: A dashboard view that presents the results of the backend analysis for multiple papers:
+3. **Synthesis Dashboard**: A dashboard view that presents the results of the backend analysis for multiple papers:
     - **Meta-Analysis Summary**: A clear, concise summary of the pooled effect size and confidence interval.
     - **Forest Plot Display**: The generated forest plot image will be displayed prominently.
     - **Conflict List**: A list of potential contradictions identified by the NLI model.
-4.  **Export Functionality**: Buttons to export the comparison matrix as a CSV and the synthesis dashboard as a Markdown report.
+4. **Export Functionality**: Buttons to export the comparison matrix as a CSV and the synthesis dashboard as a Markdown report.
 
 ---
 
@@ -752,11 +755,11 @@ This phase builds the UI for the synthesis engine, likely as a new main area wid
 
 **Publishing Steps**:
 
-1.  **Publish to npm**: `npm publish` (for the frontend package)
-2.  **Publish to PyPI**: `python -m build && twine upload dist/*` (for the Python package)
-3.  **Submit to JupyterLab Extension Registry**: Follow the [extension listing process](https://jupyterlab.readthedocs.io/en/stable/extension/extension_tutorial.html#publishing-your-extension) to list your extension
-4.  **Create GitHub Release**: Tag a release on GitHub with release notes
-5.  **Share Widely**: Post announcement on Discourse, social media, and relevant mailing lists
+1. **Publish to npm**: `npm publish` (for the frontend package)
+2. **Publish to PyPI**: `python -m build && twine upload dist/*` (for the Python package)
+3. **Submit to JupyterLab Extension Registry**: Follow the [extension listing process](https://jupyterlab.readthedocs.io/en/stable/extension/extension_tutorial.html#publishing-your-extension) to list your extension
+4. **Create GitHub Release**: Tag a release on GitHub with release notes
+5. **Share Widely**: Post announcement on Discourse, social media, and relevant mailing lists
 
 ---
 
@@ -785,18 +788,18 @@ Users will be able to configure their preferred extraction method in JupyterLab'
 
 To ensure the tool is particularly useful for learning science research, the following specific features will be built-in from the start:
 
-1.  **Specialized Metadata Schema**: The database schema (Table 1) includes fields like `learning_domain` and `intervention_type`, which are critical for organizing and comparing learning science studies.
-2.  **Preset Extraction Templates**: The AI extraction prompt will include a preset template specifically for learning science and WWC criteria. It will instruct the model to look for:
+1. **Specialized Metadata Schema**: The database schema (Table 1) includes fields like `learning_domain` and `intervention_type`, which are critical for organizing and comparing learning science studies.
+2. **Preset Extraction Templates**: The AI extraction prompt will include a preset template specifically for learning science and WWC criteria. It will instruct the model to look for:
     - **Learning Objectives**: What were the students supposed to learn?
     - **Intervention Components**: What specific techniques were used (e.g., worked examples, feedback, collaboration)?
     - **WWC Criteria**: Baseline/endline sample sizes, attrition numbers for treatment/control, and baseline demographic tables.
-3.  **Example Workflows**: The user documentation will include a tutorial specifically for learning scientists, demonstrating how to import a set of papers on a topic like "spaced repetition" and generate a meta-analytic summary with WWC quality ratings.
+3. **Example Workflows**: The user documentation will include a tutorial specifically for learning scientists, demonstrating how to import a set of papers on a topic like "spaced repetition" and generate a meta-analytic summary with WWC quality ratings.
 
 ---
 
 ## Appendix C: Success Criteria
 
-### For JupyterLab Contribution:
+### For JupyterLab Contribution
 
 - [ ] Both PRs follow contribution guidelines exactly
 - [ ] Code matches JupyterLab style and patterns
@@ -805,7 +808,7 @@ To ensure the tool is particularly useful for learning science research, the fol
 - [ ] Maintainers engage with PRs (questions/feedback)
 - [ ] Features are genuinely useful to the research community
 
-### For Learning Science Goals:
+### For Learning Science Goals
 
 - [ ] Tools are useful for Alpha School research evaluation
 - [ ] Learning science preset demonstrates deep domain knowledge
@@ -817,43 +820,43 @@ To ensure the tool is particularly useful for learning science research, the fol
 
 ## Appendix D: Key Resources
 
-### JupyterLab Documentation:
+### JupyterLab Documentation
 
-- **Main docs**: https://jupyterlab.readthedocs.io/
-- **Extension tutorial**: https://jupyterlab.readthedocs.io/en/stable/extension/extension_tutorial.html
-- **Contributing guide**: https://github.com/jupyterlab/jupyterlab/blob/main/CONTRIBUTING.md
+- **Main docs**: <https://jupyterlab.readthedocs.io/>
+- **Extension tutorial**: <https://jupyterlab.readthedocs.io/en/stable/extension/extension_tutorial.html>
+- **Contributing guide**: <https://github.com/jupyterlab/jupyterlab/blob/main/CONTRIBUTING.md>
 - **Architecture**: See the [JupyterLab documentation](https://jupyterlab.readthedocs.io/) for architecture details
 
-### JupyterLab Community:
+### JupyterLab Community
 
-- **Matrix/Element chat**: https://matrix.to/#/#jupyterlab:matrix.org
-- **Discourse forum**: https://discourse.jupyter.org/
-- **GitHub discussions**: https://github.com/jupyterlab/jupyterlab/discussions
+- **Matrix/Element chat**: <https://matrix.to/#/#jupyterlab:matrix.org>
+- **Discourse forum**: <https://discourse.jupyter.org/>
+- **GitHub discussions**: <https://github.com/jupyterlab/jupyterlab/discussions>
 
-### Learning Science Resources:
+### Learning Science Resources
 
-- **What Works Clearinghouse**: https://ies.ed.gov/ncee/wwc/
-- **Campbell Collaboration**: https://www.campbellcollaboration.org/
-- **GRADE handbook**: https://gdt.gradepro.org/app/handbook/handbook.html
-- **Cochrane Handbook**: https://training.cochrane.org/handbook
+- **What Works Clearinghouse**: <https://ies.ed.gov/ncee/wwc/>
+- **Campbell Collaboration**: <https://www.campbellcollaboration.org/>
+- **GRADE handbook**: <https://gdt.gradepro.org/app/handbook/handbook.html>
+- **Cochrane Handbook**: <https://training.cochrane.org/handbook>
 
-### Statistical Tools:
+### Statistical Tools
 
-- **Meta-analysis in Python (statsmodels)**: https://www.statsmodels.org/stable/stats.html#meta-analysis
-- **R metafor package**: https://www.metafor-project.org/
-- **Effect size calculators**: https://www.psychometrica.de/effect_size.html
+- **Meta-analysis in Python (statsmodels)**: <https://www.statsmodels.org/stable/stats.html#meta-analysis>
+- **R metafor package**: <https://www.metafor-project.org/>
+- **Effect size calculators**: <https://www.psychometrica.de/effect_size.html>
 
 ---
 
 ## Appendix E: Notes & Reminders
 
-### Speed vs Quality:
+### Speed vs Quality
 
 - Build fast, but don't skip testing or documentation.
 - Use AI to accelerate development, but review all generated code.
 - Don't reinvent the wheel—use existing libraries like `statsmodels` and `PyMuPDF`.
 
-### Community Engagement:
+### Community Engagement
 
 - Over-communicate with maintainers.
 - Be responsive to feedback.
@@ -861,20 +864,20 @@ To ensure the tool is particularly useful for learning science research, the fol
 - Thank people for their time.
 - Build relationships, not just code.
 
-### Learning Science Focus:
+### Learning Science Focus
 
 - Every feature should have a learning science application in mind.
 - The preset is the showcase, but the core tools must be general.
 - The Alpha School use case drives design decisions.
 - Document pedagogical reasoning in addition to technical details.
 
-### Deliverable Priority:
+### Deliverable Priority
 
-1.  **Working, tested code** ← MOST IMPORTANT
-2.  **Clear documentation**
-3.  **Professional PRs**
-4.  **Video walkthrough**
-5.  **Bonus materials**
+1. **Working, tested code** ← MOST IMPORTANT
+2. **Clear documentation**
+3. **Professional PRs**
+4. **Video walkthrough**
+5. **Bonus materials**
 
 ---
 
@@ -1113,6 +1116,7 @@ Attrition (participant dropout) is the most critical and complex part of a WWC r
 **Cautious Boundary**: Used when the intervention could plausibly affect retention (e.g., a dropout prevention program, a school choice voucher, an intensive tutoring program). This is the default and more stringent boundary.
 
 _Table 2: WWC Attrition Boundaries (from Handbook Appendix C)_
+
 | Overall Attrition | Max Differential (Cautious) | Max Differential (Optimistic) |
 |-------------------|----------------------------|-------------------------------|
 | ≤ 10% | 5% | 7% |
@@ -1491,9 +1495,9 @@ This extension provides semi-automated tools for all three tasks, scaffolding hu
 
 ## References
 
-[1] JupyterLab Developer Documentation. (2024). _JupyterLab_. Retrieved from https://jupyterlab.readthedocs.io/en/stable/extension/extension_dev.html
+[1] JupyterLab Developer Documentation. (2024). _JupyterLab_. Retrieved from <https://jupyterlab.readthedocs.io/en/stable/extension/extension_dev.html>
 
-[2] JupyterLab Contribution Guide. (2024). _JupyterLab GitHub_. Retrieved from https://github.com/jupyterlab/jupyterlab/blob/master/CONTRIBUTING.md
+[2] JupyterLab Contribution Guide. (2024). _JupyterLab GitHub_. Retrieved from <https://github.com/jupyterlab/jupyterlab/blob/master/CONTRIBUTING.md>
 
 [3### Command & Server Extension Examples
 
@@ -1501,10 +1505,10 @@ This section provides two code snippets demonstrating how the frontend (TypeScri
 
 #### How They Connect
 
-1.  **Frontend calls**: `${baseUrl}my-extension/hello`
-2.  **Backend handles**: The route registered at `url_path_join(base_url, "my-extension", "hello")`
-3.  **Backend responds**: JSON with a message
-4.  **Frontend displays**: The message in a dialog box
+1. **Frontend calls**: `${baseUrl}my-extension/hello`
+2. **Backend handles**: The route registered at `url_path_join(base_url, "my-extension", "hello")`
+3. **Backend responds**: JSON with a message
+4. **Frontend displays**: The message in a dialog box
 
 #### Key Takeaways
 
@@ -1624,13 +1628,13 @@ def _load_jupyter_server_extension(server_app):
 
 ```
 
-### Semantic Scholar API Clientation. (2024). _Semantic Scholar_. Retrieved from https://www.semanticscholar.org/product/api
+### Semantic Scholar API Clientation. (2024). _Semantic Scholar_. Retrieved from <https://www.semanticscholar.org/product/api>
 
-[4] PyMuPDF Documentation. (2024). _PyMuPDF_. Retrieved from https://pymupdf.readthedocs.io/en/latest/
+[4] PyMuPDF Documentation. (2024). _PyMuPDF_. Retrieved from <https://pymupdf.readthedocs.io/en/latest/>
 
-[5] Statsmodels Documentation. (2024). _Statsmodels_. Retrieved from https://www.statsmodels.org/stable/index.html
+[5] Statsmodels Documentation. (2024). _Statsmodels_. Retrieved from <https://www.statsmodels.org/stable/index.html>
 
-[6] What Works Clearinghouse. (2022). _WWC Standards Handbook, Version 5.0_. U.S. Department of Education, Institute of Education Sciences. Retrieved from https://ies.ed.gov/ncee/wwc/Docs/referenceresources/Final_WWC-HandbookVer5.0-0-508.pdf
+[6] What Works Clearinghouse. (2022). _WWC Standards Handbook, Version 5.0_. U.S. Department of Education, Institute of Education Sciences. Retrieved from <https://ies.ed.gov/ncee/wwc/Docs/referenceresources/Final_WWC-HandbookVer5.0-0-508.pdf>
 
 ---
 
