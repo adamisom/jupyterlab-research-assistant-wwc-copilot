@@ -20,7 +20,16 @@ export const ConflictView: React.FC<ConflictViewProps> = ({ result }) => {
       <h3>Conflict Detection Results</h3>
 
       {result.status === 'disabled' && result.message && (
-        <div className="jp-WWCExtension-error" style={{ marginBottom: '16px' }}>
+        <div
+          className="jp-WWCExtension-error"
+          style={{
+            marginBottom: '16px',
+            backgroundColor: 'var(--jp-layout-color2)',
+            color: 'var(--jp-content-font-color2)',
+            border: '1px solid var(--jp-border-color2)',
+            padding: '12px'
+          }}
+        >
           <strong>Conflict Detection Unavailable</strong>
           <p>{result.message}</p>
         </div>

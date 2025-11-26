@@ -469,8 +469,8 @@ class ConflictDetectionHandler(BaseAPIHandler):
                 # Extract findings and detect conflicts
                 detector = ConflictDetector()
 
-                # Check if NLI pipeline is available
-                if detector.nli_pipeline is None:
+                # Check if NLI model is available (tokenizer and model must both be loaded)
+                if detector.tokenizer is None or detector.model is None:
                     logger.warning(
                         "Conflict detection NLI pipeline not available. "
                         "Install 'transformers' library to enable conflict detection."
