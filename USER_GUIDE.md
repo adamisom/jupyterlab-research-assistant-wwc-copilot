@@ -27,6 +27,7 @@ The extension adds a **Research Library** panel to the left sidebar of JupyterLa
 3. **Or use the Command Palette**: Press `Cmd+Shift+C` (Mac) or `Ctrl+Shift+C` (Windows/Linux), then type "Research Library" and select "Open Research Library"
 
 The Research Library panel has two main tabs:
+
 - **Discovery**: Search and import papers from Semantic Scholar and OpenAlex
 - **Library**: Browse and manage your imported papers
 
@@ -48,6 +49,7 @@ The extension searches **Semantic Scholar** first, and automatically falls back 
 #### Search Results
 
 Each result shows:
+
 - **Title** and **authors**
 - **Publication year**
 - **Abstract** (if available)
@@ -76,6 +78,7 @@ To add a paper to your library:
 #### Paper Cards
 
 Each paper card displays:
+
 - **Title** (clickable to open detail view)
 - **Authors** (formatted as names)
 - **Year** and **citation count**
@@ -85,6 +88,7 @@ Each paper card displays:
 #### Paper Detail View
 
 Click any paper card to see:
+
 - Complete metadata (title, authors, year, DOI, abstract)
 - **Study metadata** (if available): methodology, sample sizes, effect sizes
 - **Learning science metadata** (if available): domain, intervention type, age group
@@ -116,6 +120,7 @@ You can import PDF files in two ways:
 #### AI Metadata Extraction (Optional)
 
 If you've configured AI extraction (Claude, OpenAI, or Ollama), the extension can automatically extract:
+
 - **Effect sizes** (Cohen's d, standard errors) by outcome
 - **Sample sizes** (baseline and endline)
 - **Methodology** (RCT, Quasi-experimental, etc.)
@@ -159,6 +164,7 @@ Perform statistical meta-analysis across multiple studies to synthesize effect s
 The results display:
 
 **Summary Statistics**:
+
 - **Pooled effect size** (Cohen's d) with 95% confidence interval
 - **P-value** for the overall effect
 - **Heterogeneity statistics**:
@@ -167,9 +173,11 @@ The results display:
   - **Q statistic**: Test of heterogeneity
 
 **Visualization**:
+
 - **Forest plot**: Shows individual study effect sizes with confidence intervals and the pooled estimate
 
 **Individual Studies Table**:
+
 - Effect size for each study
 - Confidence intervals
 - Study weights in the meta-analysis
@@ -211,10 +219,12 @@ Detect potential publication bias using statistical tests and visualizations.
 #### Bias Results
 
 **Egger's Test**:
+
 - P-value indicating presence of publication bias
 - Interpretation guidance
 
 **Funnel Plot**:
+
 - Visual representation of effect sizes vs. standard errors
 - Asymmetry suggests potential publication bias
 - Studies with larger standard errors (less precise) should show more scatter
@@ -232,6 +242,7 @@ Identify influential studies that might be driving your meta-analysis results.
 #### Sensitivity Results
 
 **Leave-One-Out Analysis**:
+
 - Shows how the pooled effect size changes when each study is removed
 - Helps identify influential studies
 - Displays:
@@ -240,6 +251,7 @@ Identify influential studies that might be driving your meta-analysis results.
   - Difference from the full analysis
 
 Use this to:
+
 - Check robustness of your findings
 - Identify studies that might be outliers
 - Understand the contribution of each study
@@ -263,6 +275,7 @@ Automatically detect contradictions between study findings using AI.
 #### Conflict Results
 
 Each detected contradiction shows:
+
 - **Paper 1** and **Paper 2** titles
 - **Finding 1** and **Finding 2** (the contradictory statements)
 - **Confidence score** (how confident the model is about the contradiction)
@@ -270,6 +283,7 @@ Each detected contradiction shows:
 **Note**: The system filters out comparisons between findings about different topics/interventions to reduce false positives.
 
 **Requirements**: Conflict detection requires the optional `transformers` and `torch` libraries. Install with:
+
 ```bash
 pip install "jupyterlab-research-assistant-wwc-copilot[conflict-detection]"
 ```
@@ -309,10 +323,12 @@ The WWC Co-Pilot helps you assess individual study quality using **What Works Cl
 The WWC Co-Pilot guides you through a **5-step process**:
 
 **Step 1: Randomization**
+
 - Indicate whether randomization was documented
 - Review extracted randomization information (if available)
 
 **Step 2: Attrition**
+
 - Review calculated attrition rates (overall and differential)
 - Choose attrition boundary: **Cautious** or **Optimistic**
   - **Cautious**: Use when intervention could affect retention (e.g., dropout prevention programs)
@@ -320,15 +336,18 @@ The WWC Co-Pilot guides you through a **5-step process**:
 - See real-time calculation of whether attrition meets WWC standards
 
 **Step 3: Baseline Equivalence**
+
 - Review baseline differences between treatment and control groups
 - See calculated effect size (Cohen's d) for baseline differences
 - Color-coded indicators show whether equivalence is satisfied
 
 **Step 4: Statistical Adjustment**
+
 - Indicate if valid statistical adjustments were used (if required)
 - Review adjustment methods reported in the study
 
 **Step 5: Review & Finalize**
+
 - See the **final WWC rating**:
   - 🟢 **Meets WWC Standards Without Reservations**
   - 🟡 **Meets WWC Standards With Reservations**
@@ -369,7 +388,6 @@ The WWC Co-Pilot guides you through a **5-step process**:
 ---
 
 ## Tips & Best Practices
-
 
 ### For Synthesis Features
 
@@ -457,4 +475,3 @@ Now that you're familiar with the extension, try:
 5. **Generate a synthesis report** for your review
 
 Happy researching! 📚🔬
-
