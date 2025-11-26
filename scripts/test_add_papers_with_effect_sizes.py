@@ -77,7 +77,23 @@ def create_simple_pdf(
 
 
 def add_test_papers():
-    """Add test papers with effect sizes for testing."""
+    """
+    Add test papers with effect sizes for testing.
+
+    NOTE: This script bypasses several high-level API/service layer features:
+    - Duplicate detection: Calls db.add_paper() directly, bypassing LibraryHandler
+      and ImportService duplicate checks. Papers will be added even if duplicates exist.
+    - PDF upload workflow: Creates PDFs directly and adds them to paper_data,
+      bypassing ImportService.import_pdf() which handles file validation, AI extraction,
+      and duplicate detection for PDF uploads.
+    - AI extraction pipeline: Does not trigger AI metadata extraction that would
+      normally run during PDF import.
+    - API response formatting: Does not use the API response format with is_duplicate
+      flags that the frontend expects.
+
+    This is intentional for testing purposes - the script needs to populate the database
+    directly without going through the full API/service workflows.
+    """
     # Set up upload directory
     upload_dir = Path.home() / ".jupyter" / "research_assistant" / "uploads"
     upload_dir.mkdir(parents=True, exist_ok=True)
