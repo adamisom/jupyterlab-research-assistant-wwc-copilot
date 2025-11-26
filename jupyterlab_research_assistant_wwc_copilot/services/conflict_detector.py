@@ -125,7 +125,19 @@ class ConflictDetector:
 
         # If one has intervention/outcome keywords and the other doesn't, be cautious
         # but don't filter out (might be about same topic with different wording)
-        return True
+        # Return True if findings might be on the same topic (no clear separation)
+        return not (
+            (
+                f1_interventions
+                and f2_interventions
+                and not set(f1_interventions).intersection(set(f2_interventions))
+            )
+            or (
+                f1_outcomes
+                and f2_outcomes
+                and not set(f1_outcomes).intersection(set(f2_outcomes))
+            )
+        )
 
     def find_contradictions(
         self,
