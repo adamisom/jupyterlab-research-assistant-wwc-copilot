@@ -261,6 +261,8 @@ export interface IConflictDetectionResult {
   }>;
   n_papers: number;
   n_contradictions: number;
+  status?: 'success' | 'disabled';
+  message?: string;
 }
 
 export async function detectConflicts(

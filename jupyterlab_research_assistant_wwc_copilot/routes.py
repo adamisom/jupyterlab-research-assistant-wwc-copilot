@@ -451,7 +451,29 @@ class ConflictDetectionHandler(BaseAPIHandler):
 
                 # Extract findings and detect conflicts
                 detector = ConflictDetector()
+                
+                # Check if NLI pipeline is available
+                if detector.nli_pipeline is None:
+                    logger.warning(
+                        "Conflict detection NLI pipeline not available. "
+                        "Install 'transformers' library to enable conflict detection."
+                    )
+                    self.send_success(
+                        {
+                            "contradictions": [],
+                            "n_papers": len(papers),
+                            "n_contradictions": 0,
+                            "status": "disabled",
+                            "message": (
+                                "Conflict detection is not available. "
+                                "Install the 'transformers' library to enable this feature."
+                            ),
+                        }
+                    )
+                    return
+
                 all_contradictions = []
+                findings_extracted = 0
 
                 # Compare each pair of papers
                 for i in range(len(papers)):
@@ -468,6 +490,7 @@ class ConflictDetectionHandler(BaseAPIHandler):
                         )
 
                         if findings1 and findings2:
+                            findings_extracted += 1
                             contradictions = detector.find_contradictions(
                                 findings1,
                                 findings2,
@@ -481,13 +504,20 @@ class ConflictDetectionHandler(BaseAPIHandler):
                                 contradiction["paper2_title"] = paper2["title"]
                                 all_contradictions.append(contradiction)
 
-                self.send_success(
-                    {
-                        "contradictions": all_contradictions,
-                        "n_papers": len(papers),
-                        "n_contradictions": len(all_contradictions),
-                    }
-                )
+                result = {
+                    "contradictions": all_contradictions,
+                    "n_papers": len(papers),
+                    "n_contradictions": len(all_contradictions),
+                    "status": "success",
+                }
+                
+                if findings_extracted == 0:
+                    result["message"] = (
+                        "No findings could be extracted from the papers. "
+                        "Papers may need full text or more detailed abstracts."
+                    )
+                
+                self.send_success(result)
         except Exception as e:
             logger.exception("Conflict detection failed")
             self.send_error(500, str(e))

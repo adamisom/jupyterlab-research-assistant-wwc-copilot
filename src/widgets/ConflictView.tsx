@@ -19,6 +19,27 @@ export const ConflictView: React.FC<ConflictViewProps> = ({ result }) => {
     <div className="jp-WWCExtension-conflicts">
       <h3>Conflict Detection Results</h3>
 
+      {result.status === 'disabled' && result.message && (
+        <div className="jp-WWCExtension-error" style={{ marginBottom: '16px' }}>
+          <strong>Conflict Detection Unavailable</strong>
+          <p>{result.message}</p>
+        </div>
+      )}
+
+      {result.message && result.status === 'success' && (
+        <div
+          className="jp-WWCExtension-loading"
+          style={{
+            marginBottom: '16px',
+            padding: '12px',
+            backgroundColor: 'var(--jp-layout-color2)',
+            borderRadius: 'var(--jp-border-radius)'
+          }}
+        >
+          <p>{result.message}</p>
+        </div>
+      )}
+
       <div className="jp-WWCExtension-conflicts-summary">
         <p>
           Found <strong>{result.n_contradictions}</strong> contradictions across{' '}
