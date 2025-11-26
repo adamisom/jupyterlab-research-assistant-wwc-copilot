@@ -23,17 +23,27 @@ export const PaperCard: React.FC<PaperCardProps> = ({
         selected ? 'jp-WWCExtension-paper-card-selected' : ''
       }`}
     >
-      {onToggleSelection && (
-        <div className="jp-WWCExtension-paper-card-checkbox">
-          <input
-            type="checkbox"
-            checked={selected}
-            onChange={onToggleSelection}
-            className="jp-WWCExtension-checkbox"
-            onClick={e => e.stopPropagation()}
-          />
-        </div>
-      )}
+      <div className="jp-WWCExtension-paper-card-header">
+        {onToggleSelection && (
+          <div className="jp-WWCExtension-paper-card-checkbox">
+            <input
+              type="checkbox"
+              checked={selected}
+              onChange={onToggleSelection}
+              className="jp-WWCExtension-checkbox"
+              onClick={e => e.stopPropagation()}
+            />
+          </div>
+        )}
+        {onViewDetails && (
+          <button
+            onClick={onViewDetails}
+            className="jp-WWCExtension-button jp-WWCExtension-view-details-button"
+          >
+            View Details
+          </button>
+        )}
+      </div>
       <h3
         className={`jp-WWCExtension-paper-title ${
           onViewDetails ? 'jp-mod-clickable' : ''
@@ -75,11 +85,6 @@ export const PaperCard: React.FC<PaperCardProps> = ({
         )}
       </div>
       <div className="jp-WWCExtension-paper-actions">
-        {onViewDetails && (
-          <button onClick={onViewDetails} className="jp-WWCExtension-button">
-            View Details
-          </button>
-        )}
         {onImport && (
           <button
             onClick={onImport}

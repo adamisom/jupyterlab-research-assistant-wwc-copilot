@@ -111,6 +111,13 @@ const SynthesisWorkbenchComponent: React.FC<SynthesisWorkbenchProps> = ({
   };
 
   const handleAssessBias = async () => {
+    if (paperIds.length < 3) {
+      showError(
+        'Bias Assessment',
+        'Publication bias assessment requires at least 3 studies with effect size data.'
+      );
+      return;
+    }
     setIsLoading(true);
     try {
       const result = await assessPublicationBias(paperIds);
@@ -128,6 +135,13 @@ const SynthesisWorkbenchComponent: React.FC<SynthesisWorkbenchProps> = ({
   };
 
   const handleRunSensitivityAnalysis = async () => {
+    if (paperIds.length < 3) {
+      showError(
+        'Sensitivity Analysis',
+        'Sensitivity analysis requires at least 3 studies with effect size data.'
+      );
+      return;
+    }
     setIsLoading(true);
     try {
       const result = await performSensitivityAnalysis(paperIds);
@@ -190,20 +204,22 @@ const SynthesisWorkbenchComponent: React.FC<SynthesisWorkbenchProps> = ({
           >
             Run Subgroup Analysis
           </button>
+        </div>
+        <div className="jp-WWCExtension-synthesis-actions-row">
           <button
             onClick={handleAssessBias}
-            disabled={isLoading || !metaAnalysisResult}
+            disabled={isLoading}
             className={`jp-WWCExtension-button ${
-              paperIds.length < 3 ? 'jp-mod-muted' : ''
+              paperIds.length < 3 ? 'jp-mod-muted-gray' : ''
             }`}
           >
             Assess Publication Bias
           </button>
           <button
             onClick={handleRunSensitivityAnalysis}
-            disabled={isLoading || !metaAnalysisResult}
+            disabled={isLoading}
             className={`jp-WWCExtension-button ${
-              paperIds.length < 3 ? 'jp-mod-muted' : ''
+              paperIds.length < 3 ? 'jp-mod-muted-gray' : ''
             }`}
           >
             Sensitivity Analysis

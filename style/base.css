@@ -120,6 +120,17 @@
   opacity: 0.7;
 }
 
+.jp-WWCExtension-button.jp-mod-muted-secondary:not(:disabled) {
+  background-color: var(--jp-accent-color1);
+  opacity: 0.7;
+}
+
+.jp-WWCExtension-button.jp-mod-muted-gray:not(:disabled) {
+  background-color: var(--jp-layout-color3);
+  color: var(--jp-ui-font-color2);
+  border-color: var(--jp-border-color2);
+}
+
 .jp-WWCExtension-button:hover:not(:disabled) {
   background-color: var(--jp-brand-color0);
 }
@@ -495,13 +506,25 @@
   background-color: var(--jp-layout-color2);
 }
 
-.jp-WWCExtension-paper-card-checkbox {
+.jp-WWCExtension-paper-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   margin-bottom: 8px;
+}
+
+.jp-WWCExtension-paper-card-checkbox {
+  flex-shrink: 0;
 }
 
 .jp-WWCExtension-checkbox {
   cursor: pointer;
-  margin-right: 8px;
+}
+
+.jp-WWCExtension-view-details-button {
+  padding: 4px 12px;
+  font-size: var(--jp-ui-font-size0);
+  margin-left: auto;
 }
 
 .jp-WWCExtension-synthesis-button-container {
@@ -788,6 +811,7 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
+  padding-bottom: 16px;
 }
 
 .jp-WWCExtension-meta-analysis h3 {
