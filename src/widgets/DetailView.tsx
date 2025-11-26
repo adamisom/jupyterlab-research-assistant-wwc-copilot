@@ -24,7 +24,14 @@ export const DetailView: React.FC<DetailViewProps> = ({ paper, onClose }) => {
   return (
     <div className="jp-WWCExtension-detail-view">
       <div className="jp-WWCExtension-detail-header">
-        <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginBottom: '8px' }}>
+        <div
+          style={{
+            display: 'flex',
+            gap: '10px',
+            alignItems: 'center',
+            marginBottom: '8px'
+          }}
+        >
           <button onClick={onClose} className="jp-WWCExtension-button">
             ← Go Back
           </button>
@@ -92,7 +99,12 @@ export const DetailView: React.FC<DetailViewProps> = ({ paper, onClose }) => {
               </div>
             ) : (
               <div className="jp-WWCExtension-detail-section">
-                <p style={{ color: 'var(--jp-content-font-color2)', fontStyle: 'italic' }}>
+                <p
+                  style={{
+                    color: 'var(--jp-content-font-color2)',
+                    fontStyle: 'italic'
+                  }}
+                >
                   No abstract available for this paper.
                 </p>
               </div>

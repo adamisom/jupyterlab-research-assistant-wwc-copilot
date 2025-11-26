@@ -120,8 +120,8 @@ export const WWCCoPilot: React.FC<WWCCoPilotProps> = ({
       // Only run if we don't already have an assessment and not currently loading
       runAssessment();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentStep]); // Intentionally exclude runAssessment to prevent infinite loops
+    // Intentionally exclude runAssessment from deps to prevent infinite loops
+  }, [currentStep]);
 
   // Handle errors - only show once per error
   const [lastError, setLastError] = useState<Error | null>(null);
