@@ -5,6 +5,9 @@ import { IPaper } from '../api';
 import { AppEvents } from '../utils/events';
 import { Tabs } from './Tabs';
 import { formatNumber } from '../utils/format';
+import { showError } from '../utils/notifications';
+import { openPDFInNewTab } from '../utils/download';
+import { hasFullPDF } from '../utils/paper';
 
 interface DetailViewProps {
   paper: IPaper;
@@ -16,17 +19,25 @@ export const DetailView: React.FC<DetailViewProps> = ({ paper, onClose }) => {
     'overview' | 'study' | 'learning' | 'wwc'
   >('overview');
 
-  const openPDF = () => {
+  const openPDF = async () => {
     if (paper.id !== undefined) {
-      // Open PDF via our backend route
-      const settings = ServerConnection.makeSettings();
-      const url = URLExt.join(
-        settings.baseUrl,
-        'jupyterlab-research-assistant-wwc-copilot',
-        'pdf',
-        `?paper_id=${paper.id}`
-      );
-      window.open(url, '_blank');
+      try {
+        // Fetch PDF from backend and open using blob URL (bypasses backend Content-Type issues)
+        const settings = ServerConnection.makeSettings();
+        const url = URLExt.join(
+          settings.baseUrl,
+          'jupyterlab-research-assistant-wwc-copilot',
+          'pdf',
+          `?paper_id=${paper.id}`
+        );
+        await openPDFInNewTab(url);
+      } catch (err) {
+        showError(
+          'Failed to Open PDF',
+          err instanceof Error ? err.message : 'Unknown error occurred',
+          err instanceof Error ? err : undefined
+        );
+      }
     }
   };
 
@@ -73,8 +84,20 @@ export const DetailView: React.FC<DetailViewProps> = ({ paper, onClose }) => {
           )}
           {paper.year && <div>Year: {paper.year}</div>}
           {paper.doi && <div>DOI: {paper.doi}</div>}
-          {paper.citation_count !== undefined && (
+          {paper.citation_count !== undefined && paper.citation_count > 0 && (
             <div>Citations: {paper.citation_count}</div>
+          )}
+          {hasFullPDF(paper) && !paper.s2_id && !paper.doi && (
+            <div
+              style={{
+                marginTop: '8px',
+                fontStyle: 'italic',
+                color: 'var(--jp-content-font-color2)'
+              }}
+            >
+              Note: This is a locally uploaded PDF. Citation count, DOI, and
+              other metadata from external sources are not available.
+            </div>
           )}
         </div>
       </div>
@@ -114,7 +137,7 @@ export const DetailView: React.FC<DetailViewProps> = ({ paper, onClose }) => {
                     fontStyle: 'italic'
                   }}
                 >
-                  No abstract available for this paper.
+                  'No abstract available for this paper.'
                 </p>
               </div>
             )}

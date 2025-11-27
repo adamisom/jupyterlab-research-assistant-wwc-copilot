@@ -1,6 +1,10 @@
 import React from 'react';
+import { ServerConnection } from '@jupyterlab/services';
+import { URLExt } from '@jupyterlab/coreutils';
 import { IPaper } from '../api';
 import { hasFullPDF } from '../utils/paper';
+import { openPDFInNewTab } from '../utils/download';
+import { showError } from '../utils/notifications';
 
 interface PaperCardProps {
   paper: IPaper;
@@ -61,7 +65,7 @@ export const PaperCard: React.FC<PaperCardProps> = ({
         {paper.year && (
           <div className="jp-WWCExtension-paper-year">Year: {paper.year}</div>
         )}
-        {paper.citation_count !== undefined && (
+        {paper.citation_count !== undefined && paper.citation_count > 0 && (
           <div className="jp-WWCExtension-paper-citations">
             Citations: {paper.citation_count}
           </div>
@@ -75,9 +79,46 @@ export const PaperCard: React.FC<PaperCardProps> = ({
       )}
       <div className="jp-WWCExtension-paper-status">
         {hasFullPDF(paper) ? (
-          <span className="jp-WWCExtension-pdf-badge jp-mod-has-pdf">
-            📄 Full PDF
-          </span>
+          <a
+            href="#"
+            className="jp-WWCExtension-pdf-badge jp-mod-has-pdf"
+            onClick={async e => {
+              e.preventDefault();
+              e.stopPropagation();
+              if (paper.id !== undefined) {
+                try {
+                  const settings = ServerConnection.makeSettings();
+                  const url = URLExt.join(
+                    settings.baseUrl,
+                    'jupyterlab-research-assistant-wwc-copilot',
+                    'pdf',
+                    `?paper_id=${paper.id}`
+                  );
+                  await openPDFInNewTab(url);
+                } catch (err) {
+                  showError(
+                    'Failed to Open PDF',
+                    err instanceof Error
+                      ? err.message
+                      : 'Unknown error occurred',
+                    err instanceof Error ? err : undefined
+                  );
+                }
+              }
+            }}
+          >
+            📄 Full Local PDF
+          </a>
+        ) : paper.open_access_pdf ? (
+          <a
+            href={paper.open_access_pdf}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="jp-WWCExtension-pdf-badge jp-mod-open-access"
+            onClick={e => e.stopPropagation()}
+          >
+            📥 Open Access PDF
+          </a>
         ) : (
           <span className="jp-WWCExtension-pdf-badge jp-mod-metadata-only">
             📋 Metadata Only
