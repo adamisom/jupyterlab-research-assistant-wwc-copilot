@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Open Access PDF Links**: Display and link to open access PDFs from external sources (Semantic Scholar, OpenAlex)
 - **Abstract Extraction**: Extract abstracts from uploaded PDFs (first page, first paragraph(s))
 - **Authors & Year Extraction**: Extract authors and publication year from PDF first page
-- **Library UI Improvements**: 
+- **Library UI Improvements**:
   - Show Authors and Year in Library list instead of abstract snippet
   - Display "could not detect" when extraction fails
   - Clickable "Full Local PDF" badge in Library list
@@ -36,18 +36,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - **[User Guide](./USER_GUIDE.md)**: Comprehensive user documentation covering all features, workflows, and best practices
-
-### Fixed
-
-- **Conflict Detection**: Fixed input format for cross-encoder NLI model
-  (now uses tuple format instead of string concatenation)
-- **Conflict Detection**: Added topic filtering to reduce false positives
-  when findings are about different interventions/outcomes
-- **Meta-Analysis**: Suppressed harmless sqrt() warnings from statsmodels
-  when tau² is negative (common with 2 studies or low heterogeneity)
-
-### Added
-
 - Stage 2 enhancements (all features now complete):
   - **Enhanced WWC UI**: Multi-step wizard interface with progress
     indicators and localStorage persistence
@@ -62,6 +50,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Stage 2 enhancements guide
   (`docs/stage-2-enhancements-implementation-guide.md`) for
   implementation reference
+
+### Fixed
+
+- **Conflict Detection**: Fixed input format for cross-encoder NLI model
+  (now uses tuple format instead of string concatenation)
+- **Conflict Detection**: Added topic filtering to reduce false positives
+  when findings are about different interventions/outcomes
+- **Meta-Analysis**: Suppressed harmless sqrt() warnings from statsmodels
+  when tau² is negative (common with 2 studies or low heterogeneity)
 
 ### Changed
 
