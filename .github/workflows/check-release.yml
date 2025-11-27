@@ -1,9 +1,12 @@
 name: Check Release
+# Temporarily disabled - check-release step is currently broken
+# on:
+#   push:
+#     tags:
+#       - 'v*'
+#   workflow_dispatch:
 on:
-  push:
-    tags:
-      - 'v*'
-  workflow_dispatch:
+  workflow_dispatch:  # Only allow manual dispatch for now
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}

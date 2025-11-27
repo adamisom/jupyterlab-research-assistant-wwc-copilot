@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Build and install the JupyterLab extension for Binder
+set -e
+
+echo "Installing Node.js dependencies..."
+jlpm install
+
+echo "Building the extension..."
+jlpm build:prod
+
+echo "Installing the Python package..."
+pip install -e .
+
+echo "Enabling the server extension..."
+jupyter server extension enable jupyterlab_research_assistant_wwc_copilot
+
+echo "Building JupyterLab..."
+jupyter lab build --minimize=False
+
+echo "Binder setup complete!"
+
