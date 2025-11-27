@@ -55,20 +55,27 @@ class ImportService:
         # Extract text and metadata from PDF
         extracted = self.pdf_parser.extract_text_and_metadata(str(file_path))
 
-        # Get title and authors for deduplication check
+        # Get title, authors, and year for deduplication check
         title = extracted.get("title") or filename.replace(".pdf", "")
-        author = extracted.get("author")
-        # Convert author string to list if needed
-        # Author might be a comma-separated string, split it
-        authors = [a.strip() for a in author.split(",") if a.strip()] if author else []
-        # PDF metadata doesn't typically include year, so we'll match without it
-        year = None
+
+        # Use extracted authors (list) if available, otherwise try to parse from author string
+        authors = extracted.get("authors")  # This is now a list from PDF parser
+        if not authors:
+            author = extracted.get("author")
+            # Convert author string to list if needed
+            # Author might be a comma-separated string, split it
+            authors = (
+                [a.strip() for a in author.split(",") if a.strip()] if author else []
+            )
+
+        # Use extracted year if available
+        year = extracted.get("year")
 
         # Create paper record
         paper_data = {
             "title": title,
-            "authors": authors,
-            "year": year,
+            "authors": authors,  # Now a list from PDF parser
+            "year": year,  # Now extracted from PDF text
             "abstract": extracted.get("abstract"),
             "full_text": extracted.get("full_text"),
             "pdf_path": str(file_path),

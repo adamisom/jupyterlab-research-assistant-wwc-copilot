@@ -57,26 +57,21 @@ export const PaperCard: React.FC<PaperCardProps> = ({
         {paper.title}
       </h3>
       <div className="jp-WWCExtension-paper-meta">
-        {paper.authors && paper.authors.length > 0 && (
-          <div className="jp-WWCExtension-paper-authors">
-            Authors: {paper.authors.join(', ')}
-          </div>
-        )}
-        {paper.year && (
-          <div className="jp-WWCExtension-paper-year">Year: {paper.year}</div>
-        )}
+        <div className="jp-WWCExtension-paper-authors">
+          Authors:{' '}
+          {paper.authors && paper.authors.length > 0
+            ? paper.authors.join(', ')
+            : 'could not detect'}
+        </div>
+        <div className="jp-WWCExtension-paper-year">
+          Year: {paper.year ? paper.year : 'could not detect'}
+        </div>
         {paper.citation_count !== undefined && paper.citation_count > 0 && (
           <div className="jp-WWCExtension-paper-citations">
             Citations: {paper.citation_count}
           </div>
         )}
       </div>
-      {paper.abstract && (
-        <div className="jp-WWCExtension-paper-abstract">
-          {paper.abstract.substring(0, 200)}
-          {paper.abstract.length > 200 ? '...' : ''}
-        </div>
-      )}
       <div className="jp-WWCExtension-paper-status">
         {hasFullPDF(paper) ? (
           <a
