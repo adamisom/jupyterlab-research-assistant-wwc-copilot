@@ -127,3 +127,4 @@ dmypy.json
 # Yarn cache
 .yarn/
 junit.xml
+test_release/
