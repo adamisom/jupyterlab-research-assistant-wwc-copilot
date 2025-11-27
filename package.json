@@ -1,6 +1,6 @@
 {
     "name": "jupyterlab-research-assistant-wwc-copilot",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "A JupyterLab extension for academic research management and WWC quality assessment",
     "keywords": [
         "jupyter",

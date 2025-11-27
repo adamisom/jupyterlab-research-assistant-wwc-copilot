@@ -5,6 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2025-12-XX
+
+### Added
+
+- **PDF Viewing**: Support for viewing uploaded PDFs via blob URLs in new browser tabs
+- **Open Access PDF Links**: Display and link to open access PDFs from external sources (Semantic Scholar, OpenAlex)
+- **Abstract Extraction**: Extract abstracts from uploaded PDFs (first page, first paragraph(s))
+- **Authors & Year Extraction**: Extract authors and publication year from PDF first page
+- **Library UI Improvements**: 
+  - Show Authors and Year in Library list instead of abstract snippet
+  - Display "could not detect" when extraction fails
+  - Clickable "Full Local PDF" badge in Library list
+  - Enhanced PDF link styling with hover effects
+
+### Fixed
+
+- **Abstract Extraction**: Stop extraction at "Keywords:" marker
+- **Library Ordering**: Library now shows most recent additions first
+- **PDF Display**: Fixed PDF viewing to use blob URLs instead of direct backend serving
+- **Test Configuration**: Fixed pytest wrapper script and test discovery paths
+
+### Changed
+
+- **Abstract Extraction**: Improved logic to remove authors from abstract text (needs further refinement)
+- **Library Display**: Replaced abstract snippet with Authors/Year fields for better metadata visibility
+
 ## [0.1.0] - 2025-11-25
 
 ### Added
