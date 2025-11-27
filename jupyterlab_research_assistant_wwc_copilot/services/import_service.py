@@ -69,6 +69,7 @@ class ImportService:
             "title": title,
             "authors": authors,
             "year": year,
+            "abstract": extracted.get("abstract"),
             "full_text": extracted.get("full_text"),
             "pdf_path": str(file_path),
         }
@@ -138,6 +139,11 @@ class ImportService:
                         **existing_paper,  # Keep existing fields
                         **paper_data,  # Overwrite with PDF data (pdf_path, full_text)
                     }
+                    # Preserve existing abstract if PDF extraction didn't find one
+                    if not paper_data.get("abstract") and existing_paper.get(
+                        "abstract"
+                    ):
+                        merged_data["abstract"] = existing_paper["abstract"]
                     # Preserve existing study_metadata and learning_science_metadata
                     # unless AI extraction provides new data
                     if "study_metadata" not in paper_data:

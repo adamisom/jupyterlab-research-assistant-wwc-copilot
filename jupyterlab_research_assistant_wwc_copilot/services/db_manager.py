@@ -31,8 +31,8 @@ class DatabaseManager:
             self.session.close()
 
     def get_all_papers(self) -> list[dict]:
-        """Get all papers from database."""
-        papers = self.session.query(Paper).all()
+        """Get all papers from database, ordered by most recent first (by ID)."""
+        papers = self.session.query(Paper).order_by(Paper.id.desc()).all()
         return [self._paper_to_dict(p) for p in papers]
 
     def get_paper_by_id(self, paper_id: int) -> Optional[dict]:
@@ -64,6 +64,7 @@ class DatabaseManager:
             s2_id=data.get("s2_id"),
             citation_count=data.get("citation_count", 0),
             pdf_path=data.get("pdf_path"),
+            open_access_pdf=data.get("open_access_pdf"),
             abstract=data.get("abstract"),
             full_text=data.get("full_text"),
         )
@@ -315,6 +316,7 @@ class DatabaseManager:
             "citation_count": paper.citation_count,
             "abstract": paper.abstract,
             "pdf_path": paper.pdf_path,
+            "open_access_pdf": paper.open_access_pdf,
             "full_text": paper.full_text,
         }
 

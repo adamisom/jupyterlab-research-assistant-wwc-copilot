@@ -8,7 +8,9 @@ IMPORTANT FOR DEVELOPERS:
 """
 
 import logging
+import re
 from pathlib import Path
+from typing import Optional
 
 import fitz  # PyMuPDF (imported as 'fitz' for historical reasons)
 
@@ -31,7 +33,7 @@ class PDFParser:
             pdf_path: Path to PDF file
 
         Returns:
-            Dictionary with 'title', 'author', 'subject', 'full_text', 'page_count'
+            Dictionary with 'title', 'author', 'subject', 'abstract', 'full_text', 'page_count'
 
         Raises:
             FileNotFoundError: If PDF doesn't exist
@@ -70,10 +72,14 @@ class PDFParser:
 
             doc.close()  # CRITICAL: Free memory
 
+            # Try to extract abstract from full_text
+            abstract = self._extract_abstract(full_text)
+
             return {
                 "title": metadata.get("title", "").strip() or None,
                 "author": metadata.get("author", "").strip() or None,
                 "subject": metadata.get("subject", "").strip() or None,
+                "abstract": abstract,
                 "full_text": full_text,
                 "page_count": page_count,
                 "total_pages": total_pages,
@@ -81,6 +87,40 @@ class PDFParser:
         except Exception as e:
             logger.exception(f"Error parsing PDF {pdf_path}")
             raise RuntimeError(f"Failed to parse PDF: {e!s}") from e
+
+    def _extract_abstract(self, full_text: str) -> Optional[str]:
+        """
+        Extract abstract from PDF text by looking for common patterns.
+
+        Args:
+            full_text: Full text extracted from PDF
+
+        Returns:
+            Abstract text if found, None otherwise
+        """
+        if not full_text:
+            return None
+
+        # Common patterns for abstract sections
+        # Look for "Abstract" heading followed by text, ending before "Keywords", "Introduction", etc.
+        # Pattern 1: "Abstract" (case-insensitive) followed by optional punctuation/whitespace
+        # Capture text until "Keywords", "Key words", "Introduction", or end of reasonable abstract length
+        patterns = [
+            r"(?i)\babstract\b[:\s]*\n?\s*(.+?)(?=\n\s*(?:keywords?|introduction|background|method|1\.|i\.|§))",
+            r"(?i)\babstract\b[:\s]*\n?\s*(.{100,2000})",  # Fallback: 100-2000 chars after "Abstract"
+        ]
+
+        for pattern in patterns:
+            match = re.search(pattern, full_text, re.DOTALL | re.MULTILINE)
+            if match:
+                abstract = match.group(1).strip()
+                # Clean up: remove extra whitespace, newlines
+                abstract = re.sub(r"\s+", " ", abstract)
+                # Limit length (abstracts are typically 100-500 words, ~500-3000 chars)
+                if 50 <= len(abstract) <= 3000:
+                    return abstract
+
+        return None
 
     def extract_text_chunk(self, pdf_path: str, max_chars: int = 16000) -> str:
         """
