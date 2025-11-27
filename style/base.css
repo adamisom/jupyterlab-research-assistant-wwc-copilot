@@ -216,12 +216,42 @@
   background-color: var(--jp-success-color3);
   color: var(--jp-success-color0);
   border: 1px solid var(--jp-success-color1);
+  text-decoration: underline;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.jp-WWCExtension-pdf-badge.jp-mod-has-pdf:hover {
+  background-color: var(--jp-success-color2);
+  color: var(--jp-success-color0);
+  border-color: var(--jp-success-color0);
+  text-decoration: underline;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
 }
 
 .jp-WWCExtension-pdf-badge.jp-mod-metadata-only {
   background-color: var(--jp-warn-color3);
   color: var(--jp-warn-color0);
   border: 1px solid var(--jp-warn-color1);
+}
+
+.jp-WWCExtension-pdf-badge.jp-mod-open-access {
+  background-color: var(--jp-info-color3);
+  color: var(--jp-info-color0);
+  border: 1px solid var(--jp-info-color1);
+  text-decoration: underline;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.jp-WWCExtension-pdf-badge.jp-mod-open-access:hover {
+  background-color: var(--jp-info-color2);
+  color: var(--jp-info-color0);
+  border-color: var(--jp-info-color0);
+  text-decoration: underline;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
 }
 
 .jp-WWCExtension-paper-actions {
@@ -522,8 +552,8 @@
 }
 
 .jp-WWCExtension-view-details-button {
-  padding: 4px 12px;
-  font-size: var(--jp-ui-font-size0);
+  font-size: 1.1em;
+  padding: 8px 16px;
   margin-left: auto;
 }
 
