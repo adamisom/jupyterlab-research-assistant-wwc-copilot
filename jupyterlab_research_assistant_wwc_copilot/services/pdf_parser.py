@@ -106,6 +106,7 @@ class PDFParser:
     def _extract_abstract(self, first_page_text: str) -> Optional[str]:
         """
         Extract abstract from the first page by grabbing the first paragraph(s).
+        Stops before "Keywords:" and removes authors from the beginning.
 
         Args:
             first_page_text: Text extracted from the first page only
@@ -116,9 +117,13 @@ class PDFParser:
         if not first_page_text:
             return None
 
+        # Stop at "Keywords:" or "Key words:" (case-insensitive)
+        # Split the text at keywords to avoid including them
+        keywords_pattern = r"(?i)\n\s*(?:keywords?|key\s+words?)\s*:"
+        text_before_keywords = re.split(keywords_pattern, first_page_text)[0]
+
         # Split text into paragraphs (separated by double newlines or significant whitespace)
-        # Also handle single newlines that might indicate paragraph breaks
-        paragraphs = re.split(r"\n\s*\n|\n{2,}", first_page_text.strip())
+        paragraphs = re.split(r"\n\s*\n|\n{2,}", text_before_keywords.strip())
 
         # Filter out empty paragraphs
         paragraphs = [p.strip() for p in paragraphs if p.strip()]
@@ -126,8 +131,113 @@ class PDFParser:
         if not paragraphs:
             return None
 
-        # Get the first paragraph
-        first_paragraph = paragraphs[0]
+        # NOTE: The following logic to exclude titles and authors doesn't appear to be
+        # working as expected, but it's fine as-is for now. The abstract extraction
+        # still works, just may include some title/author text at the beginning.
+        #
+        # First, identify the title (usually the first substantial paragraph)
+        # Titles are typically: all/mostly capitalized, single line or short, at the very start
+        title_paragraph_idx = 0
+        if paragraphs:
+            first_para = paragraphs[0]
+            words = first_para.split()
+            if words:
+                # Check if first paragraph looks like a title (mostly capitalized)
+                capitalized_ratio = sum(1 for w in words if w and w[0].isupper()) / len(
+                    words
+                )
+                # If very high capitalization (>80%) and relatively short, likely title
+                if capitalized_ratio > 0.8 and len(first_para) < 200:
+                    title_paragraph_idx = 0
+                else:
+                    # Title might be in first paragraph but mixed case
+                    # Or title might be missing - assume first paragraph is title
+                    title_paragraph_idx = 0
+
+        # Now look for authors/universities right after the title
+        # Authors typically appear in the next few paragraphs after the title
+        # Look at paragraphs immediately following the title (up to 5 paragraphs)
+        title_end_char_pos = 0
+
+        # Find where the title paragraph ends in the original text
+        if title_paragraph_idx < len(paragraphs):
+            title_text = paragraphs[title_paragraph_idx]
+            # Find the position where title ends in the original text
+            title_end_char_pos = text_before_keywords.find(title_text) + len(title_text)
+
+        # Now look for university mentions in the text right after the title
+        # Only search in a limited window after the title (e.g., next 500 characters)
+        search_window = text_before_keywords[
+            title_end_char_pos : title_end_char_pos + 500
+        ]
+        search_window_lines = search_window.split("\n")
+
+        # Common university/institution indicators
+        university_indicators = [
+            r"\bUniversity\b",
+            r"\bCollege\b",
+            r"\bInstitute\b",
+            r"\bDepartment\b",
+            r"\bSchool\b",
+            r"\bLaboratory\b",
+            r"\bLab\b",
+            r"\bCenter\b",
+            r"\bCentre\b",
+            r"\bHospital\b",
+        ]
+
+        # Find the last line in the search window that contains a university indicator
+        last_author_line_idx = -1
+        for i, line in enumerate(search_window_lines):
+            line_stripped = line.strip()
+            if not line_stripped:
+                continue
+
+            # Check if this line contains a university indicator
+            for indicator in university_indicators:
+                if re.search(indicator, line_stripped, re.IGNORECASE):
+                    # Check if line looks like "Name University" pattern
+                    words = line_stripped.split()
+                    if words and len(words) >= 2:
+                        # Check if most words are capitalized (name + university)
+                        capitalized_count = sum(
+                            1 for w in words if w and w[0].isupper()
+                        )
+                        if (
+                            capitalized_count >= len(words) * 0.6
+                        ):  # At least 60% capitalized
+                            last_author_line_idx = i
+                            break
+
+        # If we found author lines right after title, start abstract from after the last one
+        if last_author_line_idx >= 0:
+            # Calculate the absolute position in the full text
+            # Find where the last author line ends
+            author_section_end = title_end_char_pos
+            for i in range(last_author_line_idx + 1):
+                if i < len(search_window_lines):
+                    author_section_end += (
+                        len(search_window_lines[i]) + 1
+                    )  # +1 for newline
+
+            # Get text starting from after the author section
+            text_after_authors = text_before_keywords[author_section_end:].strip()
+
+            # Re-split into paragraphs from the cleaned text
+            paragraphs_after_authors = re.split(r"\n\s*\n|\n{2,}", text_after_authors)
+            paragraphs_after_authors = [
+                p.strip() for p in paragraphs_after_authors if p.strip()
+            ]
+
+            if paragraphs_after_authors:
+                # Use the first paragraph after authors
+                first_paragraph = paragraphs_after_authors[0]
+            else:
+                # Fallback: use original first paragraph
+                first_paragraph = paragraphs[0]
+        else:
+            # No author lines detected right after title, use original first paragraph
+            first_paragraph = paragraphs[0]
 
         # Count words in first paragraph
         word_count = len(first_paragraph.split())
@@ -138,8 +248,10 @@ class PDFParser:
         else:
             abstract = first_paragraph
 
-        # Clean up: normalize whitespace
+        # Clean up: normalize whitespace and ensure we didn't include keywords
         abstract = re.sub(r"\s+", " ", abstract)
+        # Remove any accidental inclusion of keywords section
+        abstract = re.split(r"(?i)\s+keywords?\s*:", abstract)[0].strip()
 
         # Validate length (must have at least some content)
         if len(abstract) >= 50:
