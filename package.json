@@ -65,7 +65,7 @@
         "stylelint": "jlpm stylelint:check --fix",
         "stylelint:check": "stylelint --cache \"style/**/*.css\"",
         "test": "jest --coverage",
-        "test:python": "python -m pytest jupyterlab_research_assistant_wwc_copilot/tests/ -v",
+        "test:python": "bash scripts/run_pytest.sh",
         "ci": "jlpm build && jlpm lint:check && jlpm test && jlpm test:python",
         "watch": "run-p watch:src watch:labextension",
         "watch:src": "tsc -w --sourceMap",

@@ -107,6 +107,7 @@ filterwarnings = [
     "ignore::DeprecationWarning",
     "ignore:builtin type.*has no __module__ attribute:DeprecationWarning"
 ]
+norecursedirs = ["test_release", ".git", ".venv", "venv", "node_modules", "dist", "build"]
 
 [tool.ruff]
 # Exclude a variety of commonly ignored directories.
