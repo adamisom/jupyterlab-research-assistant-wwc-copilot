@@ -31,6 +31,7 @@ class Paper(Base):
     s2_id = Column(String(255))  # Semantic Scholar ID
     citation_count = Column(Integer, default=0)
     pdf_path = Column(Text)  # Filesystem path to PDF
+    open_access_pdf = Column(Text)  # URL to open access PDF
     abstract = Column(Text)
     full_text = Column(Text)  # Extracted PDF text
 
@@ -87,6 +88,15 @@ def get_db_path() -> Path:
 def _migrate_database(engine):
     """Run database migrations for schema changes."""
     inspector = inspect(engine)
+
+    # Check if papers table exists
+    if "papers" in inspector.get_table_names():
+        columns = [col["name"] for col in inspector.get_columns("papers")]
+        # Add open_access_pdf column if it doesn't exist
+        if "open_access_pdf" not in columns:
+            with engine.connect() as conn:
+                conn.execute(text("ALTER TABLE papers ADD COLUMN open_access_pdf TEXT"))
+                conn.commit()
 
     # Check if learning_science_metadata table exists
     if "learning_science_metadata" in inspector.get_table_names():

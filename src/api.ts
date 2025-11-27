@@ -17,6 +17,7 @@ export interface IPaper {
   abstract?: string;
   full_text?: string;
   pdf_path?: string;
+  open_access_pdf?: string;
   study_metadata?: {
     methodology?: string;
     sample_size_baseline?: number;
