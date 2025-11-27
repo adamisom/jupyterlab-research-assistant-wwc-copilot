@@ -206,7 +206,7 @@ class WWCQualityAssessor:
                 "randomization_documented",
                 extracted_data.get("randomization_documented"),
             ),
-            is_rct=(extracted_data.get("methodology", "").upper() == "RCT"),
+            is_rct=((extracted_data.get("methodology") or "").upper() == "RCT"),
             paper_id=extracted_data.get("paper_id"),
             paper_title=extracted_data.get("paper_title"),
         )
