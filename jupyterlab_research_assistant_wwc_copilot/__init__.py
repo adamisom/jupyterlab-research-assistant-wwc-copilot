@@ -1,3 +1,5 @@
+from pathlib import Path
+
 try:
     from ._version import __version__
 except ImportError:
@@ -16,7 +18,6 @@ except ImportError:
 # Load environment variables from .env file if it exists
 try:
     from dotenv import load_dotenv
-    from pathlib import Path
 
     # Load .env from project root (parent of this package directory)
     env_path = Path(__file__).parent.parent / ".env"

@@ -106,9 +106,7 @@ with DatabaseManager() as db:
     for paper_data in papers_data:
         paper = db.add_paper(paper_data)
         added_papers.append(paper)
-        print(f"✓ Added: {paper['title']} (ID: {paper['id']})")
+        print(f"✓ Added: {paper['title']} (ID: {paper['id']})")  # noqa: T201
 
-print(f"\n✓ Successfully added {len(added_papers)} papers with effect sizes")
-print("\nYou can now run meta-analysis on these papers!")
-
-
+print(f"\n✓ Successfully added {len(added_papers)} papers with effect sizes")  # noqa: T201
+print("\nYou can now run meta-analysis on these papers!")  # noqa: T201
