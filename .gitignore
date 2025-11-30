@@ -128,3 +128,7 @@ dmypy.json
 .yarn/
 junit.xml
 test_release/
+
+# Environment variables
+.env
+.env.local

@@ -2,6 +2,7 @@
 
 import json
 import logging
+import os
 from pathlib import Path
 from typing import Optional
 
@@ -164,7 +165,9 @@ class DiscoveryHandler(BaseAPIHandler):
 
         # Try Semantic Scholar first
         try:
-            api = SemanticScholarAPI()
+            # Read API key from environment variable if available
+            api_key = os.getenv("SEMANTIC_SCHOLAR_API_KEY")
+            api = SemanticScholarAPI(api_key=api_key)
             results = api.search_papers(query, year=year, limit=limit, offset=offset)
             self.send_success(results)
         except Exception as semantic_error:

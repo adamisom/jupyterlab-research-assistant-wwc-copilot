@@ -12,6 +12,20 @@ except ImportError:
         stacklevel=2,
     )
     __version__ = "dev"
+
+# Load environment variables from .env file if it exists
+try:
+    from dotenv import load_dotenv
+    from pathlib import Path
+
+    # Load .env from project root (parent of this package directory)
+    env_path = Path(__file__).parent.parent / ".env"
+    if env_path.exists():
+        load_dotenv(env_path)
+except ImportError:
+    # python-dotenv not installed, skip .env loading
+    pass
+
 from .routes import setup_route_handlers
 
 

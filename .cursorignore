@@ -1,0 +1,31 @@
+# Environment variables (sensitive)
+.env
+.env.local
+.env.*.local
+
+# Dependencies (large, not useful for context)
+node_modules/
+.venv/
+venv/
+__pycache__/
+
+# Build artifacts
+lib/
+dist/
+build/
+*.egg-info/
+jupyterlab_research_assistant_wwc_copilot/labextension/
+
+# Test results
+test_release/
+ui-tests/test-results/
+ui-tests/playwright-report/
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Logs and caches
+*.log
+.eslintcache
+.stylelintcache
+
