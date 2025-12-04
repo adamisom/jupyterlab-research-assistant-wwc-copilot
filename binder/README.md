@@ -52,8 +52,8 @@ Or use the helper script:
 ## Getting Your API Keys
 
 - **Semantic Scholar**: https://www.semanticscholar.org/product/api
-- **OpenAI**: https://platform.openai.com/api-keys
-- **Anthropic Claude**: https://console.anthropic.com/
+- **OpenAI**: Search for "OpenAI API keys" to find the API key management page
+- **Anthropic Claude**: Search for "Anthropic Claude console" to find the API key management page
 
 ## Troubleshooting
 
