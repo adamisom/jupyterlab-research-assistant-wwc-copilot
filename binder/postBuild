@@ -9,8 +9,11 @@ jlpm install
 echo "Building the extension..."
 jlpm build:prod
 
-echo "Installing the Python package..."
-pip install -e .
+echo "Installing the Python package with conflict-detection support..."
+pip install -e ".[conflict-detection]"
+
+echo "Pre-downloading NLI model for conflict detection..."
+python scripts/preload_nli_model.py || echo "⚠ Model pre-load failed (will download on first use)"
 
 echo "Enabling the server extension..."
 jupyter server extension enable jupyterlab_research_assistant_wwc_copilot
@@ -18,5 +21,13 @@ jupyter server extension enable jupyterlab_research_assistant_wwc_copilot
 echo "Building JupyterLab..."
 jupyter lab build --minimize=False
 
+echo ""
 echo "Binder setup complete!"
+echo ""
+echo "NOTE: To use Semantic Scholar API key, set it in a notebook cell:"
+echo "  import os"
+echo "  os.environ['SEMANTIC_SCHOLAR_API_KEY'] = 'your-api-key-here'"
+echo ""
+echo "Or restart the kernel after setting it in the terminal:"
+echo "  export SEMANTIC_SCHOLAR_API_KEY='your-api-key-here'"
 

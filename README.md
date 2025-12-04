@@ -1,6 +1,7 @@
 # jupyterlab_research_assistant_wwc_copilot
 
 [![Github Actions Status](https://github.com/adamisom/jupyterlab-research-assistant-wwc-copilot/workflows/Build/badge.svg)](https://github.com/adamisom/jupyterlab-research-assistant-wwc-copilot/actions/workflows/build.yml)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/adamisom/jupyterlab-research-assistant-wwc-copilot/HEAD)
 
 A JupyterLab extension for academic research management and WWC quality assessment
 
@@ -71,8 +72,27 @@ pip install jupyterlab_research_assistant_wwc_copilot
 To remove the extension, execute:
 
 ```bash
-pip uninstall jupyterlab_research_assistant_wwc_copilot
+pip uninstall jupyterlab_research-assistant-wwc-copilot
 ```
+
+## Try on Binder
+
+Launch the extension instantly on Binder (no installation needed):
+
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/adamisom/jupyterlab-research-assistant-wwc-copilot/HEAD)
+
+**Quick start:**
+
+1. Click the Binder badge above or go to [mybinder.org](https://mybinder.org)
+2. Paste repo URL: `https://github.com/adamisom/jupyterlab-research-assistant-wwc-copilot`
+3. Click "launch"
+
+**Setting API keys on Binder:**
+
+- **Semantic Scholar**: Set in a notebook cell: `os.environ['SEMANTIC_SCHOLAR_API_KEY'] = 'your-key'`
+- **AI Extraction**: Configure in Settings → Settings Editor → Research Assistant
+
+See [`binder/README.md`](./binder/README.md) for detailed Binder setup instructions.
 
 ## Troubleshoot
 
