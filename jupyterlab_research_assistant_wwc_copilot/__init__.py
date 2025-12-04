@@ -51,3 +51,37 @@ def _load_jupyter_server_extension(server_app):
     setup_route_handlers(server_app.web_app)
     name = "jupyterlab_research_assistant_wwc_copilot"
     server_app.log.info(f"Registered {name} server extension")
+
+    # Pre-load NLI model in background (idempotent - fast if already cached)
+    try:
+        from .services.conflict_detector import ConflictDetector  # noqa: PLC0415
+
+        # Initialize ConflictDetector in background - this will download/cache the model
+        # This is idempotent: if already cached, it loads quickly
+        # We do this on startup so the model is ready when users need conflict detection
+        def _preload_model():
+            try:
+                detector = ConflictDetector()
+                if detector.model is not None:
+                    server_app.log.info(
+                        "NLI model pre-loaded and ready for conflict detection"
+                    )
+                else:
+                    server_app.log.warning(
+                        "NLI model not available. "
+                        "Install transformers library for conflict detection support."
+                    )
+            except Exception as e:
+                server_app.log.warning(f"Could not pre-load NLI model: {e}")
+                server_app.log.info(
+                    "Model will be downloaded on first conflict detection use"
+                )
+
+        # Run in background thread to avoid blocking server startup
+        import threading  # noqa: PLC0415
+
+        thread = threading.Thread(target=_preload_model, daemon=True)
+        thread.start()
+    except ImportError:
+        # transformers not available - that's okay, conflict detection is optional
+        pass
